@@ -1,1 +1,7 @@
-SUBDIRS=common atk-adaptor cspi pyatspi tests
+SUBDIRS=src
+
+if ENABLE_TESTING
+SUBDIRS+=tests
+else
+SUBDIRS+=
+endif

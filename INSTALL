@@ -1,13 +1,13 @@
 Install procedure
 -----------------
 
-        % gzip -cd at-spi-1.9.0.tar.gz | tar xvf -  # unpack the sources
-        % cd at-spi-1.9.0                           # change to the toplevel directory
+        % gzip -cd pyatspi-2.0.0.tar.gz | tar xvf   # unpack the sources
+        % cd pyatspi-2.0.0                          # change to the toplevel directory
         % ./configure                               # run the `configure' script
-        % make                                      # build at-spi
+        % make                                      # build pyatspi
 
         [ Become root if necessary ]
-        % make install                              # install at-spi
+        % make install                              # install pyatspi
 
 Requirements
 ------------
@@ -15,17 +15,6 @@ Requirements
         GNU make
         GNU autotools
 
-        pkg-config
-
         python
-
         glib
-        gtk+
-        gail
-
-        dbus
-        dbus-glib
         dbus-python
-
-        X
-        XEVIE (Reccomended)
