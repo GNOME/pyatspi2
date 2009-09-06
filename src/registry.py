@@ -99,8 +99,7 @@ class _Registry(object):
                 @return: Desktop reference
                 @rtype: Accessibility.Desktop
                 """
-                #TODO Use the accessible factory.
-                return _Desktop(self._app_cache)
+                return self._accessible_factory.create_accessible (ATSPI_REGISTRY_NAME, ATSPI_DESKTOP_PATH)
 
         def registerEventListener(self, client, *names):
                 """

@@ -13,9 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from base import Enum
-from accessible import Accessible
-from factory import accessible_factory
+from enum import Enum
 
 __all__ = [
             "Collection",
@@ -23,7 +21,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Collection (object):
+class Collection(object):
 
         def createMatchRule(self, *args, **kwargs):
                 func = self.get_dbus_method("createMatchRule", dbus_interface=ATSPI_COLLECTION)

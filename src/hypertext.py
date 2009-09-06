@@ -14,7 +14,6 @@
 
 from interfaces import *
 from accessible import Accessible
-from factory import accessible_factory
 
 __all__ = [
            "Hypertext",
@@ -22,7 +21,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Hypertext (Object):
+class Hypertext(object):
         """
         An interface used for objects which implement linking between
         multiple resource or content locations, or multiple 'markers'
@@ -40,8 +39,8 @@ class Hypertext (Object):
                 @return the Hyperlink in this Hypertext object.
                 """
                 func = self.get_dbus_method("getLink", dbus_interface=ATSPI_HYPERTEXT)
-                return self._cache.create_accessible(self._app_name, func(index),
-                                                     interfaces.ATSPI_HYPERTEXT)
+                return self.acc_factory.create_accessible(self._app_name, func(index),
+                                                          interfaces.ATSPI_HYPERLINK)
 
         def getLinkIndex(self, character_index):
                 """

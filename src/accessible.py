@@ -13,7 +13,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import ATSPI_ACCESSIBLE, ATSPI_APPLICATION
-from base import BaseProxy, Enum
+from base import BaseProxy
+from enum import Enum
 
 from state import StateSet, _marshal_state_set
 from relation import _marshal_relation_set
@@ -108,7 +109,7 @@ class Accessible (object):
         Get the containing Application for this object.
         @return the Application instance to which this object belongs.
         """
-        return self._cache.create_application(self._app_name)
+        return self.acc_factory.create_application(self._app_name)
 
     def getAttributes(self):
         """
@@ -152,7 +153,7 @@ class Accessible (object):
         @return : the 'nth' Accessible child of this object.
         """
         path = self.cached_data.children[index]
-        return self._cache.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
+        return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
 
     def getIndexInParent(self):
         """
@@ -189,7 +190,7 @@ class Accessible (object):
         else:
                 func = self.get_dbus_method("getRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
                 relation_set = func()
-                self._relation_set = _marshal_relation_set(self._cache, self._app_name, relation_set)
+                self._relation_set = _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
                 return self._relation_set
 
     def getRole(self):
@@ -263,9 +264,9 @@ class Accessible (object):
     name = property(fget=get_name, doc=_nameDoc)
 
     def get_parent(self):
-        return self._cache.create_accessible(self._app_name,
-                                             self.cached_data.parent,
-                                             ATSPI_ACCESSIBLE)
+        return self.acc_factory.create_accessible(self._app_name,
+                                                  self.cached_data.parent,
+                                                  ATSPI_ACCESSIBLE)
 
     _parentDoc = \
         """

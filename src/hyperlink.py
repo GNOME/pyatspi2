@@ -13,8 +13,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from accessible import Accessible
-from factory import accessible_factory
 
 import dbus
 
@@ -24,7 +22,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Hyperlink(Accessible):
+class Hyperlink(object):
         """
         Instances of Hyperlink are returned by Hypertext objects, and
         are the means by which end users and clients interact with linked,
@@ -51,8 +49,8 @@ class Hyperlink(Accessible):
                 ith anchor can be accessed.
                 """
                 func = self.get_dbus_method("getObject", dbus_interface=ATSPI_HYPERLINK)
-                return self._cache.create_accessible(self._app_name, func(index),
-                                                     interfaces.ATSPI_HYPERLINK)
+                return self.acc_factory.create_accessible(self._app_name, func(index),
+                                                          ATSPI_ACCESSIBLE)
 
         def getURI(self, index):
                 """

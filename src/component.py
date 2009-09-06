@@ -13,9 +13,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from base import Enum
-from factory import accessible_factory
-from accessible import BoundingBox, Accessible
+from enum import Enum
+from accessible import BoundingBox
 
 from dbus.types import UInt32
 
@@ -74,7 +73,7 @@ LAYER_WINDOW = ComponentLayer(7)
 
 #------------------------------------------------------------------------------
 
-class Component (object):
+class Component(object):
         """
         The Component interface is implemented by objects which occupy
         on-screen space, e.g. objects which have onscreen visual representations.
@@ -101,9 +100,9 @@ class Component (object):
                 specified point.
                 """
                 func = self.get_dbus_method("getAccessibleAtPoint", dbus_interface=ATSPI_COMPONENT)
-                return self._cache.create_accessible(self._app_name,
-                                                     func(x, y, UInt32(coord_type)),
-                                                     interfaces.ATSPI_COMPONENT)
+                return self.acc_factory.create_accessible(self._app_name,
+                                                          func(x, y, UInt32(coord_type)),
+                                                          interfaces.ATSPI_ACCESSIBLE)
 
         def getAlpha(self):
                 """

@@ -13,7 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from base import BaseProxyMeta
+from base import BaseProxy
 from accessible import BoundingBox
 from state import StateSet
 
@@ -127,64 +127,11 @@ class DesktopComponent(object):
 
 #------------------------------------------------------------------------------
 
-class Desktop(object):
+class Desktop(BaseProxy):
         """
-        The base interface which is implemented by all accessible objects.
-        All objects support interfaces for querying their contained
-        'children' and position in the accessible-object hierarchy,
-        whether or not they actually have children.
+        Desktop object is an accessible whose children are the root accessible
+        objects of all applications on the desktop. (Connected to ATSPI)
         """
-
-        __metaclass__ = BaseProxyMeta
-
-        def __init__(self, cache):
-                """
-                Creates a desktop object. There should be one single desktop
-                object for the Registry object.
-
-                @param cache - The application cache.
-                @kwarf application - The application D-Bus name
-
-                If the application name is provided the Desktop is being used for
-                test and will only report the application provided as its single child.
-                """
-                self._appcache = cache
-                self._app_name = ':'
-                self._acc_path = DESKTOP_PATH
-
-        def __str__(self):
-                    try:
-                              return '[%s | %s]' % (self.getRoleName(), self.name)
-                    except Exception:
-                              return '[DEAD]'
-
-        def __nonzero__(self):
-                        return True
-
-        def __len__(self):
-                        return self.getChildCount()
-
-        def __getitem__(self, index):
-                        # IndexError thrown by getChildAtIndex
-                        return self.getChildAtIndex(index)
-
-        def __eq__(self, other):
-                if other is None:
-                        return False
-                try:
-                        if self._app_name == other._app_name and \
-                           self._acc_path == other._acc_path:
-                                return True
-                        else:
-                                return False
-                except AttributeError:
-                        return False
-
-        def __ne__(self, other):
-                return not self.__eq__(other)
-
-        def __hash__(self):
-                return hash(self._app_name + self._acc_path)
 
         def getApplication(self):
                 """

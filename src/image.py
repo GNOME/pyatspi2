@@ -14,9 +14,7 @@
 
 import dbus
 from interfaces import *
-from accessible import Accessible
-from factory import accessible_factory
-from accessible import BoundingBox
+from accessible import Accessible, BoundingBox
 
 from dbus.types import UInt32
 

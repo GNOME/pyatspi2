@@ -13,7 +13,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from factory import accessible_factory
 from accessible import Accessible
 
 import dbus
@@ -24,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Application (object):
+class Application(object):
         """
         An interface identifying an object which is the root of the user
         interface Accessible hierarchy associated with a running application.

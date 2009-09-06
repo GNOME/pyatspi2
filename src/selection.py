@@ -13,8 +13,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from accessible import Accessible
-from factory import accessible_factory
 
 import dbus
 
@@ -83,8 +81,8 @@ class Selection(object):
                 by selectedChildIndex.
                 """
                 func = self.get_dbus_method("getSelectedChild", dbus_interface=ATSPI_SELECTION)
-                return self._cache.create_accessible(self._app_name, func(index),
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory.create_accessible(self._app_name, func(index),
+                                                          interfaces.ATSPI_ACCESSIBLE)
 
         def isChildSelected(self, index):
                 """

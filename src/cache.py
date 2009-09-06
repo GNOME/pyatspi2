@@ -48,7 +48,7 @@ class ApplicationCache(object):
                 self.application_list = []
                 self.application_cache = {}
 
-                self._regsig = connection.add_signal_receiver(self.update_handler,
+                self._regsig = connection.add_signal_receiver(self._update_handler,
                                                               dbus_interface=ATSPI_REGISTRY_INTERFACE,
                                                               signal_name="updateApplications")
 
@@ -61,7 +61,14 @@ class ApplicationCache(object):
                 for bus_name in self.application_list:
                         self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
 
-        def update_handler (self, update_type, bus_name):
+        def __call__ (self, app_name, acc_path): 
+                """
+                Returns the cache tuple for the given application and accessible
+                object path. Throws an IndexError if the cache data is not found.
+                """
+                return self.application_cache[app_name][acc_path]
+
+        def _update_handler (self, update_type, bus_name):
                 if update_type == ApplicationCache._APPLICATIONS_ADD:
                         #TODO Check that app does not already exist
                         #TODO Excuding this app is a hack, need to have re-entrant method calls.
@@ -89,28 +96,20 @@ class ApplicationCache(object):
 
                 self._event_dispatcher._notifyChildrenChange(event)
 
-        def get_cache_data(self, app_name, acc_path):
-                """
-                Returns the cache tuple for the given application and accessible
-                object path. Throws an IndexError if the cache data is not found.
-                """
-                return self.application_cache[app_name][acc_path]
-
-        def get_root(self, app_name):
-                return self.application_cache[app_name].root
-
-
         def _refresh(self):
                 new = self._app_register.getApplications()
                 removed = [item for item in self.application_list if item not in new]
                 added   = [item for item in new if item not in self.application_list]
                 for item in added:
-                        self.update_handler (self._APPLICATIONS_ADD, item)
+                        self._update_handler (self._APPLICATIONS_ADD, item)
                 for item in removed:
-                        self.update_handler (self._APPLICATIONS_REMOVE, item)
+                        self._update_handler (self._APPLICATIONS_REMOVE, item)
 
                 for item in self.application_cache.values():
                         item._refresh()
+
+        def get_root(self, app_name):
+                return self.application_cache[app_name].root
 
 #------------------------------------------------------------------------------
 
@@ -279,7 +278,6 @@ class AccessibleCache(object):
                         del(self._objects[path])
                 except KeyError:
                         pass
-
 
         def _refresh(self):
                 get_method = self._tree_itf.get_dbus_method(self._GET_METHOD)

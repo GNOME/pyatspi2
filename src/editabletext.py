@@ -13,7 +13,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from factory import accessible_factory
 from text import *
 
 __all__ = [
@@ -22,7 +21,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class EditableText (Text):
+class EditableText(Text):
         """
         Derived from interface Text, EditableText provides methods for
         modifying textual content of components which support editing.

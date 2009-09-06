@@ -25,68 +25,38 @@ from editabletext import *
 from hyperlink import *
 from hypertext import *
 from image import *
-from relation import *
-from role import *
 from selection import *
 from state import *
-from table import *
 from text import *
 from value import *
 
-#------------------------------------------------------------------------------
-
-class AccessibleObjectNoLongerExists(Exception):
-        pass
+from cache import ApplicationCache
 
 #------------------------------------------------------------------------------
 
-class _DBusObjectFactory:
+class CachedAccessibleFactory (object):
 
-        def __init__(self, connection):
-
-        def get_dbus_object(self, *args, **kwargs):
-                pass
-
-        def get_dbus_method(self, *args, **kwargs):
-                method =  self.dbus_object.get_dbus_method(*args, **kwargs)
-
-                def dbus_method_func(*iargs, **ikwargs):
-                        # TODO Need to throw an AccessibleObjectNoLongerExists exception
-                        # on D-Bus error of the same type.
-                        try:
-                                return method(*iargs, **ikwargs)
-                        except UnknownMethodException, e:
-                                raise NotImplementedError(e)
-                        except DBusException, e:
-                                raise LookupError(e)
-        
-                return dbus_method_func
-
-#------------------------------------------------------------------------------
-
-class _CachedAccessibleFactory (object):
-
-        def __init__ (self, object_factory):
+        def __init__ (self, connection, proxy_class):
 
                 self._cache = ApplicationCache()
 
-                self._object_factory = object_factory
+                self._connection = connection
+                self._proxy_class = proxy_class
 
                 self._interfaces = { 
-                        interfaces.ATSPI_ACTION:
-                        interfaces.ATSPI_APPLICATION:
-                        interfaces.ATSPI_COLLECTION:
-                        interfaces.ATSPI_COMPONENT:
-                        interfaces.ATSPI_DOCUMENT:
-                        interfaces.ATSPI_EDITABLE_TEXT:
-                        interfaces.ATSPI_HYPERTEXT:
-                        interfaces.ATSPI_HYPERLINK:
-                        interfaces.ATSPI_IMAGE:
-                        interfaces.ATSPI_SELECTION:
-                        interfaces.ATSPI_STREAMABLE_CONTENT:
-                        interfaces.ATSPI_TABLE:
-                        interfaces.ATSPI_TEXT:
-                        interfaces.ATSPI_VALUE:
+                        interfaces.ATSPI_ACTION:Action,
+                        interfaces.ATSPI_APPLICATION:Application,
+                        interfaces.ATSPI_COLLECTION:Collection,
+                        interfaces.ATSPI_COMPONENT:Component,
+                        interfaces.ATSPI_DOCUMENT:Document,
+                        interfaces.ATSPI_EDITABLE_TEXT:Text,
+                        interfaces.ATSPI_HYPERTEXT:Hypertext,
+                        interfaces.ATSPI_HYPERLINK:Hyperlink,
+                        interfaces.ATSPI_IMAGE:Image,
+                        interfaces.ATSPI_SELECTION:Selection,
+                        interfaces.ATSPI_TABLE:Table,
+                        interfaces.ATSPI_TEXT:Text,
+                        interfaces.ATSPI_VALUE:Value,
                 }
 
                 for value in self._interfaces.values():
@@ -111,7 +81,7 @@ class _CachedAccessibleFactory (object):
                               provided here so that another one is not created.
                 """
                 if dbus_object == None:
-                        dbus_object = self._object_factory.get_dbus_object (app_name, acc_path)
+                        dbus_object = self._proxy_class (self._connection, bus_name, object_path, introspect=False)
 
                 if app_name == ATSPI_REGISTRY_NAME or acc_path == ATSPI_DESKTOP_PATH:
                         return self._interfaces [ATSPI_DESKTOP] (app_name,
@@ -120,7 +90,6 @@ class _CachedAccessibleFactory (object):
                                                                  interface,
                                                                  dbus_object,
                                                                  self._cache)
-
 
                 return self._interfaces [interface] (app_name,
                                                      acc_path,

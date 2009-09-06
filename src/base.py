@@ -60,7 +60,7 @@ class BaseProxy(object):
 
         __metaclass__ = BaseProxyMeta
 
-        def __init__(self, app_name, acc_path, acc_factory, dbus_interface, dbus_object):
+        def __init__(self, app_name, acc_path, acc_factory, dbus_interface, dbus_object, cache):
                 """
                 Create a D-Bus Proxy for an ATSPI interface.
 
@@ -74,6 +74,7 @@ class BaseProxy(object):
                 self._acc_factory = acc_factory
                 self._dbus_interface = dbus_interface
                 self._dbus_object = dbus_object
+                self._cache = cache
 
                 self._pgetter = self.get_dbus_method("Get",
                                                      dbus_interface="org.freedesktop.DBus.Properties")
@@ -99,6 +100,14 @@ class BaseProxy(object):
         @property
         def dbus_object (self):
                 return self._dbus_object
+
+        @property
+        def cache (self):
+                return self._dbus_object
+
+        @property
+        def cached_data (self):
+                return self.cache(self.app_name, self.acc_path)
 
         def __str__(self):
                     try:
@@ -146,5 +155,22 @@ class BaseProxy(object):
                         raise NotImplementedError(
                                 "%s not supported by accessible object at path %s"
                                 % (interface, self._acc_path))
+
+        def get_dbus_method (self, *args, **kwargs):
+                method =  self.dbus_object.get_dbus_method(self, *args, **kwargs)
+
+                def dbus_method_func(*iargs, **ikwargs):
+
+                        # Need to throw an AccessibleObjectNoLongerExists exception
+                        # on D-Bus error of the same type.
+
+                        try:
+                                return method(*iargs, **ikwargs)
+                        except UnknownMethodException, e:
+                                raise NotImplementedError(e)
+                        except DBusException, e:
+                                raise LookupError(e)
+        
+                return dbus_method_func
 
 #END----------------------------------------------------------------------------

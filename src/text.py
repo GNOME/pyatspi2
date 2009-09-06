@@ -12,14 +12,10 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import dbus
-
 from interfaces import *
-from accessible import Accessible
-from base import Enum
-from factory import accessible_factory
+from enum import Enum
 
-from dbus.types import UInt32
+from dbus.types import UInt32, Int32
 
 __all__ = [
            "Text",
@@ -204,7 +200,7 @@ class Text(object):
                 of colon-delimited name-value pairs.
                 """
                 func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_TEXT)
-                [attrs, startOffset, endOffset] = func(dbus.Int32(offset))
+                [attrs, startOffset, endOffset] = func(Int32(offset))
                 dict = [key + ':' + value for key, value in attrs]
                 return [dict, startOffset, endOffset]
 
@@ -407,7 +403,7 @@ class Text(object):
                 func = self.get_dbus_method("getText", dbus_interface=ATSPI_TEXT)
                 if not endOffset:
                         endOffset = -1
-                return func(dbus.Int32(startOffset), dbus.Int32(endOffset))
+                return func(Int32(startOffset), Int32(endOffset))
 
         def getTextAfterOffset(self, offset, type):
                 """
@@ -538,7 +534,7 @@ class Text(object):
                 return func(selectionNum, startOffset, endOffset)
 
         def get_caretOffset(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "caretOffset"))
+                return Int32(self._pgetter(self.dbus_interface, "caretOffset"))
         _caretOffsetDoc = \
                 """
                 The current offset of the text caret in the Text object. This
@@ -551,7 +547,7 @@ class Text(object):
         caretOffset = property(fget=get_caretOffset, doc=_caretOffsetDoc)
 
         def get_characterCount(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "characterCount"))
+                return Int32(self._pgetter(self.dbus_interface, "characterCount"))
         _characterCountDoc = \
                 """
                 The total current number of characters in the Text object, including

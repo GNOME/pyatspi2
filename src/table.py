@@ -14,7 +14,6 @@
 
 from interfaces import *
 from accessible import Accessible
-from factory import accessible_factory
 
 import dbus
 
@@ -73,8 +72,8 @@ class Table(object):
                 cell.
                 """
                 func = self.get_dbus_method("getAccessibleAt", dbus_interface=ATSPI_TABLE)
-                return self._cache.create_accessible(self._app_name, func(row, column),
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory.create_accessible(self._app_name, func(row, column),
+                                                          interfaces.ATSPI_ACCESSIBLE)
 
         def getColumnAtIndex(self, index):
                 """
@@ -126,8 +125,8 @@ class Table(object):
                 if available.
                 """
                 func = self.get_dbus_method("getColumnHeader", dbus_interface=ATSPI_TABLE)
-                return self._cache.create_accessible(self._app_name, func(index),
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory.create_accessible(self._app_name, func(index),
+                                                          interfaces.ATSPI_ACCESSIBLE)
 
         def getIndexAt(self, row, column):
                 """
@@ -231,8 +230,8 @@ class Table(object):
                 if available.
                 """
                 func = self.get_dbus_method("getRowHeader", dbus_interface=ATSPI_TABLE)
-                return self._cache.create_accessible(self._app_name, func(row),
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory.create_accessible(self._app_name, func(row),
+                                                          interfaces.ATSPI_ACCESSIBLE)
 
         def getSelectedColumns(self):
                 """
@@ -311,8 +310,8 @@ class Table(object):
 
         def get_caption(self):
                 accessible = self._pgetter(self._dbus_interface, "caption")
-                return self._cache.create_accessible(self._app_name, accessible,
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory.create_accessible(self._app_name, accessible,
+                                                          interfaces.ATSPI_ACCESSIBLE)
         _captionDoc = \
                 """
                 An Accessible which represents of a caption for a Table.
@@ -360,8 +359,8 @@ class Table(object):
 
         def get_summary(self):
                 accessible = self._pgetter(self._dbus_interface, "summary")
-                return self._cache.create_accessible(self._app_name, accessible,
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory.create_accessible(self._app_name, accessible,
+                                                          interfaces.ATSPI_ACCESSIBLE)
         _summaryDoc = \
                 """
                 An accessible object which summarizes the contents of a Table.
