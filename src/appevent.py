@@ -19,7 +19,6 @@ from base import AccessibleObjectNotAvailable
 __all__ = [
                 "Event",
                 "EventType",
-                "event_type_to_signal_reciever",
           ]
 
 #------------------------------------------------------------------------------
@@ -282,16 +281,16 @@ class ApplicationEventRegister (object):
                 for client in register.keys():
                         client(event)
 
-        def _notifyNameChange(self, event):
+        def notifyNameChange(self, event):
                 self._callClients(self._name_listeners, event)
 
-        def _notifyDescriptionChange(self, event):
+        def notifyDescriptionChange(self, event):
                 self._callClients(self._description_listeners, event)
 
-        def _notifyParentChange(self, event):
+        def notifyParentChange(self, event):
                 self._callClients(self._parent_listeners, event)
 
-        def _notifyChildrenChange(self, event):
+        def notifyChildrenChange(self, event):
                 self._callClients(self._children_changed_listeners, event)
 
         def _registerFake(self, type, register, client, *names):
@@ -387,5 +386,27 @@ class ApplicationEventRegister (object):
                 self._deregisterFake(self._children_changed_type, self._children_changed_listeners, client, *names)
 
                 return missing
+
+#------------------------------------------------------------------------------
+
+class NullApplicationEventRegister (object):
+
+        def notifyNameChange(self, event):
+                pass
+
+        def notifyDescriptionChange(self, event):
+                pass
+
+        def notifyParentChange(self, event):
+                pass
+
+        def notifyChildrenChange(self, event):
+                pass
+
+        def registerEventListener(self, client, *names):
+                pass
+
+        def deregisterEventListener(self, client, *names):
+                return FALSE
 
 #END----------------------------------------------------------------------------

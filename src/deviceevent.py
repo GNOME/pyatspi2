@@ -16,7 +16,7 @@ import dbus as _dbus
 import dbus.service as _service
 import interfaces
 
-from base import Enum as _Enum
+from enum import Enum as _Enum
 
 #------------------------------------------------------------------------------
 
@@ -516,7 +516,7 @@ class KeyboardDeviceEventListener(_service.Object):
                 try:
                         # wrap the device event
                         event = DeviceEvent(*ev)
-                        return self._registry.handleDeviceEvent(event, self)
+                        return self._registry._handleDeviceEvent(event, self)
                 except Exception, e:
                         import traceback
                         traceback.print_exc()
@@ -565,7 +565,7 @@ class _DeviceEventRegister (object):
                 # register for new keystrokes on the observer
                 ob.unregister(self.dev, key_set, mask, kind)
 
-        def handleDeviceEvent(self, event, ob):
+        def _handleDeviceEvent(self, event, ob):
                 try:
                         # try to get the client registered for this event type
                         client = self.deviceClients[ob]
@@ -587,5 +587,32 @@ class _DeviceEventRegister (object):
 
         def generateMouseEvent(self, x, y, name):
                 self.dev.generateMouseEvent(_dbus.Int32(x), _dbus.Int32(y), name)
+
+#------------------------------------------------------------------------------
+
+class _NullDeviceEventRegister (object):
+        
+        def registerKeystrokeListener(self,
+                                      client,
+                                      key_set=[],
+                                      mask=0,
+                                      kind=(KEY_PRESSED_EVENT, KEY_RELEASED_EVENT),
+                                      synchronous=True,
+                                      preemptive=True,
+                                      global_=False):
+                pass
+
+        def deregisterKeystrokeListener(self,
+                                        client,
+                                        key_set=[],
+                                        mask=0,
+                                        kind=(KEY_PRESSED_EVENT, KEY_RELEASED_EVENT)):
+                pass
+
+        def generateKeyboardEvent(self, keycode, keysym, kind):
+                pass
+
+        def generateMouseEvent(self, x, y, name):
+                pass
 
 #END---------------------------------------------------------------------------
