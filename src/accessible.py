@@ -14,7 +14,7 @@
 
 from interfaces import ATSPI_ACCESSIBLE, ATSPI_APPLICATION
 from base import BaseProxy, Enum
-from factory import accessible_factory
+
 from state import StateSet, _marshal_state_set
 from relation import _marshal_relation_set
 from role import Role, ROLE_NAMES
@@ -84,7 +84,7 @@ class BoundingBox(list):
 
 #------------------------------------------------------------------------------
 
-class Accessible(BaseProxy):
+class Accessible (object):
     """
     The base interface which is implemented by all accessible objects.
     All objects support interfaces for querying their contained
@@ -272,12 +272,5 @@ class Accessible(BaseProxy):
         an Accessible object which is this object's containing object.
         """
     parent = property(fget=get_parent, doc=_parentDoc)
-
-    def refresh(self):
-            self._relation_set = None
-            self._cache.application_cache[self._app_name]._refresh()
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_ACCESSIBLE, Accessible)
 
 #END----------------------------------------------------------------------------

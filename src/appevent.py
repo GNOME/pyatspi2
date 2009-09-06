@@ -259,4 +259,133 @@ class Event(object):
                                          (self.type, self.detail1, self.detail2, self.any_data,
                                                 self.source, self.host_application)
 
+#------------------------------------------------------------------------------
+
+class ApplicationEventRegister (object):
+
+        def __init__ (self):
+                self._event_listeners = {}
+
+                # All of this special casing is for the 'faked'
+                # events caused by cache updates.
+
+                self._name_type = _EventType("object:property-change:name")
+                self._name_listeners = {}
+                self._description_type = _EventType("object:property-change:description")
+                self._description_listeners = {}
+                self._parent_type = _EventType("object:property-change:parent")
+                self._parent_listeners = {}
+                self._children_changed_type = _EventType("object:children-changed")
+                self._children_changed_listeners = {}
+
+        def _callClients(self, register, event):
+                for client in register.keys():
+                        client(event)
+
+        def _notifyNameChange(self, event):
+                self._callClients(self._name_listeners, event)
+
+        def _notifyDescriptionChange(self, event):
+                self._callClients(self._description_listeners, event)
+
+        def _notifyParentChange(self, event):
+                self._callClients(self._parent_listeners, event)
+
+        def _notifyChildrenChange(self, event):
+                self._callClients(self._children_changed_listeners, event)
+
+        def _registerFake(self, type, register, client, *names):
+                """
+                Registers a client from a register of clients
+                for 'Fake' events emitted by the cache.
+                """
+                try:
+                        registered = register[client]
+                except KeyError:
+                        registered = []
+                        register[client] = registered
+
+                for name in names:
+                        new_type = _EventType(name)
+                        if new_type.is_subtype(type):
+                                registered.append(new_type.name)
+
+                if registered == []:
+                        del(register[client])
+
+        def _deregisterFake(self, type, register, client, *names):
+                """
+                Deregisters a client from a register of clients
+                for 'Fake' events emitted by the cache.
+                """
+                try:
+                        registered = register[client]
+                except KeyError:
+                        return True
+
+                for name in names:
+                        remove_type = _EventType(name)
+
+                        copy = registered[:]
+                        for i in range(0, len(copy)):
+                                type_name = copy[i]
+                                registered_type = _EventType(type_name)
+
+                                if remove_type.is_subtype(registered_type):
+                                        del(registered[i])
+
+                if registered == []:
+                        del(register[client])
+
+        def registerEventListener(self, client, *names):
+                try:
+                        registered = self._event_listeners[client]
+                except KeyError:
+                        registered = []
+                        self._event_listeners[client] = registered
+
+                for name in names:
+                        new_type = _EventType(name)
+                        registered.append((new_type.name,
+                                           _event_type_to_signal_reciever(self._bus, self._app_cache, client, new_type)))
+
+                self._registerFake(self._name_type, self._name_listeners, client, *names)
+                self._registerFake(self._description_type, self._description_listeners, client, *names)
+                self._registerFake(self._parent_type, self._parent_listeners, client, *names)
+                self._registerFake(self._children_changed_type, self._children_changed_listeners, client, *names)
+
+        def deregisterEventListener(self, client, *names):
+                try:
+                        registered = self._event_listeners[client]
+                except KeyError:
+                        # Presumably if were trying to deregister a client with
+                        # no names then the return type is always true.
+                        return True
+
+                missing = False
+
+                for name in names:
+                        remove_type = _EventType(name)
+                        copy = registered[:]
+                        for i in range (0, len(copy)):
+                                type_name, signal_match = copy[i]
+                                registered_type = _EventType(type_name)
+
+                                if remove_type.is_subtype(registered_type):
+                                        signal_match.remove()
+                                        del(registered[i])
+                                else:
+                                        missing = True
+
+                if registered == []:
+                        del(self._event_listeners[client])
+
+                #TODO Do these account for missing also?
+                self._deregisterFake(self._name_type, self._name_listeners, client, *names)
+                self._deregisterFake(self._description_type, self._description_listeners, client, *names)
+                self._deregisterFake(self._parent_type, self._parent_listeners, client, *names)
+                self._deregisterFake(self._children_changed_type, self._children_changed_listeners, client, *names)
+
+                return missing
+
 #END----------------------------------------------------------------------------

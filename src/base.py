@@ -12,53 +12,13 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import dbus
-from dbus.proxies import Interface
-from dbus.exceptions import *
-
 import interfaces
 
 __all__ = [
-           "AccessibleObjectNoLongerExists",
-           "AccessibleObjectNotAvailable",
-           "Enum",
            "BaseProxy",
-           "_repack_tuple",
           ]
 
-class AccessibleObjectNoLongerExists(Exception):
-        pass
-
-class AccessibleObjectNotAvailable(Exception):
-        pass
-
 #------------------------------------------------------------------------------
-
-def _repack_tuple (tup):
-        """
-        Re-packs a tuple moving the last element to the beginning.
-        """
-        return (tup[-1] ,) + tup[:-1]
-
-#------------------------------------------------------------------------------
-
-class Enum(dbus.UInt32):
-        def __str__(self):
-                return self._enum_lookup[int(self)]
-
-        def __eq__(self, other):
-                if other is None:
-                        return False
-                if int(self) == int(other):
-                        return True
-                else:
-                        return False
-
-        def __hash__(self):
-                return int(self)
-
-#------------------------------------------------------------------------------
-
 
 class BaseProxyMeta(type):
         def __new__(meta, *args, **kwargs):
@@ -97,38 +57,48 @@ class BaseProxyMeta(type):
 #------------------------------------------------------------------------------
 
 class BaseProxy(object):
-        """
-        The base D-Bus proxy for a remote object that implements one or more
-        of the AT-SPI interfaces.
-        """
 
         __metaclass__ = BaseProxyMeta
 
-        def __init__(self, app_name, acc_path, cache, interface, dbus_object=None):
+        def __init__(self, app_name, acc_path, acc_factory, dbus_interface, dbus_object):
                 """
                 Create a D-Bus Proxy for an ATSPI interface.
 
-                cache - ApplicationCache, where the cached data for the accessible can be obtained.
                 app_name - D-Bus bus name of the application this accessible belongs to.
                 acc_path - D-Bus object path of the server side accessible object.
-                parent - Parent accessible.
-                dbus_object(kwarg) - The D-Bus proxy object used by the accessible for D-Bus method calls.
+                acc_factory - Factory used to create new accessible objects.
+                dbus_object - The D-Bus proxy object used by the accessible for D-Bus method calls.
                 """
-                self._cache = cache
                 self._app_name = app_name
                 self._acc_path = acc_path
-                self._dbus_interface = interface
-
-                if not dbus_object:
-                        dbus_object = cache.connection.get_object(self._app_name,
-                                                                  self._acc_path,
-                                                                  introspect=False)
+                self._acc_factory = acc_factory
+                self._dbus_interface = dbus_interface
                 self._dbus_object = dbus_object
 
                 self._pgetter = self.get_dbus_method("Get",
                                                      dbus_interface="org.freedesktop.DBus.Properties")
                 self._psetter = self.get_dbus_method("Set",
                                                      dbus_interface="org.freedesktop.DBus.Properties")
+
+        @property
+        def app_name (self):
+                return self._app_name
+
+        @property
+        def acc_path (self):
+                return self._acc_path
+
+        @property
+        def acc_factory (self):
+                return self._acc_factory
+
+        @property
+        def dbus_interface (self):
+                return self._dbus_interface
+
+        @property
+        def dbus_object (self):
+                return self._dbus_object
 
         def __str__(self):
                     try:
@@ -140,8 +110,8 @@ class BaseProxy(object):
                 if other is None:
                         return False
                 try:
-                        if self._app_name == other._app_name and \
-                           self._acc_path == other._acc_path:
+                        if self.app_name == other.app_name and \
+                           self.acc_path == other.acc_path:
                                 return True
                         else:
                                 return False
@@ -152,34 +122,14 @@ class BaseProxy(object):
                 return not self.__eq__(other)
 
         def __hash__(self):
-                return hash(self._app_name + self._acc_path)
-
-        def get_dbus_method(self, *args, **kwargs):
-                method =  self._dbus_object.get_dbus_method(*args, **kwargs)
-
-                def dbus_method_func(*iargs, **ikwargs):
-                        # TODO Need to throw an AccessibleObjectNoLongerExists exception
-                        # on D-Bus error of the same type.
-                        try:
-                                return method(*iargs, **ikwargs)
-                        except UnknownMethodException, e:
-                                raise NotImplementedError(e)
-                        except DBusException, e:
-                                raise LookupError(e)
-
-                return dbus_method_func
+                return hash(self.app_name + self.acc_path)
 
         @property
-        def cached_data(self):
-                try:
-                        return self._cache.get_cache_data(self._app_name, self._acc_path)
-                except KeyError:
-                        raise AccessibleObjectNoLongerExists, \
-                                'Cache data cannot be found for path %s in app %s' % (self._acc_path, self._app_name)
-
-        @property
-        def interfaces(self):
-                return self.cached_data.interfaces
+        def interfaces:
+                """
+                Returns the interfaces supported by this object.
+                """
+                return []
 
         def queryInterface(self, interface):
                 """
@@ -188,16 +138,13 @@ class BaseProxy(object):
                 is not supported.
                 """
                 if interface in self.interfaces:
-                        return self._cache.create_accessible(self._app_name,
-                                                             self._acc_path,
-                                                             interface,
-                                                             dbus_object=self._dbus_object)
+                        return self.acc_factory.create_accessible(self.app_name,
+                                                                  self.acc_path,
+                                                                  interface,
+                                                                  dbus_object=self.dbus_object)
                 else:
                         raise NotImplementedError(
                                 "%s not supported by accessible object at path %s"
                                 % (interface, self._acc_path))
-
-        def flushCache(self):
-                pass
 
 #END----------------------------------------------------------------------------

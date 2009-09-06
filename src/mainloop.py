@@ -1,4 +1,4 @@
-#Copyright (C) 2008 Codethink Ltd
+#Copyright (C) 2009 Codethink Ltd
 
 #This library is free software; you can redistribute it and/or
 #modify it under the terms of the GNU Lesser General Public
@@ -12,29 +12,11 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-from registry import*
-
-from constants import *
-from utils import *
-
-from deviceevent import *
-from appevent import *
-
-from accessible import *
-from action import *
-from application import *
-from collection import *
-from component import *
-from desktop import *
-from document import *
-from editabletext import *
-from hyperlink import *
-from hypertext import *
-from image import *
-from relation import *
-from role import *
-from selection import *
-from state import *
-from table import *
-from text import *
-from value import *
+class GObjectMain (object):
+        def set_main (self):
+                from dbus.mainloop.glib import DBusGMainLoop
+                DBusGMainLoop (set_as_default=True)
+                del DBusGMainLoop
+        
+        def get_dbus_method (self);
+                pass

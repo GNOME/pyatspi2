@@ -22,7 +22,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Document(Accessible):
+class Document (object):
         """
         Primarily a 'tagging' interface which indicates the start of
         document content in the Accessibility hierarchy. Accessible objects
@@ -67,8 +67,5 @@ class Document(Accessible):
                 """
                 func = self.get_dbus_method("getLocale", dbus_interface=ATSPI_DOCUMENT)
                 return func()
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_DOCUMENT, Document)
 
 #END----------------------------------------------------------------------------

@@ -19,25 +19,6 @@
 
 #authors: Peter Parente, Mark Doffman
 
-import os as _os
-import dbus as _dbus
-import gobject as _gobject
-
-from desktop import Desktop as _Desktop
-
-from event import EventType as _EventType
-from event import event_type_to_signal_reciever as _event_type_to_signal_reciever
-
-from applicationcache import TestApplicationCache, ApplicationCache
-
-from dbus.mainloop.glib import DBusGMainLoop as _DBusGMainLoop
-
-from Queue import Queue
-from deviceevent import *
-from deviceevent import _TestDeviceEventController
-
-_DBusGMainLoop(set_as_default=True)
-
 #------------------------------------------------------------------------------
 
 class _Registry(object):
@@ -57,51 +38,17 @@ class _Registry(object):
         @type reg: Accessibility.Registry
         @ivar dev: Reference to the device controller
         @type dev: Accessibility.DeviceEventController
-        @ivar queue: Queue of events awaiting local dispatch
-        @type queue: Queue.Queue
         @ivar clients: Map of event names to client listeners
         @type clients: dictionary
         @ivar observers: Map of event names to AT-SPI L{_Observer} objects
         @type observers: dictionary
         """
 
-        def __init__(self):
-                """
-                Stores a reference to the AT-SPI registry. Gets and stores a reference
-                to the DeviceEventController.
-
-                @param reg: Reference to the AT-SPI registry daemon
-                @type reg: Accessibility.Registry
-                """
-                self._bus = _dbus.SessionBus()
-
-                app_name = None
-                if "ATSPI_TEST_APP_NAME" in _os.environ.keys():
-                        app_name = _os.environ["ATSPI_TEST_APP_NAME"]
-
-                if app_name:
-                        self._app_cache = TestApplicationCache(self, self._bus, app_name)
-                        self.dev = _TestDeviceEventController()
-                else:
-                        self._app_cache = ApplicationCache(self, self._bus)
-                        self.dev = DeviceEventController(self._bus)
-
-                self._event_listeners = {}
-
-                # All of this special casing is for the 'faked'
-                # events caused by cache updates.
-
-                self._name_type = _EventType("object:property-change:name")
-                self._name_listeners = {}
-                self._description_type = _EventType("object:property-change:description")
-                self._description_listeners = {}
-                self._parent_type = _EventType("object:property-change:parent")
-                self._parent_listeners = {}
-                self._children_changed_type = _EventType("object:children-changed")
-                self._children_changed_listeners = {}
-
-                self.clients = {}
-                self.deviceClients = {}
+        def __init__(device_event_register, app_event_register, accessible_factory, main_loop):
+                self.device_event_register = device_event_register
+                self.app_event_register = app_event_register
+                self.accessible_factory = accessible_factory
+                self.main_loop = main_loop
 
         def __call__(self):
                 """
@@ -109,14 +56,6 @@ class _Registry(object):
                 @rtype: L{Registry}
                 """
                 return self
-
-        @property
-        def cache (self):
-                """
-                This is the accessible application cache through which
-                all accessible objects are accessed.
-                """
-                return self._app_cache
 
         def start(self, async=False, gil=True):
                 """
@@ -131,16 +70,16 @@ class _Registry(object):
                         Note - No Longer used.
                 @type gil: boolean
                 """
-                self._loop = _gobject.MainLoop()
                 try:
-                        self._loop.run()
+                        self._main_loop.run()
                 except KeyboardInterrupt:
                         pass
 
         def stop(self, *args):
-                """Quits the main loop."""
-                self._loop.quit()
-                self.flushEvents()
+                """
+                Quits the main loop.
+                """
+                self.main_loop.stop()
 
         def getDesktopCount(self):
                 """
@@ -160,70 +99,8 @@ class _Registry(object):
                 @return: Desktop reference
                 @rtype: Accessibility.Desktop
                 """
+                #TODO Use the accessible factory.
                 return _Desktop(self._app_cache)
-
-        # -------------------------------------------------------------------------------
-
-        def _callClients(self, register, event):
-                for client in register.keys():
-                        client(event)
-
-        def _notifyNameChange(self, event):
-                self._callClients(self._name_listeners, event)
-
-        def _notifyDescriptionChange(self, event):
-                self._callClients(self._description_listeners, event)
-
-        def _notifyParentChange(self, event):
-                self._callClients(self._parent_listeners, event)
-
-        def _notifyChildrenChange(self, event):
-                self._callClients(self._children_changed_listeners, event)
-
-        def _registerFake(self, type, register, client, *names):
-                """
-                Registers a client from a register of clients
-                for 'Fake' events emitted by the cache.
-                """
-                try:
-                        registered = register[client]
-                except KeyError:
-                        registered = []
-                        register[client] = registered
-
-                for name in names:
-                        new_type = _EventType(name)
-                        if new_type.is_subtype(type):
-                                registered.append(new_type.name)
-
-                if registered == []:
-                        del(register[client])
-
-        def _deregisterFake(self, type, register, client, *names):
-                """
-                Deregisters a client from a register of clients
-                for 'Fake' events emitted by the cache.
-                """
-                try:
-                        registered = register[client]
-                except KeyError:
-                        return True
-
-                for name in names:
-                        remove_type = _EventType(name)
-
-                        copy = registered[:]
-                        for i in range(0, len(copy)):
-                                type_name = copy[i]
-                                registered_type = _EventType(type_name)
-
-                                if remove_type.is_subtype(registered_type):
-                                        del(registered[i])
-
-                if registered == []:
-                        del(register[client])
-
-        # -------------------------------------------------------------------------------
 
         def registerEventListener(self, client, *names):
                 """
@@ -245,21 +122,7 @@ class _Registry(object):
                 @param names: List of full or partial event names
                 @type names: list of string
                 """
-                try:
-                        registered = self._event_listeners[client]
-                except KeyError:
-                        registered = []
-                        self._event_listeners[client] = registered
-
-                for name in names:
-                        new_type = _EventType(name)
-                        registered.append((new_type.name,
-                                           _event_type_to_signal_reciever(self._bus, self._app_cache, client, new_type)))
-
-                self._registerFake(self._name_type, self._name_listeners, client, *names)
-                self._registerFake(self._description_type, self._description_listeners, client, *names)
-                self._registerFake(self._parent_type, self._parent_listeners, client, *names)
-                self._registerFake(self._children_changed_type, self._children_changed_listeners, client, *names)
+                self._app_event_register.registerEventListener (client, *names)
 
         def deregisterEventListener(self, client, *names):
                 """
@@ -278,38 +141,7 @@ class _Registry(object):
                         registered?
                 @rtype: boolean
                 """
-                try:
-                        registered = self._event_listeners[client]
-                except KeyError:
-                        # Presumably if were trying to deregister a client with
-                        # no names then the return type is always true.
-                        return True
-
-                missing = False
-
-                for name in names:
-                        remove_type = _EventType(name)
-                        copy = registered[:]
-                        for i in range (0, len(copy)):
-                                type_name, signal_match = copy[i]
-                                registered_type = _EventType(type_name)
-
-                                if remove_type.is_subtype(registered_type):
-                                        signal_match.remove()
-                                        del(registered[i])
-                                else:
-                                        missing = True
-
-                if registered == []:
-                        del(self._event_listeners[client])
-
-                #TODO Do these account for missing also?
-                self._deregisterFake(self._name_type, self._name_listeners, client, *names)
-                self._deregisterFake(self._description_type, self._description_listeners, client, *names)
-                self._deregisterFake(self._parent_type, self._parent_listeners, client, *names)
-                self._deregisterFake(self._children_changed_type, self._children_changed_listeners, client, *names)
-
-                return missing
+                self._app_event_register.deregisterEventListener (client, *names)
 
         # -------------------------------------------------------------------------------
 
@@ -349,20 +181,13 @@ class _Registry(object):
                         AT-SPI is in the foreground? (requires xevie)
                 @type global_: boolean
                 """
-                try:
-                        # see if we already have an observer for this client
-                        ob = self.deviceClients[client]
-                except KeyError:
-                        # create a new device observer for this client
-                        ob = KeyboardDeviceEventListener(self, synchronous, preemptive, global_)
-                        # store the observer to client mapping, and the inverse
-                        self.deviceClients[ob] = client
-                        self.deviceClients[client] = ob
-                if mask is None:
-                        # None means all modifier combinations
-                        mask = utils.allModifiers()
-                # register for new keystrokes on the observer
-                ob.register(self.dev, key_set, mask, kind)
+                self._device_event_register.registerKeystrokeListener (client,
+                                                                       key_set,
+                                                                       mask,
+                                                                       kind,
+                                                                       synchronous,
+                                                                       preemptive,
+                                                                       global_)
 
         def deregisterKeystrokeListener(self,
                                         client,
@@ -389,46 +214,7 @@ class _Registry(object):
                 @type kind: list
                 @raise KeyError: When the client isn't already registered for events
                 """
-                # see if we already have an observer for this client
-                ob = self.deviceClients[client]
-                if mask is None:
-                        # None means all modifier combinations
-                        mask = utils.allModifiers()
-                # register for new keystrokes on the observer
-                ob.unregister(self.dev, key_set, mask, kind)
-
-        def handleDeviceEvent(self, event, ob):
-                """
-                Dispatches L{event.DeviceEvent}s to registered clients. Clients are called
-                in the order they were registered for the given AT-SPI event. If any
-                client returns True, callbacks cease for the event for clients of this registry 
-                instance. Clients of other registry instances and clients in other processes may 
-                be affected depending on the values of synchronous and preemptive used when invoking
-                L{registerKeystrokeListener}. 
-
-                @note: Asynchronous dispatch of device events is not supported.
-
-                @param event: AT-SPI device event
-                @type event: L{event.DeviceEvent}
-                @param ob: Observer that received the event
-                @type ob: L{KeyboardDeviceEventListener}
-
-                @return: Should the event be consumed (True) or allowed to pass on to other
-                        AT-SPI observers (False)?
-                @rtype: boolean
-                """
-                try:
-                        # try to get the client registered for this event type
-                        client = self.deviceClients[ob]
-                except KeyError:
-                        # client may have unregistered recently, ignore event
-                        return False
-                # make the call to the client
-                try:
-                        return client(event) or event.consume
-                except Exception:
-                        # print the exception, but don't let it stop notification
-                        traceback.print_exc()
+                self._device_event_register.deregisterKeystrokeListener (client, key_set, mask, kind)
 
         # -------------------------------------------------------------------------------
 
@@ -460,10 +246,7 @@ class _Registry(object):
                 @param kind: Kind of event to synthesize
                 @type kind: integer
                 """
-                if keysym is None:
-                        self.dev.generateKeyboardEvent(keycode, '', kind)
-                else:
-                        self.dev.generateKeyboardEvent(None, keysym, kind)
+                self._device_event_register.generateKeyboardEvent (keycode, keysym, kind)
 
         def generateMouseEvent(self, x, y, name):
                 """
@@ -479,4 +262,4 @@ class _Registry(object):
                 @param name: Name of the event to generate
                 @type name: string
                 """
-                self.dev.generateMouseEvent(_dbus.Int32(x), _dbus.Int32(y), name)
+                self._device_event_register.generateMouseEvent (x, y, name)

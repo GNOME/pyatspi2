@@ -24,7 +24,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Action(Accessible):
+class Action (object):
         """
         An interface through which a user-actionable user interface component
         can be manipulated. Components which react to mouse or keyboard
@@ -104,8 +104,5 @@ class Action(Accessible):
                 supports.
                 """
         nActions = property(fget=get_nActions, doc=_nActionsDoc)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_ACTION, Action)
 
 #END----------------------------------------------------------------------------

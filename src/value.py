@@ -24,7 +24,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Value(Accessible):
+class Value(object)
         """
         An interface supporting controls which allow a one-dimensional,
         scalar quantity to be modified or which reflect a scalar quantity.
@@ -67,8 +67,5 @@ class Value(Accessible):
                 The minimum value allowed by this valuator.
                 """
         minimumValue = property(fget=get_minimumValue, doc=_minimumValueDoc)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_VALUE, Value)
 
 #END----------------------------------------------------------------------------

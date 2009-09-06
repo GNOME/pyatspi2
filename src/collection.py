@@ -23,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Collection(Accessible):
+class Collection (object):
 
         def createMatchRule(self, *args, **kwargs):
                 func = self.get_dbus_method("createMatchRule", dbus_interface=ATSPI_COLLECTION)
@@ -103,8 +103,5 @@ class Collection(Accessible):
         TREE_LAST_DEFINED = TreeTraversalType(3)
         TREE_RESTRICT_CHILDREN = TreeTraversalType(0)
         TREE_RESTRICT_SIBLING = TreeTraversalType(1)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_COLLECTION, Collection)
 
 #END----------------------------------------------------------------------------

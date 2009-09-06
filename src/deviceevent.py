@@ -20,6 +20,13 @@ from base import Enum as _Enum
 
 #------------------------------------------------------------------------------
 
+ATSPI_DEVICE_EVENT_LISTENER_INTERFACE = 'org.freedesktop.atspi.DeviceEventListener'
+ATSPI_DEVICE_EVENT_CONTROLLER_INTERFACE = 'org.freedesktop.atspi.DeviceEventController'
+ATSPI_DEVICE_EVENT_CONTROLLER_PATH = '/org/freedesktop/atspi/registry/deviceeventcontroller'
+ATSPI_DEVICE_EVENT_CONTROLLER_NAME = 'org.freedesktop.atspi.Registry'
+
+#------------------------------------------------------------------------------
+
 class PressedEventType(_Enum):
         _enum_lookup = {
                 0:'KEY_PRESSED_EVENT',
@@ -400,37 +407,6 @@ class DeviceEventController(object):
 
 #------------------------------------------------------------------------------
 
-class _TestDeviceEventController(object):
-        """
-        Used for testing when no Registry daemon is present.
-        """
-
-        def registerKeystrokeListener(self, event_listener, keys, event_mask, key_event_types, event_listener_mode):
-                return True
-
-        def deregisterKeystrokeListener(self, event_listener, keys, event_mask, key_event_types):
-                pass
-
-        def registerDeviceEventListener(self, event_listener, event_types):
-                return True
-
-        def deregisterDeviceEventListener(self, event_listener, event_types):
-                pass
-
-        def notifyListenersSync(self, event):
-                return False
-
-        def notifyListenersAsync(self, event):
-                pass
-
-        def generateKeyboardEvent(self, keycode, keystring, type):
-                pass
-
-        def generateMouseEvent(self, x, y, name):
-                pass
-
-#------------------------------------------------------------------------------
-
 class KeyboardDeviceEventListener(_service.Object):
         """
         Observes keyboard press and release events.
@@ -545,5 +521,71 @@ class KeyboardDeviceEventListener(_service.Object):
                         import traceback
                         traceback.print_exc()
                         return False
+
+#------------------------------------------------------------------------------
+
+class _DeviceEventRegister (object):
+        
+        def __init__ (self):
+                self.deviceClients = {}
+
+        def registerKeystrokeListener(self,
+                                      client,
+                                      key_set=[],
+                                      mask=0,
+                                      kind=(KEY_PRESSED_EVENT, KEY_RELEASED_EVENT),
+                                      synchronous=True,
+                                      preemptive=True,
+                                      global_=False):
+                try:
+                        # see if we already have an observer for this client
+                        ob = self.deviceClients[client]
+                except KeyError:
+                        # create a new device observer for this client
+                        ob = KeyboardDeviceEventListener(self, synchronous, preemptive, global_)
+                        # store the observer to client mapping, and the inverse
+                        self.deviceClients[ob] = client
+                        self.deviceClients[client] = ob
+                if mask is None:
+                        # None means all modifier combinations
+                        mask = utils.allModifiers()
+                # register for new keystrokes on the observer
+                ob.register(self.dev, key_set, mask, kind)
+
+        def deregisterKeystrokeListener(self,
+                                        client,
+                                        key_set=[],
+                                        mask=0,
+                                        kind=(KEY_PRESSED_EVENT, KEY_RELEASED_EVENT)):
+                # see if we already have an observer for this client
+                ob = self.deviceClients[client]
+                if mask is None:
+                        # None means all modifier combinations
+                        mask = utils.allModifiers()
+                # register for new keystrokes on the observer
+                ob.unregister(self.dev, key_set, mask, kind)
+
+        def handleDeviceEvent(self, event, ob):
+                try:
+                        # try to get the client registered for this event type
+                        client = self.deviceClients[ob]
+                except KeyError:
+                        # client may have unregistered recently, ignore event
+                        return False
+                # make the call to the client
+                try:
+                        return client(event) or event.consume
+                except Exception:
+                        # print the exception, but don't let it stop notification
+                        traceback.print_exc()
+
+        def generateKeyboardEvent(self, keycode, keysym, kind):
+                if keysym is None:
+                        self.dev.generateKeyboardEvent(keycode, '', kind)
+                else:
+                        self.dev.generateKeyboardEvent(None, keysym, kind)
+
+        def generateMouseEvent(self, x, y, name):
+                self.dev.generateMouseEvent(_dbus.Int32(x), _dbus.Int32(y), name)
 
 #END---------------------------------------------------------------------------

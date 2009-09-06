@@ -12,9 +12,105 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import dbus as _dbus
+import dbus
+
+from desktop import Desktop, DESKTOP_PATH
 
 from event import Event as _Event
+from base import AccessibleObjectNotAvailable
+
+from interfaces import *
+
+__all__ = [
+           "ApplicationCache",
+          ]
+
+#------------------------------------------------------------------------------
+
+class ApplicationCache(object):
+        """
+        Keeps a store of the caches for all accessible applications.
+        Updates as new applications are added or removed.
+
+        @event_dispatcher:   Each accessible cache object must have an
+                             object to send update events.
+
+        @connection: D-Bus connection used to access applications.
+        """
+
+        _APPLICATIONS_ADD = 1
+        _APPLICATIONS_REMOVE = 0
+
+        def __init__(self, event_dispatcher, connection):
+                self._connection = connection
+                self._event_dispatcher = event_dispatcher
+
+                self.application_list = []
+                self.application_cache = {}
+
+                self._regsig = connection.add_signal_receiver(self.update_handler,
+                                                              dbus_interface=ATSPI_REGISTRY_INTERFACE,
+                                                              signal_name="updateApplications")
+
+                obj = connection.get_object(ATSPI_REGISTRY_NAME,
+                                            ATSPI_REGISTRY_PATH,
+                                            introspect=False)
+                self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
+
+                self.application_list.extend(self._app_register.getApplications())
+                for bus_name in self.application_list:
+                        self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
+
+        def update_handler (self, update_type, bus_name):
+                if update_type == ApplicationCache._APPLICATIONS_ADD:
+                        #TODO Check that app does not already exist
+                        #TODO Excuding this app is a hack, need to have re-entrant method calls.
+                        if bus_name != self._connection.get_unique_name ():
+                                self.application_list.append(bus_name)
+                                self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
+                                                                                   self._connection,
+                                                                                   bus_name)
+                                event = _Event(self,
+                                               DESKTOP_PATH,
+                                               ATSPI_REGISTRY_NAME,
+                                               "org.freedesktop.atspi.Event.Object",
+                                               "children-changed",
+                                               ("add", 0, 0, ""))
+                elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
+                        #TODO Fail safely if app does not exist
+                        self.application_list.remove(bus_name)
+                        del(self.application_cache[bus_name])
+                        event = _Event(self,
+                                       DESKTOP_PATH,
+                                       ATSPI_REGISTRY_NAME,
+                                       "org.freedesktop.atspi.Event.Object",
+                                       "children-changed",
+                                       ("remove", 0, 0, ""))
+
+                self._event_dispatcher._notifyChildrenChange(event)
+
+        def get_cache_data(self, app_name, acc_path):
+                """
+                Returns the cache tuple for the given application and accessible
+                object path. Throws an IndexError if the cache data is not found.
+                """
+                return self.application_cache[app_name][acc_path]
+
+        def get_root(self, app_name):
+                return self.application_cache[app_name].root
+
+
+        def _refresh(self):
+                new = self._app_register.getApplications()
+                removed = [item for item in self.application_list if item not in new]
+                added   = [item for item in new if item not in self.application_list]
+                for item in added:
+                        self.update_handler (self._APPLICATIONS_ADD, item)
+                for item in removed:
+                        self.update_handler (self._APPLICATIONS_REMOVE, item)
+
+                for item in self.application_cache.values():
+                        item._refresh()
 
 #------------------------------------------------------------------------------
 
@@ -78,14 +174,14 @@ class AccessibleCache(object):
         _UPDATE_SIGNAL = 'updateAccessible'
         _REMOVE_SIGNAL = 'removeAccessible'
 
-        def __init__(self, registry, connection, bus_name):
+        def __init__(self, event_dispatcher, connection, bus_name):
                 """
                 Creates a cache.
 
                 connection - DBus connection.
                 busName    - Name of DBus connection where cache interface resides.
                 """
-                self._registry = registry
+                self._event_dispatcher = event_dispatcher
                 self._connection = connection
                 self._bus_name = bus_name
 
@@ -110,51 +206,51 @@ class AccessibleCache(object):
 
         def _dispatch_event(self, olddata, newdata):
                 if olddata.name != newdata.name:
-                        event = _Event(self._registry.cache,
+                        event = _Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
                                        "property-change",
                                        ("accessible-name", 0, 0, newdata.name))
-                        self._registry._notifyNameChange(event)
+                        self._event_dispatcher._notifyNameChange(event)
 
                 if olddata.description != newdata.description:
-                        event = _Event(self._registry.cache,
+                        event = _Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
                                        "property-change",
                                        ("accessible-description", 0, 0, newdata.description))
-                        self._registry._notifyDescriptionChange(event)
+                        self._event_dispatcher._notifyDescriptionChange(event)
 
                 if olddata.parent != newdata.parent:
-                        event = _Event(self._registry.cache,
+                        event = _Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
                                        "property-change",
                                        ("accessible-parent", 0, 0, ""))
-                        self._registry._notifyParentChange(event)
+                        self._event_dispatcher._notifyParentChange(event)
 
                 removed, added = _list_items_added_removed (olddata.children, newdata.children)
 
                 if added:
-                        event = _Event(self._registry.cache,
+                        event = _Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
                                        "children-changed",
                                        ("add", 0, 0, ""))
-                        self._registry._notifyChildrenChange(event)
+                        self._event_dispatcher._notifyChildrenChange(event)
 
                 if removed:
-                        event = _Event(self._registry.cache,
+                        event = _Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
                                        "children-changed",
                                        ("remove", 0, 0, ""))
-                        self._registry._notifyChildrenChange(event)
+                        self._event_dispatcher._notifyChildrenChange(event)
 
         # TODO This should be the other way around. Single is more common than many.
         def _update_single(self, object):
@@ -184,13 +280,13 @@ class AccessibleCache(object):
                 except KeyError:
                         pass
 
-        def _get_root(self):
-                return self._root
 
         def _refresh(self):
                 get_method = self._tree_itf.get_dbus_method(self._GET_METHOD)
                 self._update_objects(get_method())
 
-        root = property(fget=_get_root)
+        @property
+        def root(self):
+                return self._root
 
-#END---------------------------------------------------------------------------
+#END----------------------------------------------------------------------------

@@ -24,7 +24,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Selection(Accessible):
+class Selection(object):
         """
         An interface which indicates that an object exposes a 'selection'
         model, allowing the selection of one or more of its children.
@@ -129,8 +129,5 @@ class Selection(Accessible):
                 selected.
                 """
         nSelectedChildren = property(fget=get_nSelectedChildren, doc=_nSelectedChildrenDoc)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_SELECTION, Selection)
 
 #END----------------------------------------------------------------------------

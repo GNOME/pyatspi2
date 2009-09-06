@@ -74,7 +74,7 @@ LAYER_WINDOW = ComponentLayer(7)
 
 #------------------------------------------------------------------------------
 
-class Component(Accessible):
+class Component (object):
         """
         The Component interface is implemented by objects which occupy
         on-screen space, e.g. objects which have onscreen visual representations.
@@ -182,8 +182,5 @@ class Component(Accessible):
                 """
                 func = self.get_dbus_method("grabFocus", dbus_interface=ATSPI_COMPONENT)
                 return func()
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_COMPONENT, Component)
 
 #END----------------------------------------------------------------------------

@@ -24,7 +24,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Table(Accessible):
+class Table(object):
         """
         An interface used by containers whose contained data is arranged
         in a "tabular" (i.e. row-column) fashion. Tables may resemble
@@ -369,8 +369,5 @@ class Table(Accessible):
                 one.
                 """
         summary = property(fget=get_summary, doc=_summaryDoc)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_TABLE, Table)
 
 #END----------------------------------------------------------------------------

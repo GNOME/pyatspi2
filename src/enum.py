@@ -12,29 +12,27 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-from registry import*
+from dbus.types import UInt32
 
-from constants import *
-from utils import *
+__all__ = [
+           "Enum",
+          ]
 
-from deviceevent import *
-from appevent import *
+#------------------------------------------------------------------------------
 
-from accessible import *
-from action import *
-from application import *
-from collection import *
-from component import *
-from desktop import *
-from document import *
-from editabletext import *
-from hyperlink import *
-from hypertext import *
-from image import *
-from relation import *
-from role import *
-from selection import *
-from state import *
-from table import *
-from text import *
-from value import *
+class Enum(dbus.UInt32):
+        def __str__(self):
+                return self._enum_lookup[int(self)]
+
+        def __eq__(self, other):
+                if other is None:
+                        return False
+                if int(self) == int(other):
+                        return True
+                else:
+                        return False
+
+        def __hash__(self):
+                return int(self)
+
+#END---------------------------------------------------------------------------

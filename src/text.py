@@ -76,7 +76,7 @@ TEXT_CLIP_NONE = TEXT_CLIP_TYPE(0)
 
 #------------------------------------------------------------------------------
 
-class Text(Accessible):
+class Text(object):
         """
         The text interface should be implemented by objects which place
         textual information onscreen as character strings or glyphs.

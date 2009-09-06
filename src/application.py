@@ -24,7 +24,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Application(Accessible):
+class Application (object):
         """
         An interface identifying an object which is the root of the user
         interface Accessible hierarchy associated with a running application.
@@ -61,8 +61,5 @@ class Application(Accessible):
                 bridge implementation.
                 """
         version = property(fget=get_version, doc=_versionDoc)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_APPLICATION, Application)
 
 #END----------------------------------------------------------------------------

@@ -22,7 +22,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class EditableText(Text):
+class EditableText (Text):
         """
         Derived from interface Text, EditableText provides methods for
         modifying textual content of components which support editing.
@@ -117,8 +117,5 @@ class EditableText(Text):
                 """
                 func = self.get_dbus_method("setTextContents", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(contents)
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_EDITABLE_TEXT, EditableText)
 
 #END----------------------------------------------------------------------------

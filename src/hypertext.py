@@ -22,7 +22,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Hypertext(Accessible):
+class Hypertext (Object):
         """
         An interface used for objects which implement linking between
         multiple resource or content locations, or multiple 'markers'
@@ -64,8 +64,5 @@ class Hypertext(Accessible):
                 """
                 func = self.get_dbus_method("getNLinks", dbus_interface=ATSPI_HYPERTEXT)
                 return func()
-
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_HYPERTEXT, Hypertext)
 
 #END----------------------------------------------------------------------------

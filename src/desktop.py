@@ -22,12 +22,7 @@ from component import LAYER_WIDGET
 
 __all__ = [
            "Desktop",
-           "DESKTOP_PATH",
           ]
-
-#------------------------------------------------------------------------------
-
-DESKTOP_PATH = '/org/freedesktop/atspi/accessible/desktop'
 
 #------------------------------------------------------------------------------
 
@@ -357,8 +352,5 @@ class Desktop(object):
                                 raise NotImplementedError(
                                                 "%s not supported by accessible object at path %s"
                                                 % (interface, self._acc_path))
-
-        def refresh(self):
-                self._appcache._refresh()
 
 #END----------------------------------------------------------------------------
