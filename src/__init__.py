@@ -14,10 +14,9 @@
 
 __version__ = (1, 9, 0)
 
-import registry
-Registry = registry._Registry()
-registry._Registry = Registry
-del registry
+import loop
+Registry = loop.new_registry ("GObject")
+del loop
 
 import constants
 from Accessibility import *

@@ -45,7 +45,7 @@ class ApplicationCache(object):
                 self._connection = connection
                 self._event_dispatcher = event_dispatcher
 
-                self.application_list = []
+                self._application_list = []
                 self.application_cache = {}
 
                 self._regsig = connection.add_signal_receiver(self._update_handler,
@@ -57,9 +57,13 @@ class ApplicationCache(object):
                                             introspect=False)
                 self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
 
-                self.application_list.extend(self._app_register.getApplications())
-                for bus_name in self.application_list:
+                self._application_list.extend(self._app_register.getApplications())
+                for bus_name in self._application_list:
                         self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
+
+        @property
+        def application_list (self):
+                return self._application_list
 
         def __call__ (self, app_name, acc_path): 
                 """
@@ -73,7 +77,7 @@ class ApplicationCache(object):
                         #TODO Check that app does not already exist
                         #TODO Excuding this app is a hack, need to have re-entrant method calls.
                         if bus_name != self._connection.get_unique_name ():
-                                self.application_list.append(bus_name)
+                                self._application_list.append(bus_name)
                                 self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                                    self._connection,
                                                                                    bus_name)
@@ -85,7 +89,7 @@ class ApplicationCache(object):
                                                ("add", 0, 0, ""))
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         #TODO Fail safely if app does not exist
-                        self.application_list.remove(bus_name)
+                        self._application_list.remove(bus_name)
                         del(self.application_cache[bus_name])
                         event = _Event(self,
                                        DESKTOP_PATH,
@@ -98,8 +102,8 @@ class ApplicationCache(object):
 
         def _refresh(self):
                 new = self._app_register.getApplications()
-                removed = [item for item in self.application_list if item not in new]
-                added   = [item for item in new if item not in self.application_list]
+                removed = [item for item in self._application_list if item not in new]
+                added   = [item for item in new if item not in self._application_list]
                 for item in added:
                         self._update_handler (self._APPLICATIONS_ADD, item)
                 for item in removed:
@@ -107,9 +111,6 @@ class ApplicationCache(object):
 
                 for item in self.application_cache.values():
                         item._refresh()
-
-        def get_root(self, app_name):
-                return self.application_cache[app_name].root
 
 #------------------------------------------------------------------------------
 

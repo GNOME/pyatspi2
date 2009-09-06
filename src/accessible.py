@@ -109,7 +109,8 @@ class Accessible (object):
         Get the containing Application for this object.
         @return the Application instance to which this object belongs.
         """
-        return self.acc_factory.create_application(self._app_name)
+        acc_path = self.cache[self.app_name].root
+        return self.acc_factory.create_accessible(self.app_name, acc_path, ATSPI_APPLICATION)
 
     def getAttributes(self):
         """

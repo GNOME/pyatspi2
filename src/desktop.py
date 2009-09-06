@@ -180,7 +180,9 @@ class Desktop(BaseProxy):
                 an in parameter indicating which child is requested (zero-indexed).
                 @return : the 'nth' Accessible child of this object.
                 """
-                return self._appcache.create_application(self._appcache.application_list[index])
+                app_name = self.cache.application_list[index]
+                acc_path = self.cache[app_name].root
+                self.acc_factory.create_accessible(app_name, acc_path, ATSPI_ACCESSIBLE)
 
         def getIndexInParent(self):
                 """
@@ -248,7 +250,7 @@ class Desktop(BaseProxy):
                 return self == accessible
 
         def get_childCount(self):
-                return len(self._appcache.application_list)
+                return len(self.cache.application_list)
         _childCountDoc = \
                 """
                 childCount: the number of children contained by this object.

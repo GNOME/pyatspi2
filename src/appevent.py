@@ -14,7 +14,6 @@
 
 import interfaces
 from accessible import BoundingBox
-from base import AccessibleObjectNotAvailable
 
 __all__ = [
                 "Event",
@@ -187,7 +186,7 @@ class Event(object):
         @ivar source: Source of the event
         @type source: Accessibility.Accessible
         """
-        def __init__(self, cache, source_path, source_application, interface, name, event):
+        def __init__(self, acc_factory, source_path, source_application, interface, name, event):
                 """
                 Extracts information from the provided event. If the event is a "normal" 
                 event, pulls the detail1, detail2, any_data, and source values out of the
@@ -200,7 +199,7 @@ class Event(object):
                 @param event: Event from an AT-SPI callback
                 @type event: Accessibility.Event or Accessibility.DeviceEvent
                 """
-                self._cache = cache
+                self._acc_factory = acc_factory
                 self._source_path = source_path
                 self._source_application = source_application
 
@@ -220,9 +219,10 @@ class Event(object):
 
         @property
         def host_application(self):
+                #TODO TODO
                 if not self._application:
                         try:
-                                return self._cache.create_application(self._source_application)
+                                return self.acc_factory.create_application(self._source_application)
                         except AccessibleObjectNotAvailable:
                                 pass
                 return self._application
@@ -260,7 +260,7 @@ class Event(object):
 
 #------------------------------------------------------------------------------
 
-class ApplicationEventRegister (object):
+class _ApplicationEventRegister (object):
 
         def __init__ (self):
                 self._event_listeners = {}
@@ -389,7 +389,7 @@ class ApplicationEventRegister (object):
 
 #------------------------------------------------------------------------------
 
-class NullApplicationEventRegister (object):
+class _NullApplicationEventRegister (object):
 
         def notifyNameChange(self, event):
                 pass

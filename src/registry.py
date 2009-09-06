@@ -21,7 +21,7 @@
 
 #------------------------------------------------------------------------------
 
-class _Registry(object):
+class Registry(object):
         """
         Wraps the Accessibility.Registry to provide more Pythonic registration for
         events.

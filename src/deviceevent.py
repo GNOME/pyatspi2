@@ -12,18 +12,12 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+from interfaces import *
+
 import dbus as _dbus
 import dbus.service as _service
-import interfaces
 
 from enum import Enum as _Enum
-
-#------------------------------------------------------------------------------
-
-ATSPI_DEVICE_EVENT_LISTENER_INTERFACE = 'org.freedesktop.atspi.DeviceEventListener'
-ATSPI_DEVICE_EVENT_CONTROLLER_INTERFACE = 'org.freedesktop.atspi.DeviceEventController'
-ATSPI_DEVICE_EVENT_CONTROLLER_PATH = '/org/freedesktop/atspi/registry/deviceeventcontroller'
-ATSPI_DEVICE_EVENT_CONTROLLER_NAME = 'org.freedesktop.atspi.Registry'
 
 #------------------------------------------------------------------------------
 
@@ -256,10 +250,10 @@ class DeviceEventController(object):
         """
 
         def __init__ (self, connection):
-                dec_object = connection.get_object(interfaces.ATSPI_REGISTRY_NAME,
-                                                   interfaces.ATSPI_DEVICE_EVENT_CONTROLLER_PATH,
+                dec_object = connection.get_object(ATSPI_REGISTRY_NAME,
+                                                   ATSPI_DEVICE_EVENT_CONTROLLER_PATH,
                                                    introspect=True)
-                self._dec = _dbus.Interface(dec_object, interfaces.ATSPI_DEVICE_EVENT_CONTROLLER_INTERFACE)
+                self._dec = _dbus.Interface(dec_object, ATSPI_DEVICE_EVENT_CONTROLLER_INTERFACE)
 
         def registerKeystrokeListener(self,
                                       event_listener,
@@ -496,7 +490,7 @@ class KeyboardDeviceEventListener(_service.Object):
                         for m in mask:
                                 dc.deregisterKeystrokeListener(self._upath, key_set, m, kind)
 
-        @_service.method(dbus_interface=interfaces.ATSPI_DEVICE_EVENT_LISTENER_INTERFACE,
+        @_service.method(dbus_interface=ATSPI_DEVICE_EVENT_LISTENER_INTERFACE,
                          in_signature="(uinnisb)",
                          out_signature="b")
         def notifyEvent(self, ev):
