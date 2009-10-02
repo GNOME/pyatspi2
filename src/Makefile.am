@@ -2,11 +2,10 @@ pyatspidir = $(pythondir)/pyatspi
 pyatspi_PYTHON = \
 		Accessibility.py	\
 		accessible.py		\
-		accessiblecache.py	\
 		action.py		\
+                appevent.py             \
 		application.py		\
-		applicationcache.py	\
-		base.py			\
+                cache.py                \
 		collection.py		\
 		component.py		\
 		constants.py		\
@@ -14,14 +13,13 @@ pyatspi_PYTHON = \
 		deviceevent.py		\
 		document.py		\
 		editabletext.py		\
-		event.py		\
 		factory.py		\
 		hyperlink.py		\
 		hypertext.py		\
 		image.py		\
 		__init__.py		\
 		interfaces.py		\
-		loginhelper.py		\
+                loop.py                 \
 		registry.py		\
 		relation.py		\
 		role.py			\

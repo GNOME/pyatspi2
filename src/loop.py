@@ -45,6 +45,11 @@ def build_registry (type):
         Method for creating the registry and configuring it for different main loops.
         """ 
 
+        app_name = None
+        if "ATSPI_TEST_APP_NAME" in _os.environ.keys():
+                app_name = _os.environ["ATSPI_TEST_APP_NAME"]
+                type = "Test"
+
         if type == "GObject":
                 loop = GObjectMain ()
 
@@ -52,8 +57,20 @@ def build_registry (type):
                 appreg = _ApplicationEventRegister()
 
                 connection = dbus.SessionBus()
-                factory = CachedAccessibleFactory(appreg, connection, GObjectProxy)
+
+                cache = ApplicationCache(appreg, connection)
+                factory = CachedAccessibleFactory(cache, connection, GObjectProxy)
                 
+                return Registry (devreg, appreg, factory, loop)
+        else if type == "Test":
+                loop = GObjectMain ()
+                
+                devreg = _NullDeviceEventRegister()
+                appreg = _NullApplicationEventRegister()
+
+                cache = TestApplicationCache(appreg, connection, appname)
+                factory = CachedAccessibleFactory(cache, connection, GObjectProxy)
+
                 return Registry (devreg, appreg, factory, loop)
         else:
                 raise Exception ("Don't know the type of main loop")

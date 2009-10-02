@@ -20,7 +20,43 @@ from interfaces import *
 
 __all__ = [
            "ApplicationCache",
+           "TestApplicationCache",
           ]
+
+#------------------------------------------------------------------------------
+
+class TestApplicationCache(object):
+
+        """
+        Test application store, accesses a single application.
+
+        The store object acts as a central class for creating accessible objects.
+        It interfaces with the ATSPI registry to keep account of all accessible
+        applications. It contains the accessible cache objects from each application.
+
+        @registry:   Each accessible cache object must have a reference to the registry
+                     object to send update events.
+
+        @connection: D-Bus connection used to access applications.
+
+        @bus_name:   The test store only accesses one accessible application, this is its
+                     D-Bus path.
+        """
+
+        def __init__(self, event_dispatcher, connection, bus_name):
+                self._application_list = [bus_name]
+                self.application_cache = {bus_name:AccessibleCache(event_dispatcher, connection, bus_name)}
+
+        @property
+        def application_list (self):
+                return self._application_list
+
+        def __call__ (self, app_name, acc_path): 
+                """
+                Returns the cache tuple for the given application and accessible
+                object path. Throws an IndexError if the cache data is not found.
+                """
+                return self.application_cache[app_name][acc_path]
 
 #------------------------------------------------------------------------------
 

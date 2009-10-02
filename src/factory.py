@@ -31,16 +31,13 @@ from text import *
 from table import *
 from value import *
 
-from cache import ApplicationCache
-
 #------------------------------------------------------------------------------
 
 class CachedAccessibleFactory (object):
 
-        def __init__ (self, event_dispatcher, connection, proxy_class):
+        def __init__ (self, cache, connection, proxy_class):
 
-                self._cache = ApplicationCache(event_dispatcher, connection)
-
+                self._cache = cache
                 self._connection = connection
                 self._proxy_class = proxy_class
 
