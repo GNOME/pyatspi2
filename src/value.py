@@ -22,7 +22,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Value(object)
+class Value(object):
         """
         An interface supporting controls which allow a one-dimensional,
         scalar quantity to be modified or which reflect a scalar quantity.

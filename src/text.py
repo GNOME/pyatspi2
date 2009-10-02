@@ -582,7 +582,4 @@ class Text(object):
                         self[3] = val
                 data = property(fget=_get_data, fset=_set_data)
 
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_TEXT, Text)
-
 #END----------------------------------------------------------------------------

@@ -19,7 +19,7 @@
 
 #authors: Peter Parente, Mark Doffman
 
-from base import Enum as _Enum
+from enum import Enum as _Enum
 
 #------------------------------------------------------------------------------
 

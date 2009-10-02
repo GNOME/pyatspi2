@@ -101,7 +101,4 @@ class Hyperlink(object):
                 """
         startIndex = property(fget=get_startIndex, doc=_startIndexDoc)
 
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_HYPERLINK, Hyperlink)
-
 #END----------------------------------------------------------------------------

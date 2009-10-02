@@ -20,7 +20,7 @@
 #authors: Peter Parente, Mark Doffman
 
 import interfaces
-from base import Enum as _Enum
+from enum import Enum as _Enum
 
 #------------------------------------------------------------------------------
 

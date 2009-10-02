@@ -20,7 +20,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Enum(dbus.UInt32):
+class Enum(UInt32):
         def __str__(self):
                 return self._enum_lookup[int(self)]
 

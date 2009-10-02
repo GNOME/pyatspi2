@@ -268,13 +268,13 @@ class _ApplicationEventRegister (object):
                 # All of this special casing is for the 'faked'
                 # events caused by cache updates.
 
-                self._name_type = _EventType("object:property-change:name")
+                self._name_type = EventType("object:property-change:name")
                 self._name_listeners = {}
-                self._description_type = _EventType("object:property-change:description")
+                self._description_type = EventType("object:property-change:description")
                 self._description_listeners = {}
-                self._parent_type = _EventType("object:property-change:parent")
+                self._parent_type = EventType("object:property-change:parent")
                 self._parent_listeners = {}
-                self._children_changed_type = _EventType("object:children-changed")
+                self._children_changed_type = EventType("object:children-changed")
                 self._children_changed_listeners = {}
 
         def _callClients(self, register, event):
@@ -305,7 +305,7 @@ class _ApplicationEventRegister (object):
                         register[client] = registered
 
                 for name in names:
-                        new_type = _EventType(name)
+                        new_type = EventType(name)
                         if new_type.is_subtype(type):
                                 registered.append(new_type.name)
 
@@ -323,12 +323,12 @@ class _ApplicationEventRegister (object):
                         return True
 
                 for name in names:
-                        remove_type = _EventType(name)
+                        remove_type = EventType(name)
 
                         copy = registered[:]
                         for i in range(0, len(copy)):
                                 type_name = copy[i]
-                                registered_type = _EventType(type_name)
+                                registered_type = EventType(type_name)
 
                                 if remove_type.is_subtype(registered_type):
                                         del(registered[i])
@@ -344,7 +344,7 @@ class _ApplicationEventRegister (object):
                         self._event_listeners[client] = registered
 
                 for name in names:
-                        new_type = _EventType(name)
+                        new_type = EventType(name)
                         registered.append((new_type.name,
                                            _event_type_to_signal_reciever(self._bus, self._app_cache, client, new_type)))
 
@@ -364,11 +364,11 @@ class _ApplicationEventRegister (object):
                 missing = False
 
                 for name in names:
-                        remove_type = _EventType(name)
+                        remove_type = EventType(name)
                         copy = registered[:]
                         for i in range (0, len(copy)):
                                 type_name, signal_match = copy[i]
-                                registered_type = _EventType(type_name)
+                                registered_type = EventType(type_name)
 
                                 if remove_type.is_subtype(registered_type):
                                         signal_match.remove()

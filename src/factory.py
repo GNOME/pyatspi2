@@ -28,6 +28,7 @@ from image import *
 from selection import *
 from state import *
 from text import *
+from table import *
 from value import *
 
 from cache import ApplicationCache
@@ -36,18 +37,20 @@ from cache import ApplicationCache
 
 class CachedAccessibleFactory (object):
 
-        def __init__ (self, connection, proxy_class):
+        def __init__ (self, event_dispatcher, connection, proxy_class):
 
-                self._cache = ApplicationCache()
+                self._cache = ApplicationCache(event_dispatcher, connection)
 
                 self._connection = connection
                 self._proxy_class = proxy_class
 
                 self._interfaces = { 
+                        interfaces.ATSPI_ACCESSIBLE:Accessible,
                         interfaces.ATSPI_ACTION:Action,
                         interfaces.ATSPI_APPLICATION:Application,
                         interfaces.ATSPI_COLLECTION:Collection,
                         interfaces.ATSPI_COMPONENT:Component,
+                        interfaces.ATSPI_DESKTOP:Accessible,
                         interfaces.ATSPI_DOCUMENT:Document,
                         interfaces.ATSPI_EDITABLE_TEXT:Text,
                         interfaces.ATSPI_HYPERTEXT:Hypertext,
@@ -59,43 +62,33 @@ class CachedAccessibleFactory (object):
                         interfaces.ATSPI_VALUE:Value,
                 }
 
-                for value in self._interfaces.values():
-                        value.__bases__.append(Accessible)
 
-                self._interfaces[interfaces.ATSPI_ACCESSIBLE] = Accessible
-                self._interfaces[interfaces.ATSPI_DESKTOP] = Desktop
-
-        def create_accessible (self, app_name, acc_path, interface, dbus_object=None):
+        def create_accessible (self, name, path, itf, object=None):
                 """
                 Creates an accessible object.
 
-                @app_name: D-Bus name of the application where the accessible object resides.
+                @name: D-Bus name of the application where the accessible object resides.
 
-                @acc_path: D-Bus path of the object within the application.
+                @path: D-Bus path of the object within the application.
 
-                @interface: D-Bus interface of the requested object. A different accessible object
+                @itf: D-Bus interface of the requested object. A different accessible object
                             class will be created depending on this. Making the function much like 
                             an accessible object factory.
 
-                @dbus_object: If a D-Bus object already exists for the accessible object it can be
+                @object: If a D-Bus object already exists for the accessible object it can be
                               provided here so that another one is not created.
                 """
-                if dbus_object == None:
-                        dbus_object = self._proxy_class (self._connection, bus_name, object_path, introspect=False)
+                if name == ATSPI_REGISTRY_NAME or path == ATSPI_DESKTOP_PATH:
+                        itf = interfaces.ATSPI_DESKTOP
 
-                if app_name == ATSPI_REGISTRY_NAME or acc_path == ATSPI_DESKTOP_PATH:
-                        return self._interfaces [ATSPI_DESKTOP] (app_name,
-                                                                 acc_path,
-                                                                 self,
-                                                                 interface,
-                                                                 dbus_object,
-                                                                 self._cache)
+                if object == None:
+                        object = self._proxy_class (self._connection, name, path, introspect=False)
 
-                return self._interfaces [interface] (app_name,
-                                                     acc_path,
-                                                     self,
-                                                     interface,
-                                                     dbus_object,
-                                                     self._cache)
+                if (itf == interfaces.ATSPI_DESKTOP):
+                        impl = Desktop (name, path, self, itf, object)
+                else:
+                        impl = AccessibleImplCached (self._cache, name, path, self, itf, object)
+
+                return self._interfaces [interface] (impl, name, path, self, itf, object)
 
 #END----------------------------------------------------------------------------

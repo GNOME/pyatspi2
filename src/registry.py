@@ -21,6 +21,9 @@
 
 #------------------------------------------------------------------------------
 
+from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
+from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
+
 class Registry(object):
         """
         Wraps the Accessibility.Registry to provide more Pythonic registration for
@@ -44,7 +47,7 @@ class Registry(object):
         @type observers: dictionary
         """
 
-        def __init__(device_event_register, app_event_register, accessible_factory, main_loop):
+        def __init__(self, device_event_register, app_event_register, accessible_factory, main_loop):
                 self.device_event_register = device_event_register
                 self.app_event_register = app_event_register
                 self.accessible_factory = accessible_factory
@@ -148,7 +151,7 @@ class Registry(object):
                                       client,
                                       key_set=[],
                                       mask=0,
-                                      kind=(KEY_PRESSED_EVENT, KEY_RELEASED_EVENT),
+                                      kind=(_KEY_PRESSED_EVENT, _KEY_RELEASED_EVENT),
                                       synchronous=True,
                                       preemptive=True,
                                       global_=False):
@@ -192,7 +195,7 @@ class Registry(object):
                                         client,
                                         key_set=[],
                                         mask=0,
-                                        kind=(KEY_PRESSED_EVENT, KEY_RELEASED_EVENT)):
+                                        kind=(_KEY_PRESSED_EVENT, _KEY_RELEASED_EVENT)):
                 """
                 Deregisters a listener for key stroke events.
 

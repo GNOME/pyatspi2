@@ -15,11 +15,11 @@
 import dbus
 
 from registry import Registry
-from factory import CachedObjectFactory
+from factory import CachedAccessibleFactory
 from appevent import _ApplicationEventRegister
-from deviceevent import DeviceEventRegister
+from deviceevent import _DeviceEventRegister
 
-__all__ = ["new_registry"]
+__all__ = ["build_registry"]
 
 class GObjectMain (object):
         def __init__ (self):
@@ -40,21 +40,20 @@ class GObjectMain (object):
 class GObjectProxy (dbus.connection.ProxyObject):
         pass
 
-def new_registry (type):
+def build_registry (type):
         """
-        Factory method for creating the registry
-        and configuring it for different main loops.
+        Method for creating the registry and configuring it for different main loops.
         """ 
 
         if type == "GObject":
-                devreg = DeviceEventRegister()
+                loop = GObjectMain ()
+
+                devreg = _DeviceEventRegister()
                 appreg = _ApplicationEventRegister()
 
                 connection = dbus.SessionBus()
-                factory = CachedObjectFactory(connection, GObjectProxy)
-
-                loop = GObjectMain ()
+                factory = CachedAccessibleFactory(appreg, connection, GObjectProxy)
                 
                 return Registry (devreg, appreg, factory, loop)
-        else
+        else:
                 raise Exception ("Don't know the type of main loop")

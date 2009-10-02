@@ -14,10 +14,7 @@
 
 import dbus
 
-from desktop import Desktop, DESKTOP_PATH
-
-from event import Event as _Event
-from base import AccessibleObjectNotAvailable
+from appevent import Event
 
 from interfaces import *
 
@@ -81,8 +78,8 @@ class ApplicationCache(object):
                                 self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                                    self._connection,
                                                                                    bus_name)
-                                event = _Event(self,
-                                               DESKTOP_PATH,
+                                event = Event(self,
+                                               ATSPI_DESKTOP_PATH,
                                                ATSPI_REGISTRY_NAME,
                                                "org.freedesktop.atspi.Event.Object",
                                                "children-changed",
@@ -91,8 +88,8 @@ class ApplicationCache(object):
                         #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
                         del(self.application_cache[bus_name])
-                        event = _Event(self,
-                                       DESKTOP_PATH,
+                        event = Event(self,
+                                       ATSPI_DESKTOP_PATH,
                                        ATSPI_REGISTRY_NAME,
                                        "org.freedesktop.atspi.Event.Object",
                                        "children-changed",
@@ -206,7 +203,7 @@ class AccessibleCache(object):
 
         def _dispatch_event(self, olddata, newdata):
                 if olddata.name != newdata.name:
-                        event = _Event(self._event_dispatcher.cache,
+                        event = Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
@@ -215,7 +212,7 @@ class AccessibleCache(object):
                         self._event_dispatcher._notifyNameChange(event)
 
                 if olddata.description != newdata.description:
-                        event = _Event(self._event_dispatcher.cache,
+                        event = Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
@@ -224,7 +221,7 @@ class AccessibleCache(object):
                         self._event_dispatcher._notifyDescriptionChange(event)
 
                 if olddata.parent != newdata.parent:
-                        event = _Event(self._event_dispatcher.cache,
+                        event = Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
@@ -235,7 +232,7 @@ class AccessibleCache(object):
                 removed, added = _list_items_added_removed (olddata.children, newdata.children)
 
                 if added:
-                        event = _Event(self._event_dispatcher.cache,
+                        event = Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",
@@ -244,7 +241,7 @@ class AccessibleCache(object):
                         self._event_dispatcher._notifyChildrenChange(event)
 
                 if removed:
-                        event = _Event(self._event_dispatcher.cache,
+                        event = Event(self._event_dispatcher.cache,
                                        newdata.path,
                                        self._bus_name,
                                        "org.freedesktop.atspi.Event.Object",

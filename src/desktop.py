@@ -13,8 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
-from base import BaseProxy
-from accessible import BoundingBox
+from accessible import BaseProxy, BoundingBox
 from state import StateSet
 
 from role import ROLE_UNKNOWN
@@ -134,158 +133,46 @@ class Desktop(BaseProxy):
         """
 
         def getApplication(self):
-                """
-                Get the containing Application for this object.
-                @return the Application instance to which this object belongs.
-                """
                 return None
 
         def getAttributes(self):
-                """
-                Get a list of properties applied to this object as a whole, as
-                an AttributeSet consisting of name-value pairs. As such these
-                attributes may be considered weakly-typed properties or annotations,
-                as distinct from the strongly-typed interface instance data declared
-                using the IDL "attribute" keyword.
-                Not all objects have explicit "name-value pair" AttributeSet
-                properties.
-                Attribute names and values may have any UTF-8 string value, however
-                where possible, in order to facilitate consistent use and exposure
-                of "attribute" properties by applications and AT clients, attribute
-                names and values should chosen from a publicly-specified namespace
-                where appropriate.
-                Where possible, the names and values in the name-value pairs
-                should be chosen from well-established attribute namespaces using
-                standard semantics. For example, attributes of Accessible objects
-                corresponding to XHTML content elements should correspond to
-                attribute names and values specified in the w3c XHTML specification,
-                at http://www.w3.org/TR/xhtml2, where such values are not already
-                exposed via a more strongly-typed aspect of the AT-SPI API. Metadata
-                names and values should be chosen from the 'Dublin Core' Metadata
-                namespace using Dublin Core semantics: http://dublincore.org/dcregistry/
-                Similarly, relevant structural metadata should be exposed using
-                attribute names and values chosen from the CSS2 and WICD specification:
-                http://www.w3.org/TR/1998/REC-CSS2-19980512 WICD (http://www.w3.org/TR/2005/WD-WICD-20051121/).
-
-                @return : An AttributeSet encapsulating any "attribute values"
-                currently defined for the object. An attribute set is a list of strings
-                with each string comprising an name-value pair format 'name:value'.
-                """
                 return []
 
         def getChildAtIndex(self, index):
-                """
-                Get the accessible child of this object at index. 
-                @param : index
-                an in parameter indicating which child is requested (zero-indexed).
-                @return : the 'nth' Accessible child of this object.
-                """
                 app_name = self.cache.application_list[index]
                 acc_path = self.cache[app_name].root
                 self.acc_factory.create_accessible(app_name, acc_path, ATSPI_ACCESSIBLE)
 
         def getIndexInParent(self):
-                """
-                Get the index of this object in its parent's child list. 
-                @return : a long integer indicating this object's index in the
-                parent's list.
-                """
                 return -1
 
         def getLocalizedRoleName(self):
-                """
-                Get a string indicating the type of UI role played by this object,
-                translated to the current locale.
-                @return : a UTF-8 string indicating the type of UI role played
-                by this object.
-                """
-                #TODO Need to localize this somehow. Hmmmmm
+                #TODO Need to localize this somehow.
                 return 'unknown'
 
         def getRelationSet(self):
-                """
-                Get a set defining this object's relationship to other accessible
-                objects. 
-                @return : a RelationSet defining this object's relationships.
-                """
                 return []
 
         def getRole(self):
-                """
-                Get the Role indicating the type of UI role played by this object.
-                @return : a Role indicating the type of UI role played by this
-                object.
-                """
                 return ROLE_UNKNOWN
 
         def getRoleName(self):
-                """
-                Get a string indicating the type of UI role played by this object.
-                @return : a UTF-8 string indicating the type of UI role played
-                by this object.
-                """
                 return 'unknown'
 
         def getState(self):
-                """
-                Get the current state of the object as a StateSet. 
-                @return : a StateSet encapsulating the currently true states
-                of the object.
-                """
                 return StateSet()
-
-        def isEqual(self, accessible):
-                """
-                Determine whether an Accessible refers to the same object as
-                another. This method should be used rather than brute-force comparison
-                of object references (i.e. "by-value" comparison), as two object
-                references may have different apparent values yet refer to the
-                same object.
-                @param : obj
-                an Accessible object reference to compare to 
-                @return : a boolean indicating whether the two object references
-                point to the same object.
-                """
-                #TODO Fix this method
-                return self == accessible
 
         def get_childCount(self):
                 return len(self.cache.application_list)
-        _childCountDoc = \
-                """
-                childCount: the number of children contained by this object.
-                """
-        childCount = property(fget=get_childCount, doc=_childCountDoc)
-
-        getChildCount = get_childCount
 
         def get_description(self):
                 return ''
-        _descriptionDoc = \
-                """
-                a string describing the object in more detail than name.
-                """
-        description = property(fget=get_description, doc=_descriptionDoc)
 
         def get_name(self):
                 return 'main'
-        _nameDoc = \
-                """
-                a (short) string representing the object's name.
-                """
-        name = property(fget=get_name, doc=_nameDoc)
 
         def get_parent(self):
                 return None
-        _parentDoc = \
-                """
-                An Accessible object which is this object's containing object.
-                """
-        parent = property(fget=get_parent, doc=_parentDoc)
-
-        @property
-        def interfaces(self):
-                return [ATSPI_ACCESSIBLE, ATSPI_COMPONENT]
 
         def queryInterface(self, interface):
                 """

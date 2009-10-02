@@ -102,7 +102,4 @@ class Image(Accessible):
                 """
         imageLocale = property(fget=get_imageLocale, doc=_imageLocaleDoc)
 
-# Register the accessible class with the factory.
-accessible_factory.register_accessible_class(ATSPI_IMAGE, Image)
-
 #END----------------------------------------------------------------------------

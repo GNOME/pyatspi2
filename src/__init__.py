@@ -15,7 +15,7 @@
 __version__ = (1, 9, 0)
 
 import loop
-Registry = loop.new_registry ("GObject")
+Registry = loop.build_registry ("GObject")
 del loop
 
 import constants
