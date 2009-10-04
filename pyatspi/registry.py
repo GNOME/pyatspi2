@@ -24,6 +24,10 @@
 from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
 from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
 
+from interfaces import ATSPI_REGISTRY_NAME as _ATSPI_REGISTRY_NAME
+from interfaces import ATSPI_DESKTOP_PATH as _ATSPI_DESKTOP_PATH
+from interfaces import ATSPI_DESKTOP as _ATSPI_DESKTOP
+
 class Registry(object):
         """
         Wraps the Accessibility.Registry to provide more Pythonic registration for
@@ -102,7 +106,9 @@ class Registry(object):
                 @return: Desktop reference
                 @rtype: Accessibility.Desktop
                 """
-                return self._accessible_factory.create_accessible (ATSPI_REGISTRY_NAME, ATSPI_DESKTOP_PATH)
+                return self.accessible_factory.create_accessible (_ATSPI_REGISTRY_NAME,
+                                                                  _ATSPI_DESKTOP_PATH,
+                                                                  _ATSPI_DESKTOP)
 
         def registerEventListener(self, client, *names):
                 """

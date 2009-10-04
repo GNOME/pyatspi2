@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
+from accessible import Accessible
 
 import dbus
 
@@ -22,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Action(object):
+class Action(Accessible):
         """
         An interface through which a user-actionable user interface component
         can be manipulated. Components which react to mouse or keyboard

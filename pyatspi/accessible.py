@@ -86,155 +86,6 @@ class BoundingBox(list):
 
 #------------------------------------------------------------------------------
 
-class BaseProxy (object):
-
-        def __init__(self, app_name, acc_path, acc_factory, dbus_interface, dbus_object):
-                """
-                Create a D-Bus Proxy for an ATSPI interface.
-
-                app_name - D-Bus bus name of the application this accessible belongs to.
-                acc_path - D-Bus object path of the server side accessible object.
-                acc_factory - Factory used to create new accessible objects.
-                dbus_object - The D-Bus proxy object used by the accessible for D-Bus method calls.
-                """
-                self._app_name = app_name
-                self._acc_path = acc_path
-                self._acc_factory = acc_factory
-                self._dbus_interface = dbus_interface
-                self._dbus_object = dbus_object
-
-                self._pgetter = self.get_dbus_method("Get",
-                                                     dbus_interface="org.freedesktop.DBus.Properties")
-                self._psetter = self.get_dbus_method("Set",
-                                                     dbus_interface="org.freedesktop.DBus.Properties")
-
-        @property
-        def app_name (self):
-                return self._app_name
-
-        @property
-        def acc_path (self):
-                return self._acc_path
-
-        @property
-        def acc_factory (self):
-                return self._acc_factory
-
-        @property
-        def dbus_interface (self):
-                return self._dbus_interface
-
-        @property
-        def dbus_object (self):
-                return self._dbus_object
-
-        # D-Bus method wrapper ----------------------------------------------------------
-
-        def get_dbus_method (self, *args, **kwargs):
-                method =  self.dbus_object.get_dbus_method(self, *args, **kwargs)
-
-                def dbus_method_func(*iargs, **ikwargs):
-
-                        # Need to throw an AccessibleObjectNoLongerExists exception
-                        # on D-Bus error of the same type.
-
-                        try:
-                                return method(*iargs, **ikwargs)
-                        except UnknownMethodException, e:
-                                raise NotImplementedError(e)
-                        except DBusException, e:
-                                raise LookupError(e)
-        
-                return dbus_method_func
-
-#------------------------------------------------------------------------------
-
-class AccessibleImplCached (BaseProxy):
-
-        def __init__(self, cache, *args):
-                BaseProxy.__init__(self, *args);
-
-                self._relation_set = None
-                self._cache = cache
-
-        @property
-        def cache (self):
-                return self._cache
-
-        @property
-        def cached_data (self):
-                return self.cache(self.app_name, self.acc_path)
-
-        def getApplication(self):
-                acc_path = self.cache[self.app_name].root
-                return self.acc_factory.create_accessible(self.app_name, acc_path, ATSPI_APPLICATION)
-
-        def getAttributes(self):
-                func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_ACCESSIBLE)
-                return [key + ':' + value for key, value in func().iteritems()]
-
-        def getChildAtIndex(self, index):
-                path = self.cached_data.children[index]
-                return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
-
-        def getIndexInParent(self):
-                if self.parent == None:
-                        return -1
-                for i in range(0, self.parent.childCount):
-                        child = self.parent.getChildAtIndex(i)
-                        if self.isEqual(child):
-                                return i
-                raise AccessibleObjectNoLongerExists("Child not found within parent")
-
-        def getLocalizedRoleName(self):
-                func = self.get_dbus_method("getLocalizedRoleName", dbus_interface=ATSPI_ACCESSIBLE)
-                return func()
-
-        def getRelationSet(self):
-                if self._relation_set:
-                        return self._relation_set
-                else:
-                        func = self.get_dbus_method("getRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
-                        relation_set = func()
-                        self._relation_set = _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
-                        return self._relation_set
-
-        def getRole(self):
-                return Role(self.cached_data.role)
-
-        def getRoleName(self):
-                return ROLE_NAMES[self.cached_data.role]
-
-        def getState(self):
-                return _marshal_state_set(self.cached_data.state)
-
-        def get_childCount(self):
-                return len(self.cached_data.children)
-
-        def get_description(self):
-                return self.cached_data.description
-
-        def get_name(self):
-                return self.cached_data.name
-
-        def get_parent(self):
-                return self.acc_factory.create_accessible(self._app_name,
-                                                        self.cached_data.parent,
-                                                        ATSPI_ACCESSIBLE)
-
-        def queryInterface(self, interface):
-                if interface in self.cached_data.interfaces:
-                        return self.acc_factory.create_accessible(self.app_name,
-                                                                  self.acc_path,
-                                                                  interface,
-                                                                  dbus_object=self.dbus_object)
-                else:
-                        raise NotImplementedError(
-                                "%s not supported by accessible object at path %s"
-                                % (interface, self._acc_path))
-
-#------------------------------------------------------------------------------
-
 class AccessibleMeta(type):
         def __new__(meta, *args, **kwargs):
                 cls = type.__new__(meta, *args, **kwargs)
@@ -271,12 +122,152 @@ class AccessibleMeta(type):
 
 #------------------------------------------------------------------------------
 
+class BaseProxy (object):
+
+        __metaclass__ = AccessibleMeta
+
+        def __init__(self, app_name, acc_path, acc_factory, dbus_interface, dbus_object):
+                """
+                Create a D-Bus Proxy for an ATSPI interface.
+
+                app_name - D-Bus bus name of the application this accessible belongs to.
+                acc_path - D-Bus object path of the server side accessible object.
+                acc_factory - Factory used to create new accessible objects.
+                dbus_object - The D-Bus proxy object used by the accessible for D-Bus method calls.
+                """
+                self._app_name = app_name
+                self._acc_path = acc_path
+                self._acc_factory = acc_factory
+                self._dbus_interface = dbus_interface
+                self._dbus_object = dbus_object
+
+                self._pgetter = self._dbus_object.get_dbus_method("Get",
+                                                     dbus_interface="org.freedesktop.DBus.Properties")
+                self._psetter = self._dbus_object.get_dbus_method("Set",
+                                                     dbus_interface="org.freedesktop.DBus.Properties")
+
+        @property
+        def app_name (self):
+                return self._app_name
+
+        @property
+        def acc_path (self):
+                return self._acc_path
+
+        @property
+        def acc_factory (self):
+                return self._acc_factory
+
+        @property
+        def dbus_interface (self):
+                return self._dbus_interface
+
+        @property
+        def dbus_object (self):
+                return self._dbus_object
+
+        # D-Bus method wrapper ----------------------------------------------------------
+
+        def get_dbus_method (self, *args, **kwargs):
+                method =  self.dbus_object.get_dbus_method(*args, **kwargs)
+
+                def dbus_method_func(*iargs, **ikwargs):
+
+                        # Need to throw an AccessibleObjectNoLongerExists exception
+                        # on D-Bus error of the same type.
+
+                        try:
+                                return method(*iargs, **ikwargs)
+                        except UnknownMethodException, e:
+                                raise NotImplementedError(e)
+                        except DBusException, e:
+                                raise LookupError(e)
+        
+                return dbus_method_func
+
+#------------------------------------------------------------------------------
+
+class AccessibleImplCached (BaseProxy):
+
+        def __init__(self, cache, *args):
+                BaseProxy.__init__(self, *args);
+
+                self._relation_set = None
+                self._cache = cache
+
+        @property
+        def cache (self):
+                return self._cache
+
+        @property
+        def cached_data (self):
+                return self.cache(self.app_name, self.acc_path)
+
+        def getApplication(self):
+                acc_path = self.cache.application_cache[self.app_name].root
+                return self.acc_factory.create_accessible(self.app_name, acc_path, ATSPI_APPLICATION)
+
+        def getAttributes(self):
+                func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_ACCESSIBLE)
+                return [key + ':' + value for key, value in func().iteritems()]
+
+        def getChildAtIndex(self, index):
+                path = self.cached_data.children[index]
+                return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
+
+        def getLocalizedRoleName(self):
+                func = self.get_dbus_method("getLocalizedRoleName", dbus_interface=ATSPI_ACCESSIBLE)
+                return func()
+
+        def getRelationSet(self):
+                if self._relation_set is not None:
+                        return self._relation_set
+                else:
+                        func = self.get_dbus_method("getRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
+                        relation_set = func()
+                        self._relation_set = _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
+                        return self._relation_set
+
+        def getRole(self):
+                return Role(self.cached_data.role)
+
+        def getRoleName(self):
+                return ROLE_NAMES[self.cached_data.role]
+
+        def getState(self):
+                return _marshal_state_set(self.cached_data.state)
+
+        def get_childCount(self):
+                return len(self.cached_data.children)
+
+        def get_description(self):
+                return self.cached_data.description
+
+        def get_name(self):
+                return self.cached_data.name
+
+        def get_parent(self):
+                return self.acc_factory.create_accessible(self._app_name,
+                                                          self.cached_data.parent,
+                                                          ATSPI_ACCESSIBLE)
+
+        def queryInterface(self, interface):
+                if interface in self.cached_data.interfaces:
+                        return self.acc_factory.create_accessible(self.app_name,
+                                                                  self.acc_path,
+                                                                  interface,
+                                                                  dbus_object=self.dbus_object)
+                else:
+                        raise NotImplementedError(
+                                "%s not supported by accessible object at path %s"
+                                % (interface, self._acc_path))
+
+#------------------------------------------------------------------------------
+
 class Accessible(BaseProxy):
         """
         The interface which is implemented by all accessible objects.
         """
-
-        __metaclass__ = AccessibleMeta
 
         def __init__(self, implementation, *args):
                 BaseProxy.__init__(self, *args);
@@ -326,7 +317,7 @@ class Accessible(BaseProxy):
                 or raises a NotImplemented error if the given interface
                 is not supported.
                 """
-                return self._impl.queryInterface()
+                return self._impl.queryInterface(interface)
 
         # Accessible interface ----------------------------------------------------------
 
@@ -385,7 +376,13 @@ class Accessible(BaseProxy):
                 @return : a long integer indicating this object's index in the
                 parent's list.
                 """
-                return self._impl.getIndexInParent()
+                if self.parent == None:
+                        return -1
+                for i in range(0, self.parent.childCount):
+                        child = self.parent.getChildAtIndex(i)
+                        if self.isEqual(child):
+                                return i
+                raise AccessibleObjectNoLongerExists("Child not found within parent")
 
         def getLocalizedRoleName(self):
                 """

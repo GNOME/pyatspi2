@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
+from accessible import Accessible
 
 import dbus
 
@@ -22,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Hyperlink(object):
+class Hyperlink(Accessible):
         """
         Instances of Hyperlink are returned by Hypertext objects, and
         are the means by which end users and clients interact with linked,

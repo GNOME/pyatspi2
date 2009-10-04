@@ -23,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Application(object):
+class Application(Accessible):
         """
         An interface identifying an object which is the root of the user
         interface Accessible hierarchy associated with a running application.

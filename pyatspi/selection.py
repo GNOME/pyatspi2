@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
+from accessible import Accessible
 
 import dbus
 
@@ -22,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Selection(object):
+class Selection(Accessible):
         """
         An interface which indicates that an object exposes a 'selection'
         model, allowing the selection of one or more of its children.

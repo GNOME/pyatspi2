@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
+from accessible import Accessible
 
 __all__ = [
            "Document",
@@ -20,7 +21,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Document(object):
+class Document(Accessible):
         """
         Primarily a 'tagging' interface which indicates the start of
         document content in the Accessibility hierarchy. Accessible objects

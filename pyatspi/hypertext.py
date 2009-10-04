@@ -21,7 +21,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Hypertext(object):
+class Hypertext(Accessible):
         """
         An interface used for objects which implement linking between
         multiple resource or content locations, or multiple 'markers'

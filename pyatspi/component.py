@@ -14,7 +14,7 @@
 
 from interfaces import *
 from enum import Enum
-from accessible import BoundingBox
+from accessible import Accessible, BoundingBox
 
 from dbus.types import UInt32
 
@@ -73,7 +73,7 @@ LAYER_WINDOW = ComponentLayer(7)
 
 #------------------------------------------------------------------------------
 
-class Component(object):
+class Component(Accessible):
         """
         The Component interface is implemented by objects which occupy
         on-screen space, e.g. objects which have onscreen visual representations.

@@ -219,7 +219,7 @@ class AccessibleCache(object):
                 self._bus_name = bus_name
 
                 obj = connection.get_object(bus_name, self._PATH, introspect=False)
-                self._tree_itf = _dbus.Interface(obj, self._INTERFACE)
+                self._tree_itf = dbus.Interface(obj, self._INTERFACE)
 
                 self._objects = {}
 

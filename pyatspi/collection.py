@@ -14,6 +14,7 @@
 
 from interfaces import *
 from enum import Enum
+from accessible import Accessible
 
 __all__ = [
             "Collection",
@@ -21,7 +22,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Collection(object):
+class Collection(Accessible):
 
         def createMatchRule(self, *args, **kwargs):
                 func = self.get_dbus_method("createMatchRule", dbus_interface=ATSPI_COLLECTION)

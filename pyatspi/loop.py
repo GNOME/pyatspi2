@@ -13,11 +13,13 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 import dbus
+import os as _os
 
 from registry import Registry
 from factory import CachedAccessibleFactory
-from appevent import _ApplicationEventRegister
-from deviceevent import _DeviceEventRegister
+from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
+from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
+from cache import *
 
 __all__ = ["build_registry"]
 
@@ -62,13 +64,15 @@ def build_registry (type):
                 factory = CachedAccessibleFactory(cache, connection, GObjectProxy)
                 
                 return Registry (devreg, appreg, factory, loop)
-        else if type == "Test":
+        elif type == "Test":
                 loop = GObjectMain ()
                 
                 devreg = _NullDeviceEventRegister()
                 appreg = _NullApplicationEventRegister()
 
-                cache = TestApplicationCache(appreg, connection, appname)
+                connection = dbus.SessionBus()
+
+                cache = TestApplicationCache(appreg, connection, app_name)
                 factory = CachedAccessibleFactory(cache, connection, GObjectProxy)
 
                 return Registry (devreg, appreg, factory, loop)

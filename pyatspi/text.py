@@ -14,6 +14,7 @@
 
 from interfaces import *
 from enum import Enum
+from accessible import Accessible
 
 from dbus.types import UInt32, Int32
 
@@ -72,7 +73,7 @@ TEXT_CLIP_NONE = TEXT_CLIP_TYPE(0)
 
 #------------------------------------------------------------------------------
 
-class Text(object):
+class Text(Accessible):
         """
         The text interface should be implemented by objects which place
         textual information onscreen as character strings or glyphs.

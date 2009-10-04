@@ -132,6 +132,11 @@ class Desktop(BaseProxy):
         objects of all applications on the desktop. (Connected to ATSPI)
         """
 
+        def __init__(self, cache, *args):
+                BaseProxy.__init__(self, *args);
+
+                self.cache = cache
+
         def getApplication(self):
                 return None
 
@@ -140,8 +145,9 @@ class Desktop(BaseProxy):
 
         def getChildAtIndex(self, index):
                 app_name = self.cache.application_list[index]
-                acc_path = self.cache[app_name].root
-                self.acc_factory.create_accessible(app_name, acc_path, ATSPI_ACCESSIBLE)
+                acc_path = self.cache.application_cache[app_name].root
+
+                return self.acc_factory.create_accessible(app_name, acc_path, ATSPI_ACCESSIBLE)
 
         def getIndexInParent(self):
                 return -1

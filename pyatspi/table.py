@@ -23,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Table(object):
+class Table(Accessible):
         """
         An interface used by containers whose contained data is arranged
         in a "tabular" (i.e. row-column) fashion. Tables may resemble

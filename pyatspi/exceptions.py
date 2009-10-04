@@ -16,6 +16,9 @@
 #------------------------------------------------------------------------------
 
 class AccessibleObjectNoLongerExists(Exception):
-        pass
+        def __init__ (self): self._message = ""
+        def _get_message(self, message): return self._message
+        def _set_message(self, message): self._message = message
+        message = property(_get_message, _set_message)
 
 #END---------------------------------------------------------------------------

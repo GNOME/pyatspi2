@@ -49,7 +49,7 @@ class CachedAccessibleFactory (object):
                         interfaces.ATSPI_COMPONENT:Component,
                         interfaces.ATSPI_DESKTOP:Accessible,
                         interfaces.ATSPI_DOCUMENT:Document,
-                        interfaces.ATSPI_EDITABLE_TEXT:Text,
+                        interfaces.ATSPI_EDITABLE_TEXT:EditableText,
                         interfaces.ATSPI_HYPERTEXT:Hypertext,
                         interfaces.ATSPI_HYPERLINK:Hyperlink,
                         interfaces.ATSPI_IMAGE:Image,
@@ -60,7 +60,7 @@ class CachedAccessibleFactory (object):
                 }
 
 
-        def create_accessible (self, name, path, itf, object=None):
+        def create_accessible (self, name, path, itf, dbus_object=None):
                 """
                 Creates an accessible object.
 
@@ -75,17 +75,14 @@ class CachedAccessibleFactory (object):
                 @object: If a D-Bus object already exists for the accessible object it can be
                               provided here so that another one is not created.
                 """
-                if name == ATSPI_REGISTRY_NAME or path == ATSPI_DESKTOP_PATH:
-                        itf = interfaces.ATSPI_DESKTOP
+                if dbus_object == None:
+                        dbus_object = self._proxy_class (self._connection, name, path, introspect=False)
 
-                if object == None:
-                        object = self._proxy_class (self._connection, name, path, introspect=False)
-
-                if (itf == interfaces.ATSPI_DESKTOP):
-                        impl = Desktop (name, path, self, itf, object)
+                if name == interfaces.ATSPI_REGISTRY_NAME or path == interfaces.ATSPI_DESKTOP_PATH:
+                        impl = Desktop (self._cache, name, path, self, itf, dbus_object)
                 else:
-                        impl = AccessibleImplCached (self._cache, name, path, self, itf, object)
+                        impl = AccessibleImplCached (self._cache, name, path, self, itf, dbus_object)
 
-                return self._interfaces [interface] (impl, name, path, self, itf, object)
+                return self._interfaces[itf] (impl, name, path, self, itf, dbus_object)
 
 #END----------------------------------------------------------------------------

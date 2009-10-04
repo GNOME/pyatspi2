@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
+from accessible import Accessible
 
 import dbus
 
@@ -22,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Value(object):
+class Value(Accessible):
         """
         An interface supporting controls which allow a one-dimensional,
         scalar quantity to be modified or which reflect a scalar quantity.
