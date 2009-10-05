@@ -31,6 +31,11 @@ from text import *
 from table import *
 from value import *
 
+from desktop import DesktopTest
+from accessible import AccessibleImpl
+
+import dbus
+
 #------------------------------------------------------------------------------
 
 class CachedAccessibleFactory (object):
@@ -59,29 +64,80 @@ class CachedAccessibleFactory (object):
                         interfaces.ATSPI_VALUE:Value,
                 }
 
+        def create_application (self, name):
+                root= self._cache.application_list[name].root
+                dbus_object = self._proxy_class (self._connection, name, root, introspect=False)
+
+                impl = AccessibleImplCached (self._cache, name, root, self, interfaces.ACCESSIBLE, dbus_object)
+                return Application (impl, name, root, self, interfaces.ATSPI_APPLICATION, dbus_object)
 
         def create_accessible (self, name, path, itf, dbus_object=None):
-                """
-                Creates an accessible object.
-
-                @name: D-Bus name of the application where the accessible object resides.
-
-                @path: D-Bus path of the object within the application.
-
-                @itf: D-Bus interface of the requested object. A different accessible object
-                            class will be created depending on this. Making the function much like 
-                            an accessible object factory.
-
-                @object: If a D-Bus object already exists for the accessible object it can be
-                              provided here so that another one is not created.
-                """
                 if dbus_object == None:
                         dbus_object = self._proxy_class (self._connection, name, path, introspect=False)
 
                 if name == interfaces.ATSPI_REGISTRY_NAME or path == interfaces.ATSPI_DESKTOP_PATH:
-                        impl = Desktop (self._cache, name, path, self, itf, dbus_object)
+                        impl = DesktopCached (self._cache, name, path, self, itf, dbus_object)
                 else:
                         impl = AccessibleImplCached (self._cache, name, path, self, itf, dbus_object)
+
+                return self._interfaces[itf] (impl, name, path, self, itf, dbus_object)
+
+#------------------------------------------------------------------------------
+
+class AccessibleFactory (object):
+
+        _PATH = '/org/freedesktop/atspi/tree'
+        _INTERFACE = 'org.freedesktop.atspi.Tree'
+
+        def __init__ (self, app_name, connection, proxy_class):
+
+                self._app_name = app_name
+                self._connection = connection
+                self._proxy_class = proxy_class
+
+                self._interfaces = { 
+                        interfaces.ATSPI_ACCESSIBLE:Accessible,
+                        interfaces.ATSPI_ACTION:Action,
+                        interfaces.ATSPI_APPLICATION:Application,
+                        interfaces.ATSPI_COLLECTION:Collection,
+                        interfaces.ATSPI_COMPONENT:Component,
+                        interfaces.ATSPI_DESKTOP:Accessible,
+                        interfaces.ATSPI_DOCUMENT:Document,
+                        interfaces.ATSPI_EDITABLE_TEXT:EditableText,
+                        interfaces.ATSPI_HYPERTEXT:Hypertext,
+                        interfaces.ATSPI_HYPERLINK:Hyperlink,
+                        interfaces.ATSPI_IMAGE:Image,
+                        interfaces.ATSPI_SELECTION:Selection,
+                        interfaces.ATSPI_TABLE:Table,
+                        interfaces.ATSPI_TEXT:Text,
+                        interfaces.ATSPI_VALUE:Value,
+                }
+
+        def create_application (self, name):
+                obj = self._connection.get_object(name, self._PATH, introspect=False)
+                itf = dbus.Interface(obj, self._INTERFACE)
+                root = itf.getRoot()
+                dbus_object = self._proxy_class (self._connection, name, root, introspect=False)
+
+                impl = AccessibleImpl (name, root, self, interfaces.ATSPI_ACCESSIBLE, dbus_object)
+                return Application (impl, name, root, self, interfaces.ATSPI_APPLICATION, dbus_object)
+
+        def create_accessible (self, name, path, itf, dbus_object=None):
+                if dbus_object == None:
+                        dbus_object = self._proxy_class (self._connection, name, path, introspect=False)
+
+                if name == interfaces.ATSPI_REGISTRY_NAME or path == interfaces.ATSPI_DESKTOP_PATH:
+                        obj = self._connection.get_object(self._app_name, self._PATH, introspect=False)
+                        tree = dbus.Interface(obj, self._INTERFACE)
+                        root = tree.getRoot()
+
+                        dbus_object = self._proxy_class (self._connection,
+                                                         self._app_name,
+                                                         root,
+                                                         introspect=False)
+                        impl = DesktopTest (self._app_name, root, self, interfaces.ATSPI_DESKTOP, dbus_object)
+                else:
+                        impl = AccessibleImpl (name, path, self, itf, dbus_object)
 
                 return self._interfaces[itf] (impl, name, path, self, itf, dbus_object)
 

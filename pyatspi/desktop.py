@@ -126,16 +126,11 @@ class DesktopComponent(object):
 
 #------------------------------------------------------------------------------
 
-class Desktop(BaseProxy):
+class Desktop (BaseProxy):
         """
         Desktop object is an accessible whose children are the root accessible
         objects of all applications on the desktop. (Connected to ATSPI)
         """
-
-        def __init__(self, cache, *args):
-                BaseProxy.__init__(self, *args);
-
-                self.cache = cache
 
         def getApplication(self):
                 return None
@@ -144,10 +139,9 @@ class Desktop(BaseProxy):
                 return []
 
         def getChildAtIndex(self, index):
-                app_name = self.cache.application_list[index]
-                acc_path = self.cache.application_cache[app_name].root
-
-                return self.acc_factory.create_accessible(app_name, acc_path, ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("getApplications", dbus_interface=ATSPI_REGISTRY_INTERFACE)
+                apps = func()
+                return self.acc_factory.create_application(apps[index])
 
         def getIndexInParent(self):
                 return -1
@@ -169,7 +163,9 @@ class Desktop(BaseProxy):
                 return StateSet()
 
         def get_childCount(self):
-                return len(self.cache.application_list)
+                func = self.get_dbus_method("getApplications", dbus_interface=ATSPI_REGISTRY_INTERFACE)
+                apps = func()
+                return len(apps)
 
         def get_description(self):
                 return ''
@@ -194,5 +190,37 @@ class Desktop(BaseProxy):
                                 raise NotImplementedError(
                                                 "%s not supported by accessible object at path %s"
                                                 % (interface, self._acc_path))
+
+#------------------------------------------------------------------------------
+
+class DesktopTest (Desktop):
+
+        def getChildAtIndex(self, index):
+                return self.acc_factory.create_application(self.app_name)
+
+        def get_childCount(self):
+                return 1
+
+#------------------------------------------------------------------------------
+
+class DesktopCached(Desktop):
+        """
+        Desktop object is an accessible whose children are the root accessible
+        objects of all applications on the desktop. (Connected to ATSPI)
+        """
+
+        def __init__(self, cache, *args):
+                BaseProxy.__init__(self, *args);
+
+                self.cache = cache
+
+        def getChildAtIndex(self, index):
+                app_name = self.cache.application_list[index]
+                acc_path = self.cache.application_cache[app_name].root
+
+                return self.acc_factory.create_application(app_name)
+
+        def get_childCount(self):
+                return len(self.cache.application_list)
 
 #END----------------------------------------------------------------------------

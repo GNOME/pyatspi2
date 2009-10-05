@@ -16,7 +16,7 @@ import dbus
 import os as _os
 
 from registry import Registry
-from factory import CachedAccessibleFactory
+from factory import CachedAccessibleFactory, AccessibleFactory
 from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
 from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
 from cache import *
@@ -72,8 +72,7 @@ def build_registry (type):
 
                 connection = dbus.SessionBus()
 
-                cache = TestApplicationCache(appreg, connection, app_name)
-                factory = CachedAccessibleFactory(cache, connection, GObjectProxy)
+                factory = AccessibleFactory(app_name, connection, GObjectProxy)
 
                 return Registry (devreg, appreg, factory, loop)
         else:
