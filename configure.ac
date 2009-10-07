@@ -82,6 +82,11 @@ fi
 
 AC_PATH_XTRA
 
+AC_ARG_VAR([PYATSPI_SUBDIR],
+           [Optional subdirectory for installing pyatspi])
+AC_SUBST(PYATSPI_SUBDIR)
+AM_CONDITIONAL(RELOCATE_PYATSPI, test x"$PYATSPI_SUBDIR" != x)
+
 AC_CONFIG_FILES([Makefile
 		 tests/Makefile
 		 tests/dummyatk/Makefile
@@ -90,6 +95,7 @@ AC_CONFIG_FILES([Makefile
 		 tests/pyatspi/pasytest/Makefile
 		 tests/apps/Makefile
 		 pyatspi/Makefile
+		 pyatspi/pyatspi-dbus.pth
 		])
 
 AC_OUTPUT

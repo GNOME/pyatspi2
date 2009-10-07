@@ -1,4 +1,10 @@
+
+if RELOCATE_PYATSPI
+pyatspidir = $(pythondir)/$(PYATSPI_SUBDIR)/pyatspi
+else
 pyatspidir = $(pythondir)/pyatspi
+endif
+
 pyatspi_PYTHON = \
 		Accessibility.py	\
 		accessible.py		\
@@ -29,5 +35,14 @@ pyatspi_PYTHON = \
 		text.py			\
 		utils.py		\
 		value.py
+
+if RELOCATE_PYATSPI
+install-exec-local: Makefile
+	@$(MKDIR_P) $(DESTDIR)$(pyexecdir)
+	cp pyatspi-dbus.pth $(DESTDIR)$(pyexecdir)
+
+uninstall-local:
+	@rm $(DESTDIR)$(pyexecdir)/pyatspi-dbus.pth
+endif
 
 CLEANFILES = *.pyc
