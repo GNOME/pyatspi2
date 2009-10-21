@@ -14,12 +14,10 @@
 
 __version__ = (1, 9, 0)
 
-import loop
-Registry = loop.build_registry ("GObject")
-del loop
-
 import constants
 from Accessibility import *
+
+from settings import *
 
 #This is a re-creation of the namespace pollution implemented
 #by PyORBit.

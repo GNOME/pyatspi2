@@ -72,6 +72,10 @@ def main(argv):
 	to = bus.get_object(name, "/org/codethink/atspi/test")
 	test = dbus.Interface(to, "org.codethink.atspi.test")
 
+        # Set the main loop specifications for pyatspi.
+        import pyatspi
+        pyatspi.set_default_registry(pyatspi.MAIN_LOOP_GLIB, name)
+
 	# Run the test script here
 	os.environ["ATSPI_TEST_APP_NAME"] = name
 	module = __import__(options.test_module)

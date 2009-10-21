@@ -12,16 +12,24 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import gobject
 import dbus
 import os as _os
 
-from registry import Registry
-from factory import CachedAccessibleFactory, AccessibleFactory
-from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
-from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
-from cache import *
 
-__all__ = ["build_registry"]
+__all__ = ["GObjectMain",
+           "GObjectProxy",
+           "NullMain"]
+
+class NullMain (object):
+        def __init__ (self):
+                pass
+        
+        def run (self):
+                pass
+
+        def stop (self):
+                pass
 
 class GObjectMain (object):
         def __init__ (self):
@@ -30,50 +38,38 @@ class GObjectMain (object):
                 del DBusGMainLoop
         
         def run (self):
-                import gobject
                 gobject.MainLoop.run()
-                del gobject
 
         def stop (self):
-                import gobject
                 gobject.MainLoop.quit()
-                del gobject
 
 class GObjectProxy (dbus.connection.ProxyObject):
-        pass
+        
+        def get_dbus_method (self, *args, **kwargs):
+                method = dbus.connection.ProxyObject.get_dbus_method (self, *args, **kwargs)
 
-def build_registry (type):
-        """
-        Method for creating the registry and configuring it for different main loops.
-        """ 
+                loop        = gobject.MainLoop ()
+                error       = None
+                return_args = []
 
-        app_name = None
-        if "ATSPI_TEST_APP_NAME" in _os.environ.keys():
-                app_name = _os.environ["ATSPI_TEST_APP_NAME"]
-                type = "Test"
+                def method_error_callback (e):
+                        error = e
+                        loop.quit ()
 
-        if type == "GObject":
-                loop = GObjectMain ()
-
-                devreg = _DeviceEventRegister()
-                appreg = _ApplicationEventRegister()
-
-                connection = dbus.SessionBus()
-
-                cache = ApplicationCache(appreg, connection)
-                factory = CachedAccessibleFactory(cache, connection, GObjectProxy)
+                def method_reply_callback (*iargs):
+                        return_args = iargs
+                        loop.quit ()
                 
-                return Registry (devreg, appreg, factory, loop)
-        elif type == "Test":
-                loop = GObjectMain ()
-                
-                devreg = _NullDeviceEventRegister()
-                appreg = _NullApplicationEventRegister()
+                def dbus_method_func (*iargs, **ikwargs):
+                        #kwargs["reply_handler"] = method_reply_callback
+                        #kwargs["error_handler"] = method_error_callback
+                        return method (*iargs, **ikwargs)
 
-                connection = dbus.SessionBus()
+                        #loop.run()
 
-                factory = AccessibleFactory(app_name, connection, GObjectProxy)
+                        #if error:
+                        #        raise error
 
-                return Registry (devreg, appreg, factory, loop)
-        else:
-                raise Exception ("Don't know the type of main loop")
+                        #return return_args
+
+                return dbus_method_func

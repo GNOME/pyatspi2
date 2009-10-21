@@ -30,6 +30,7 @@ pyatspi_PYTHON = \
 		relation.py		\
 		role.py			\
 		selection.py		\
+                settings.py             \
 		state.py		\
 		table.py		\
 		text.py			\

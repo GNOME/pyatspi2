@@ -20,6 +20,7 @@ from relation import _marshal_relation_set
 from role import Role, ROLE_NAMES
 
 from dbus.types import UInt32, Int32
+from dbus import UnknownMethodException, DBusException
 
 __all__ = [
            "LOCALE_TYPE",
@@ -31,6 +32,7 @@ __all__ = [
            "LOCALE_TYPE_TIME",
            "BoundingBox",
            "BaseProxy",
+           "AccessibleMeta",
            "AccessibleImplCached",
            "Accessible",
           ]
@@ -191,11 +193,6 @@ class BaseProxy (object):
 
 class AccessibleImpl (BaseProxy):
 
-        @property
-        def interfaces (self):
-                func = self.get_dbus_method("getInterfaces", dbus_interface=ATSPI_ACCESSIBLE)
-                return func()
-
         def getApplication(self):
                 return self.acc_factory.create_application(self.app_name)
 
@@ -243,17 +240,9 @@ class AccessibleImpl (BaseProxy):
                                                           self._pgetter (self.dbus_interface, "parent"),
                                                           ATSPI_ACCESSIBLE)
 
-        def queryInterface(self, interface):
-                if interface in self.interfaces:
-                        return self.acc_factory.create_accessible(self.app_name,
-                                                                  self.acc_path,
-                                                                  interface,
-                                                                  dbus_object=self.dbus_object)
-                else:
-                        raise NotImplementedError(
-                                "%s not supported by accessible object at path %s"
-                                % (interface, self._acc_path))
-
+        def get_interfaces (self):
+                func = self.get_dbus_method("getInterfaces", dbus_interface=ATSPI_ACCESSIBLE)
+                return func()
 
 #------------------------------------------------------------------------------
 
@@ -264,10 +253,6 @@ class AccessibleImplCached (AccessibleImpl):
 
                 self._relation_set = None
                 self._cache = cache
-
-        @property
-        def interfaces (self):
-                return self.cached_data.interfaces
 
         @property
         def cache (self):
@@ -312,6 +297,9 @@ class AccessibleImplCached (AccessibleImpl):
                 return self.acc_factory.create_accessible(self._app_name,
                                                           self.cached_data.parent,
                                                           ATSPI_ACCESSIBLE)
+
+        def get_interfaces (self):
+                return self.cached_data.interfaces
 
 #------------------------------------------------------------------------------
 
@@ -368,7 +356,15 @@ class Accessible(BaseProxy):
                 or raises a NotImplemented error if the given interface
                 is not supported.
                 """
-                return self._impl.queryInterface(interface)
+                if interface in self.interfaces:
+                        return self.acc_factory.create_accessible(self.app_name,
+                                                                  self.acc_path,
+                                                                  interface,
+                                                                  dbus_object=self.dbus_object)
+                else:
+                        raise NotImplementedError(
+                                "%s not supported by accessible object at path %s"
+                                % (interface, self._acc_path))
 
         # Accessible interface ----------------------------------------------------------
 
@@ -523,5 +519,13 @@ class Accessible(BaseProxy):
                 an Accessible object which is this object's containing object.
                 """
         parent = property(fget=get_parent, doc=_parentDoc)
+
+        def get_interfaces(self):
+                return self._impl.get_interfaces()
+        _interfacesDoc = \
+                """
+                D-Bus interfaces supported by this accessible object.
+                """
+        interfaces = property(fget=get_interfaces, doc=_interfacesDoc)
 
 #END----------------------------------------------------------------------------

@@ -12,8 +12,9 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import interfaces
 from interfaces import *
-from accessible import BaseProxy, BoundingBox
+from accessible import Accessible, BoundingBox, AccessibleMeta
 from state import StateSet
 
 from role import ROLE_UNKNOWN
@@ -21,6 +22,8 @@ from component import LAYER_WIDGET
 
 __all__ = [
            "Desktop",
+           "CachedDesktop",
+           "TestDesktop",
           ]
 
 #------------------------------------------------------------------------------
@@ -126,55 +129,251 @@ class DesktopComponent(object):
 
 #------------------------------------------------------------------------------
 
-class Desktop (BaseProxy):
+class BaseDesktop (object):
         """
-        Desktop object is an accessible whose children are the root accessible
-        objects of all applications on the desktop. (Connected to ATSPI)
+        The interface which is implemented by all accessible objects.
         """
 
+        __metaclass__ = AccessibleMeta
+
+        def __init__ (self, acc_factory):
+                self._acc_factory = acc_factory
+                self._acc_factory.set_desktop (self)
+
+        @property
+        def app_name (self):
+                return interfaces.ATSPI_REGISTRY_NAME
+
+        @property
+        def acc_path (self):
+                return interfaces.ATSPI_REGISTRY_PATH
+
+        @property
+        def acc_factory (self):
+                return self._acc_factory
+
+        @property
+        def dbus_interface (self):
+                return interfaces.ATSPI_DESKTOP
+
+        @property
+        def dbus_object (self):
+                return None
+
+        def get_dbus_method (self, *args, **kwargs):
+                method =  self.dbus_object.get_dbus_method(*args, **kwargs)
+
+                def dbus_method_func(*iargs, **ikwargs):
+
+                        # Need to throw an AccessibleObjectNoLongerExists exception
+                        # on D-Bus error of the same type.
+
+                        try:
+                                return method(*iargs, **ikwargs)
+                        except UnknownMethodException, e:
+                                raise NotImplementedError(e)
+                        except DBusException, e:
+                                raise LookupError(e)
+        
+                return dbus_method_func
+
+        # Python object protocol --------------------------------------------------------
+
+        def __str__(self):
+                    try:
+                              return '[%s | %s]' % (self.getRoleName(), self.name)
+                    except Exception:
+                              return '[DEAD]'
+
+        def __eq__(self, other):
+                if other is None:
+                        return False
+                try:
+                        if self.app_name == other.app_name and \
+                           self.acc_path == other.acc_path:
+                                return True
+                        else:
+                                return False
+                except AttributeError:
+                        return False
+
+        def __ne__(self, other):
+                return not self.__eq__(other)
+
+        def __hash__(self):
+                return hash(self.app_name + self.acc_path)
+
+        def __nonzero__(self):
+                return True
+
+        def __len__(self):
+                return self.getChildCount()
+
+        def __getitem__(self, index):
+                return self.getChildAtIndex(index)
+
+        # Bonobo interface --------------------------------------------------------------
+
+        def queryInterface(self, interface):
+                """
+                Gets a different accessible interface for this object
+                """
+                return self.queryInterface(interface)
+
+        # Accessible interface ----------------------------------------------------------
+
         def getApplication(self):
+                """
+                Get the containing Application for this object.
+                @return the Application instance to which this object belongs.
+                """
                 return None
 
         def getAttributes(self):
+                """
+                Get a list of properties applied to this object as a whole, as
+                an AttributeSet consisting of name-value pairs. As such these
+                attributes may be considered weakly-typed properties or annotations,
+                as distinct from the strongly-typed interface instance data declared
+                using the IDL "attribute" keyword.
+                Not all objects have explicit "name-value pair" AttributeSet
+                properties.
+                Attribute names and values may have any UTF-8 string value, however
+                where possible, in order to facilitate consistent use and exposure
+                of "attribute" properties by applications and AT clients, attribute
+                names and values should chosen from a publicly-specified namespace
+                where appropriate.
+                Where possible, the names and values in the name-value pairs
+                should be chosen from well-established attribute namespaces using
+                standard semantics. For example, attributes of Accessible objects
+                corresponding to XHTML content elements should correspond to
+                attribute names and values specified in the w3c XHTML specification,
+                at http://www.w3.org/TR/xhtml2, where such values are not already
+                exposed via a more strongly-typed aspect of the AT-SPI API. Metadata
+                names and values should be chosen from the 'Dublin Core' Metadata
+                namespace using Dublin Core semantics: http://dublincore.org/dcregistry/
+                Similarly, relevant structural metadata should be exposed using
+                attribute names and values chosen from the CSS2 and WICD specification:
+                http://www.w3.org/TR/1998/REC-CSS2-19980512 WICD (http://www.w3.org/TR/2005/WD-WICD-20051121/).
+
+                @return : An AttributeSet encapsulating any "attribute values"
+                currently defined for the object. An attribute set is a list of strings
+                with each string comprising an name-value pair format 'name:value'.
+                """
                 return []
 
         def getChildAtIndex(self, index):
-                func = self.get_dbus_method("getApplications", dbus_interface=ATSPI_REGISTRY_INTERFACE)
-                apps = func()
-                return self.acc_factory.create_application(apps[index])
+                """
+                Get the accessible child of this object at index. 
+                @param : index
+                an in parameter indicating which child is requested (zero-indexed).
+                @return : the 'nth' Accessible child of this object.
+                """
+                return None
 
         def getIndexInParent(self):
-                return -1
+                """
+                Get the index of this object in its parent's child list.
+                @return : a long integer indicating this object's index in the
+                parent's list.
+                """
+                if self.parent == None:
+                        return -1
+                for i in range(0, self.parent.childCount):
+                        child = self.parent.getChildAtIndex(i)
+                        if self.isEqual(child):
+                                return i
+                raise AccessibleObjectNoLongerExists("Child not found within parent")
 
         def getLocalizedRoleName(self):
+                """
+                Get a string indicating the type of UI role played by this object,
+                translated to the current locale.
+                @return : a UTF-8 string indicating the type of UI role played
+                by this object.
+                """
                 #TODO Need to localize this somehow.
                 return 'unknown'
 
         def getRelationSet(self):
+                """
+                Get a set defining this object's relationship to other accessible
+                objects. 
+                @return : a RelationSet defining this object's relationships.
+                """
                 return []
 
         def getRole(self):
+                """
+                Get the Role indicating the type of UI role played by this object.
+                @return : a Role indicating the type of UI role played by this
+                object.
+                """
                 return ROLE_UNKNOWN
 
         def getRoleName(self):
+                """
+                Get a string indicating the type of UI role played by this object.
+                @return : a UTF-8 string indicating the type of UI role played
+                by this object.
+                """
                 return 'unknown'
 
         def getState(self):
+                """
+                Get the current state of the object as a StateSet. 
+                @return : a StateSet encapsulating the currently true states
+                of the object.
+                """
                 return StateSet()
 
+        def isEqual(self, other):
+                """
+                Determine whether an Accessible refers to the same object as
+                another. This method should be used rather than brute-force comparison
+                of object references (i.e. "by-value" comparison), as two object
+                references may have different apparent values yet refer to the
+                same object.
+                @param : obj
+                an Accessible object reference to compare to 
+                @return : a boolean indicating whether the two object references
+                point to the same object.
+                """
+                return self.__eq__(other)
+
         def get_childCount(self):
-                func = self.get_dbus_method("getApplications", dbus_interface=ATSPI_REGISTRY_INTERFACE)
-                apps = func()
-                return len(apps)
+                return self.get_childCount()
+        _childCountDoc = \
+                """
+                childCount: the number of children contained by this object.
+                """
+        childCount = property(fget=get_childCount, doc=_childCountDoc)
+
+        getChildCount = get_childCount
 
         def get_description(self):
                 return ''
+        _descriptionDoc = \
+                """
+                a string describing the object in more detail than name.
+                """
+        description = property(fget=get_description, doc=_descriptionDoc)
 
         def get_name(self):
                 return 'main'
+        _nameDoc = \
+                """
+                a (short) string representing the object's name.
+                """
+        name = property(fget=get_name, doc=_nameDoc)
 
         def get_parent(self):
                 return None
+        _parentDoc = \
+                """
+                an Accessible object which is this object's containing object.
+                """
+        parent = property(fget=get_parent, doc=_parentDoc)
 
         def queryInterface(self, interface):
                 """
@@ -182,7 +381,7 @@ class Desktop (BaseProxy):
                 or raises a NotImplemented error if the given interface
                 is not supported.
                 """
-                if interface == ATSPI_ACCESSIBLE:
+                if interface == ATSPI_ACCESSIBLE or interface == ATSPI_DESKTOP:
                                 return self
                 elif interface == ATSPI_COMPONENT:
                                 return DesktopComponent()
@@ -193,32 +392,95 @@ class Desktop (BaseProxy):
 
 #------------------------------------------------------------------------------
 
-class DesktopTest (Desktop):
+class TestDesktop (BaseDesktop):
+        """
+        Connects to a single application.
+        Does not use the registry daemon.
+
+        """
+        _TREE_PATH = '/org/freedesktop/atspi/tree'
+        _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
+
+        def __init__(self, connection, app_name):
+                Accessible.__init__(self, *args);
+                obj = connection.get_object (app_name,
+                                             self._TREE_PATH,
+                                             introspect=False)
+                tree = dbus.Interface (obj, self._TREE_INTERFACE)
+
+                self._single_app = app_name
+                self._root = self.tree.getRoot ()
 
         def getChildAtIndex(self, index):
-                return self.acc_factory.create_application(self.app_name)
+                return self.create_application (self._root)
+
+        def create_application (self, app_name):
+                return self.acc_factory.create_accessible (app_name,
+                                                           self._root,
+                                                           interfaces.ATSPI_APPLICATION)
 
         def get_childCount(self):
                 return 1
 
 #------------------------------------------------------------------------------
 
-class DesktopCached(Desktop):
+class Desktop (BaseDesktop):
         """
-        Desktop object is an accessible whose children are the root accessible
-        objects of all applications on the desktop. (Connected to ATSPI)
+        Connects to multiple applications.
+        Does not use caching.
+        Does use the registry daemon.
+        """
+
+        _TREE_PATH = '/org/freedesktop/atspi/tree'
+        _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
+
+        def __init__(self, connection, *args):
+                BaseDesktop.__init__(self, *args);
+
+                obj = connection.get_object(interfaces.ATSPI_REGISTRY_NAME,
+                                            interfaces.ATSPI_REGISTRY_PATH,
+                                            introspect=False)
+                self._app_register = dbus.Interface(obj, interfaces.ATSPI_REGISTRY_INTERFACE)
+
+        def create_application (self, app_name):
+                obj = connection.get_object (app_name,
+                                             self._TREE_PATH,
+                                             introspect=False)
+                tree = dbus.Interface (obj, self._TREE_INTERFACE)
+                root = self.tree.getRoot ()
+
+                return self.acc_factory.create_accessible (app_name,
+                                                           root,
+                                                           interfaces.ATSPI_APPLICATION)
+
+        def getChildAtIndex(self, index):
+                applications = self._app_register.getApplications()
+                return self.acc_factory.create_application(applications[index])
+
+        def get_childCount(self):
+                applications = self._app_register.getApplications()
+                return len (applications)
+
+#------------------------------------------------------------------------------
+
+class CachedDesktop (BaseDesktop):
+        """
+        Uses the cache to manage applications.
         """
 
         def __init__(self, cache, *args):
-                BaseProxy.__init__(self, *args);
-
+                BaseDesktop.__init__(self, *args);
                 self.cache = cache
 
-        def getChildAtIndex(self, index):
-                app_name = self.cache.application_list[index]
-                acc_path = self.cache.application_cache[app_name].root
+        def create_application (self, app_name):
+                acc_path = self.cache.get_app_root(app_name)
 
-                return self.acc_factory.create_application(app_name)
+                return self.acc_factory.create_accessible (app_name,
+                                                           acc_path, 
+                                                           interfaces.ATSPI_APPLICATION)
+
+        def getChildAtIndex(self, index):
+                return self.create_application (self.cache.application_list[index])
 
         def get_childCount(self):
                 return len(self.cache.application_list)

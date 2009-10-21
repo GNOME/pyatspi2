@@ -50,10 +50,14 @@ class Registry(object):
         @ivar observers: Map of event names to AT-SPI L{_Observer} objects
         @type observers: dictionary
         """
+        __shared_state = {}
 
-        def __init__(self, device_event_register, app_event_register, accessible_factory, main_loop):
+        def __init__(self, device_event_register, app_event_register, desktop, accessible_factory, main_loop):
+                self.__dict__ = self.__shared_state
+
                 self.device_event_register = device_event_register
                 self.app_event_register = app_event_register
+                self.desktop = desktop
                 self.accessible_factory = accessible_factory
                 self.main_loop = main_loop
 
@@ -106,9 +110,7 @@ class Registry(object):
                 @return: Desktop reference
                 @rtype: Accessibility.Desktop
                 """
-                return self.accessible_factory.create_accessible (_ATSPI_REGISTRY_NAME,
-                                                                  _ATSPI_DESKTOP_PATH,
-                                                                  _ATSPI_DESKTOP)
+                return self.desktop
 
         def registerEventListener(self, client, *names):
                 """

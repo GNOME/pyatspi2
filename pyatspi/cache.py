@@ -21,6 +21,7 @@ from interfaces import *
 __all__ = [
            "ApplicationCache",
            "TestApplicationCache",
+           "AccessibleCache"
           ]
 
 #------------------------------------------------------------------------------
@@ -45,18 +46,21 @@ class TestApplicationCache(object):
 
         def __init__(self, event_dispatcher, connection, bus_name):
                 self._application_list = [bus_name]
-                self.application_cache = {bus_name:AccessibleCache(event_dispatcher, connection, bus_name)}
+                self._application_cache = {bus_name:AccessibleCache(event_dispatcher, connection, bus_name)}
 
         @property
         def application_list (self):
                 return self._application_list
+
+        def get_app_root (self, app_name):
+                return self._application_cache[app_name].root
 
         def __call__ (self, app_name, acc_path): 
                 """
                 Returns the cache tuple for the given application and accessible
                 object path. Throws an IndexError if the cache data is not found.
                 """
-                return self.application_cache[app_name][acc_path]
+                return self._application_cache[app_name][acc_path]
 
 #------------------------------------------------------------------------------
 
@@ -79,7 +83,7 @@ class ApplicationCache(object):
                 self._event_dispatcher = event_dispatcher
 
                 self._application_list = []
-                self.application_cache = {}
+                self._application_cache = {}
 
                 self._regsig = connection.add_signal_receiver(self._update_handler,
                                                               dbus_interface=ATSPI_REGISTRY_INTERFACE,
@@ -92,18 +96,21 @@ class ApplicationCache(object):
 
                 self._application_list.extend(self._app_register.getApplications())
                 for bus_name in self._application_list:
-                        self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
+                        self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
 
         @property
         def application_list (self):
                 return self._application_list
+
+        def get_app_root (self, app_name):
+                return self._application_cache[app_name].root
 
         def __call__ (self, app_name, acc_path): 
                 """
                 Returns the cache tuple for the given application and accessible
                 object path. Throws an IndexError if the cache data is not found.
                 """
-                return self.application_cache[app_name][acc_path]
+                return self._application_cache[app_name][acc_path]
 
         def _update_handler (self, update_type, bus_name):
                 if update_type == ApplicationCache._APPLICATIONS_ADD:
@@ -111,7 +118,7 @@ class ApplicationCache(object):
                         #TODO Excuding this app is a hack, need to have re-entrant method calls.
                         if bus_name != self._connection.get_unique_name ():
                                 self._application_list.append(bus_name)
-                                self.application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
+                                self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                                    self._connection,
                                                                                    bus_name)
                                 event = Event(self,
@@ -123,7 +130,7 @@ class ApplicationCache(object):
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
-                        del(self.application_cache[bus_name])
+                        del(self._application_cache[bus_name])
                         event = Event(self,
                                        ATSPI_DESKTOP_PATH,
                                        ATSPI_REGISTRY_NAME,
@@ -142,7 +149,7 @@ class ApplicationCache(object):
                 for item in removed:
                         self._update_handler (self._APPLICATIONS_REMOVE, item)
 
-                for item in self.application_cache.values():
+                for item in self._application_cache.values():
                         item._refresh()
 
 #------------------------------------------------------------------------------
@@ -161,6 +168,16 @@ class _CacheData(object):
 
         def __init__(self, data):
                 self._update(data)
+
+        def __str__(self):
+                return (str(self.path) + '\n' +
+                        str(self.parent) + '\n' +
+                        str(self.children) + '\n' +
+                        str(self.interfaces) + '\n' +
+                        str(self.name) + '\n' +
+                        str(self.role) + '\n' +
+                        str(self.description) + '\n' +
+                        str(self.state))
 
         def _update(self, data):
                 (self.path,
@@ -230,6 +247,24 @@ class AccessibleCache(object):
                 self._removeMatch = self._tree_itf.connect_to_signal(self._REMOVE_SIGNAL, self._remove_object)
 
                 self._root = self._tree_itf.getRoot()
+
+        @property
+        def application_list (self):
+                return [self._bus_name]
+
+        def get_app_root (self, app_name):
+                if app_name != self._bus_name:
+                        raise KeyError
+                return self._root
+
+        def __call__ (self, app_name, acc_path): 
+                """
+                Returns the cache tuple for the given application and accessible
+                object path. Throws an IndexError if the cache data is not found.
+                """
+                if app_name != self._bus_name:
+                        raise KeyError
+                return self[acc_path]
 
         def __getitem__(self, key):
                 return self._objects[key]
