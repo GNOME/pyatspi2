@@ -20,6 +20,8 @@ from state import StateSet
 from role import ROLE_UNKNOWN
 from component import LAYER_WIDGET
 
+import dbus
+
 __all__ = [
            "Desktop",
            "CachedDesktop",
@@ -437,17 +439,18 @@ class Desktop (BaseDesktop):
         def __init__(self, connection, *args):
                 BaseDesktop.__init__(self, *args);
 
+                self._connection = connection
                 obj = connection.get_object(interfaces.ATSPI_REGISTRY_NAME,
                                             interfaces.ATSPI_REGISTRY_PATH,
                                             introspect=False)
                 self._app_register = dbus.Interface(obj, interfaces.ATSPI_REGISTRY_INTERFACE)
 
         def create_application (self, app_name):
-                obj = connection.get_object (app_name,
-                                             self._TREE_PATH,
-                                             introspect=False)
+                obj = self._connection.get_object (app_name,
+                                                   self._TREE_PATH,
+                                                   introspect=False)
                 tree = dbus.Interface (obj, self._TREE_INTERFACE)
-                root = self.tree.getRoot ()
+                root = tree.getRoot ()
 
                 return self.acc_factory.create_accessible (app_name,
                                                            root,
