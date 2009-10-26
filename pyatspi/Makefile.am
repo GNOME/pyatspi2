@@ -19,6 +19,8 @@ pyatspi_PYTHON = \
 		deviceevent.py		\
 		document.py		\
 		editabletext.py		\
+                enum.py                 \
+                exceptions.py           \
 		factory.py		\
 		hyperlink.py		\
 		hypertext.py		\

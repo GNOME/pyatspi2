@@ -201,6 +201,9 @@ class AccessibleImpl (BaseProxy):
                 return [key + ':' + value for key, value in func().iteritems()]
 
         def getChildAtIndex(self, index):
+                count = Int32(self._pgetter(self.dbus_interface, "childCount"))
+                if index >= count:
+                        raise IndexError
                 func = self.get_dbus_method("getChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
                 path = func (index)
                 return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)

@@ -57,19 +57,25 @@ class GObjectProxy (dbus.connection.ProxyObject):
                         loop.quit ()
 
                 def method_reply_callback (*iargs):
-                        return_args = iargs
+                        return_args.extend(iargs)
                         loop.quit ()
                 
                 def dbus_method_func (*iargs, **ikwargs):
-                        #kwargs["reply_handler"] = method_reply_callback
-                        #kwargs["error_handler"] = method_error_callback
-                        return method (*iargs, **ikwargs)
+                        method (*iargs,
+                                reply_handler=method_reply_callback,
+                                error_handler=method_error_callback,
+                                **ikwargs)
 
-                        #loop.run()
+                        loop.run()
 
-                        #if error:
-                        #        raise error
+                        if error:
+                                raise error
 
-                        #return return_args
+                        if len (return_args) == 0:
+                                return None
+                        elif len (return_args) == 1:
+                                return return_args[0]
+                        else:
+                                return tuple (return_args)
 
                 return dbus_method_func

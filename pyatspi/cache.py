@@ -138,7 +138,7 @@ class ApplicationCache(object):
                                        "children-changed",
                                        ("remove", 0, 0, ""))
 
-                self._event_dispatcher._notifyChildrenChange(event)
+                self._event_dispatcher.notifyChildrenChange(event)
 
         def _refresh(self):
                 new = self._app_register.getApplications()
@@ -280,7 +280,7 @@ class AccessibleCache(object):
                                        "org.freedesktop.atspi.Event.Object",
                                        "property-change",
                                        ("accessible-name", 0, 0, newdata.name))
-                        self._event_dispatcher._notifyNameChange(event)
+                        self._event_dispatcher.notifyNameChange(event)
 
                 if olddata.description != newdata.description:
                         event = Event(self._event_dispatcher.cache,
@@ -289,7 +289,7 @@ class AccessibleCache(object):
                                        "org.freedesktop.atspi.Event.Object",
                                        "property-change",
                                        ("accessible-description", 0, 0, newdata.description))
-                        self._event_dispatcher._notifyDescriptionChange(event)
+                        self._event_dispatcher.notifyDescriptionChange(event)
 
                 if olddata.parent != newdata.parent:
                         event = Event(self._event_dispatcher.cache,
@@ -298,7 +298,7 @@ class AccessibleCache(object):
                                        "org.freedesktop.atspi.Event.Object",
                                        "property-change",
                                        ("accessible-parent", 0, 0, ""))
-                        self._event_dispatcher._notifyParentChange(event)
+                        self._event_dispatcher.notifyParentChange(event)
 
                 removed, added = _list_items_added_removed (olddata.children, newdata.children)
 
@@ -309,7 +309,7 @@ class AccessibleCache(object):
                                        "org.freedesktop.atspi.Event.Object",
                                        "children-changed",
                                        ("add", 0, 0, ""))
-                        self._event_dispatcher._notifyChildrenChange(event)
+                        self._event_dispatcher.notifyChildrenChange(event)
 
                 if removed:
                         event = Event(self._event_dispatcher.cache,
@@ -318,7 +318,7 @@ class AccessibleCache(object):
                                        "org.freedesktop.atspi.Event.Object",
                                        "children-changed",
                                        ("remove", 0, 0, ""))
-                        self._event_dispatcher._notifyChildrenChange(event)
+                        self._event_dispatcher.notifyChildrenChange(event)
 
         # TODO This should be the other way around. Single is more common than many.
         def _update_single(self, object):
