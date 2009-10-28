@@ -132,7 +132,7 @@ class Registry(object):
                 @param names: List of full or partial event names
                 @type names: list of string
                 """
-                self._app_event_register.registerEventListener (client, *names)
+                self.app_event_register.registerEventListener (client, *names)
 
         def deregisterEventListener(self, client, *names):
                 """
@@ -151,7 +151,7 @@ class Registry(object):
                         registered?
                 @rtype: boolean
                 """
-                self._app_event_register.deregisterEventListener (client, *names)
+                self.app_event_register.deregisterEventListener (client, *names)
 
         # -------------------------------------------------------------------------------
 
@@ -191,13 +191,13 @@ class Registry(object):
                         AT-SPI is in the foreground? (requires xevie)
                 @type global_: boolean
                 """
-                self._device_event_register.registerKeystrokeListener (client,
-                                                                       key_set,
-                                                                       mask,
-                                                                       kind,
-                                                                       synchronous,
-                                                                       preemptive,
-                                                                       global_)
+                self.device_event_register.registerKeystrokeListener (client,
+                                                                      key_set,
+                                                                      mask,
+                                                                      kind,
+                                                                      synchronous,
+                                                                      preemptive,
+                                                                      global_)
 
         def deregisterKeystrokeListener(self,
                                         client,
@@ -224,7 +224,7 @@ class Registry(object):
                 @type kind: list
                 @raise KeyError: When the client isn't already registered for events
                 """
-                self._device_event_register.deregisterKeystrokeListener (client, key_set, mask, kind)
+                self.device_event_register.deregisterKeystrokeListener (client, key_set, mask, kind)
 
         # -------------------------------------------------------------------------------
 
@@ -256,7 +256,7 @@ class Registry(object):
                 @param kind: Kind of event to synthesize
                 @type kind: integer
                 """
-                self._device_event_register.generateKeyboardEvent (keycode, keysym, kind)
+                self.device_event_register.generateKeyboardEvent (keycode, keysym, kind)
 
         def generateMouseEvent(self, x, y, name):
                 """
@@ -272,4 +272,4 @@ class Registry(object):
                 @param name: Name of the event to generate
                 @type name: string
                 """
-                self._device_event_register.generateMouseEvent (x, y, name)
+                self.device_event_register.generateMouseEvent (x, y, name)
