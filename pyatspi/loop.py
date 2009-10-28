@@ -36,12 +36,13 @@ class GObjectMain (object):
                 from dbus.mainloop.glib import DBusGMainLoop
                 DBusGMainLoop (set_as_default=True)
                 del DBusGMainLoop
+                self._loop = gobject.MainLoop()
         
         def run (self):
-                gobject.MainLoop.run()
+                self._loop.run()
 
         def stop (self):
-                gobject.MainLoop.quit()
+                self._loop.quit()
 
 class GObjectProxy (dbus.connection.ProxyObject):
         

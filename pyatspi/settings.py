@@ -72,8 +72,8 @@ def get_registry (main_loop_type, app_name=None):
                 devreg = _NullDeviceEventRegister()
                 appreg = _NullApplicationEventRegister()
         else:
-                devreg = _DeviceEventRegister()
-                appreg = _ApplicationEventRegister()
+                devreg = _DeviceEventRegister(connection)
+                appreg = _ApplicationEventRegister(connection)
 
         # Set up the cache / desktop and accesible factories.
         if main_loop_type == MAIN_LOOP_GLIB:
@@ -81,6 +81,7 @@ def get_registry (main_loop_type, app_name=None):
                         cache = AccessibleCache(appreg, connection, app_name)
                 else:
                         cache = ApplicationCache(appreg, connection)
+                appreg.setCache (cache)
                 factory = CachedAccessibleFactory (cache, connection, proxy)
                 desktop = CachedDesktop (cache, factory)
 

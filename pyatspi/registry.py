@@ -82,7 +82,7 @@ class Registry(object):
                 @type gil: boolean
                 """
                 try:
-                        self._main_loop.run()
+                        self.main_loop.run()
                 except KeyboardInterrupt:
                         pass
 

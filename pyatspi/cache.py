@@ -119,8 +119,8 @@ class ApplicationCache(object):
                         if bus_name != self._connection.get_unique_name ():
                                 self._application_list.append(bus_name)
                                 self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
-                                                                                   self._connection,
-                                                                                   bus_name)
+                                                                                    self._connection,
+                                                                                    bus_name)
                                 event = Event(self,
                                                ATSPI_DESKTOP_PATH,
                                                ATSPI_REGISTRY_NAME,

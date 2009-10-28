@@ -520,7 +520,9 @@ class KeyboardDeviceEventListener(_service.Object):
 
 class _DeviceEventRegister (object):
         
-        def __init__ (self):
+        def __init__ (self, bus):
+                self.dev = DeviceEventController (bus)
+                self._bus = bus
                 self.deviceClients = {}
 
         def registerKeystrokeListener(self,

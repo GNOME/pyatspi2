@@ -262,7 +262,9 @@ class Event(object):
 
 class _ApplicationEventRegister (object):
 
-        def __init__ (self):
+        def __init__ (self, bus):
+                self._bus = bus
+                self._cache = None
                 self._event_listeners = {}
 
                 # All of this special casing is for the 'faked'
@@ -280,6 +282,9 @@ class _ApplicationEventRegister (object):
         def _callClients(self, register, event):
                 for client in register.keys():
                         client(event)
+
+        def setCache (self, cache):
+                self._cache = cache
 
         def notifyNameChange(self, event):
                 self._callClients(self._name_listeners, event)
@@ -346,7 +351,7 @@ class _ApplicationEventRegister (object):
                 for name in names:
                         new_type = EventType(name)
                         registered.append((new_type.name,
-                                           _event_type_to_signal_reciever(self._bus, self._app_cache, client, new_type)))
+                                           event_type_to_signal_reciever(self._bus, self._cache, client, new_type)))
 
                 self._registerFake(self._name_type, self._name_listeners, client, *names)
                 self._registerFake(self._description_type, self._description_listeners, client, *names)
@@ -390,6 +395,9 @@ class _ApplicationEventRegister (object):
 #------------------------------------------------------------------------------
 
 class _NullApplicationEventRegister (object):
+
+        def setCache (self, cache):
+                pass
 
         def notifyNameChange(self, event):
                 pass
