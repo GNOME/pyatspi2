@@ -43,7 +43,7 @@ class Document(Accessible):
                 attribute, or an empty string if the attribute is unspecified
                 for the object.
                 """
-                func = self.get_dbus_method("getAttributeValue", dbus_interface=ATSPI_DOCUMENT)
+                func = self.get_dbus_method("GetAttributeValue", dbus_interface=ATSPI_DOCUMENT)
                 return func(key)
 
         def getAttributes(self):
@@ -54,7 +54,7 @@ class Document(Accessible):
                 @return an AttributeSet containing the attributes of the document,
                 as name-value pairs.
                 """
-                func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_DOCUMENT)
+                func = self.get_dbus_method("GetAttributes", dbus_interface=ATSPI_DOCUMENT)
                 return [key + ':' + value for key, value in func().values()]
 
         def getLocale(self):
@@ -64,7 +64,7 @@ class Document(Accessible):
                 @return a string compliant with the POSIX standard for locale
                 description.
                 """
-                func = self.get_dbus_method("getLocale", dbus_interface=ATSPI_DOCUMENT)
+                func = self.get_dbus_method("GetLocale", dbus_interface=ATSPI_DOCUMENT)
                 return func()
 
 #END----------------------------------------------------------------------------

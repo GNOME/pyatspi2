@@ -48,7 +48,7 @@ class Image(Accessible):
                 to the containing window. 
                 @return a BoundingBox enclosing the image's onscreen representation.
                 """
-                func = self.get_dbus_method("getImageExtents", dbus_interface=ATSPI_IMAGE)
+                func = self.get_dbus_method("GetImageExtents", dbus_interface=ATSPI_IMAGE)
                 return BoundingBox(*func(UInt32(coordType)))
 
         def getImagePosition(self, coord_type):
@@ -65,7 +65,7 @@ class Image(Accessible):
                 to the screen; if 1, they are returned relative to the containing
                 window.
                 """
-                func = self.get_dbus_method("getImagePosition", dbus_interface=ATSPI_IMAGE)
+                func = self.get_dbus_method("GetImagePosition", dbus_interface=ATSPI_IMAGE)
                 return func(UInt32(coord_type))
 
         def getImageSize(self):
@@ -81,11 +81,11 @@ class Image(Accessible):
                 Back-filled with the y extents of the onscreen image (i.e. the
                 image height in pixels)
                 """
-                func = self.get_dbus_method("getImageSize", dbus_interface=ATSPI_IMAGE)
+                func = self.get_dbus_method("GetImageSize", dbus_interface=ATSPI_IMAGE)
                 return func()
 
         def get_imageDescription(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "imageDescription"))
+                return dbus.String(self._pgetter(self._dbus_interface, "ImageDescription"))
         _imageDescriptionDoc = \
                 """
                 A UTF-8 string providing a textual description of what is visually
@@ -94,7 +94,7 @@ class Image(Accessible):
         imageDescription = property(fget=get_imageDescription, doc=_imageDescriptionDoc)
 
         def get_imageLocale(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "imageLocale"))
+                return dbus.String(self._pgetter(self._dbus_interface, "ImageLocale"))
         _imageLocaleDoc = \
                 """
                 A string corresponding to the POSIX LC_MESSAGES locale used by

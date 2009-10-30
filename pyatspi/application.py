@@ -40,11 +40,11 @@ class Application(Accessible):
                 @return a string compliant with the POSIX standard for locale
                 description.
                 """
-                func = self.get_dbus_method("getLocale", dbus_interface=ATSPI_APPLICATION)
+                func = self.get_dbus_method("GetLocale", dbus_interface=ATSPI_APPLICATION)
                 return func(local_type)
 
         def get_toolkitName(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "toolkitName"))
+                return dbus.String(self._pgetter(self._dbus_interface, "ToolkitName"))
         _toolkitNameDoc = \
                 """
                 A string indicating the type of user interface toolkit which
@@ -53,7 +53,7 @@ class Application(Accessible):
         toolkitName = property(fget=get_toolkitName, doc=_toolkitNameDoc)
 
         def get_version(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "version"))
+                return dbus.String(self._pgetter(self._dbus_interface, "Version"))
         _versionDoc = \
                 """
                 A string indicating the version number of the application's accessibility

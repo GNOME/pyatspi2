@@ -94,7 +94,7 @@ class ApplicationCache(object):
                                             introspect=False)
                 self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
 
-                self._application_list.extend(self._app_register.getApplications())
+                self._application_list.extend(self._app_register.GetApplications())
                 for bus_name in self._application_list:
                         self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
 
@@ -220,7 +220,7 @@ class AccessibleCache(object):
 
         _PATH = '/org/freedesktop/atspi/tree'
         _INTERFACE = 'org.freedesktop.atspi.Tree'
-        _GET_METHOD = 'getTree'
+        _GET_METHOD = 'GetTree'
         _UPDATE_SIGNAL = 'updateAccessible'
         _REMOVE_SIGNAL = 'removeAccessible'
 
@@ -246,7 +246,7 @@ class AccessibleCache(object):
                 self._updateMatch = self._tree_itf.connect_to_signal(self._UPDATE_SIGNAL, self._update_single)
                 self._removeMatch = self._tree_itf.connect_to_signal(self._REMOVE_SIGNAL, self._remove_object)
 
-                self._root = self._tree_itf.getRoot()
+                self._root = self._tree_itf.GetRoot()
 
         @property
         def application_list (self):

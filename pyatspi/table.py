@@ -47,7 +47,7 @@ class Table(Accessible):
                 @return True if the specified column was successfully selected,
                 False if not.
                 """
-                func = self.get_dbus_method("addColumnSelection", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("AddColumnSelection", dbus_interface=ATSPI_TABLE)
                 return func(column)
 
         def addRowSelection(self, row):
@@ -58,7 +58,7 @@ class Table(Accessible):
                 @return True if the specified row was successfully selected,
                 False if not.
                 """
-                func = self.get_dbus_method("addRowSelection", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("AddRowSelection", dbus_interface=ATSPI_TABLE)
                 return func(row)
 
         def getAccessibleAt(self, row, column):
@@ -84,7 +84,7 @@ class Table(Accessible):
                 @return a long integer indicating the first column spanned by
                 the child of a table, at the specified 1-D (zero-offset) index.
                 """
-                func = self.get_dbus_method("getColumnAtIndex", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetColumnAtIndex", dbus_interface=ATSPI_TABLE)
                 return func(index)
 
         def getColumnDescription(self, column):
@@ -96,7 +96,7 @@ class Table(Accessible):
                 @return a UTF-8 string describing the specified table column,
                 if available.
                 """
-                func = self.get_dbus_method("getColumnDescription", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetColumnDescription", dbus_interface=ATSPI_TABLE)
                 return func(column)
 
         def getColumnExtentAt(self, row, column):
@@ -111,7 +111,7 @@ class Table(Accessible):
                 @return a long integer indicating the number of columns spanned
                 by the specified cell.
                 """
-                func = self.get_dbus_method("getColumnExtentAt", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetColumnExtentAt", dbus_interface=ATSPI_TABLE)
                 return func(row, column)
 
         def getColumnHeader(self, index):
@@ -139,7 +139,7 @@ class Table(Accessible):
                 @return a long integer which serves as the index of a specified
                 cell in the table, in a form usable by Accessible::getChildAtIndex.
                 """
-                func = self.get_dbus_method("getIndexAt", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetIndexAt", dbus_interface=ATSPI_TABLE)
                 return func(row, column)
 
         def getRowAtIndex(self, index):
@@ -151,7 +151,7 @@ class Table(Accessible):
                 @return a long integer indicating the first row spanned by the
                 child of a table, at the specified 1-D (zero-offset) index.
                 """
-                func = self.get_dbus_method("getRowAtIndex", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetRowAtIndex", dbus_interface=ATSPI_TABLE)
                 return func(index)
 
         def getRowColumnExtentsAtIndex(self, index):
@@ -190,7 +190,7 @@ class Table(Accessible):
                 False if the index does not correspond to a cell. If False is
                 returned, the values of the out parameters are undefined.
                 """
-                func = self.get_dbus_method("getRowColumnExtentsAtIndex", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetRowColumnExtentsAtIndex", dbus_interface=ATSPI_TABLE)
                 return func(index)
 
         def getRowDescription(self, index):
@@ -202,7 +202,7 @@ class Table(Accessible):
                 @return a UTF-8 string describing the specified table row, if
                 available.
                 """
-                func = self.get_dbus_method("getRowDescription", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetRowDescription", dbus_interface=ATSPI_TABLE)
                 return func(index)
 
         def getRowExtentAt(self, row, column):
@@ -217,7 +217,7 @@ class Table(Accessible):
                 @return a long integer indicating the number of rows spanned
                 by the specified cell.
                 """
-                func = self.get_dbus_method("getRowExtentAt", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetRowExtentAt", dbus_interface=ATSPI_TABLE)
                 return func(row, column)
 
         def getRowHeader(self, row):
@@ -239,7 +239,7 @@ class Table(Accessible):
                 @return a sequence of integers comprising the indices of columns
                 currently selected.
                 """
-                func = self.get_dbus_method("getSelectedColumns", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetSelectedColumns", dbus_interface=ATSPI_TABLE)
                 return func()
 
         def getSelectedRows(self):
@@ -248,7 +248,7 @@ class Table(Accessible):
                 @return a sequence of integers comprising the indices of rows
                 currently selected.
                 """
-                func = self.get_dbus_method("getSelectedRows", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetSelectedRows", dbus_interface=ATSPI_TABLE)
                 return func()
 
         def isColumnSelected(self, column):
@@ -259,7 +259,7 @@ class Table(Accessible):
                 @return True if the specified column is currently selected, False
                 if not.
                 """
-                func = self.get_dbus_method("isColumnSelected", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("IsColumnSelected", dbus_interface=ATSPI_TABLE)
                 return func(column)
 
         def isRowSelected(self, row):
@@ -270,7 +270,7 @@ class Table(Accessible):
                 @return True if the specified row is currently selected, False
                 if not.
                 """
-                func = self.get_dbus_method("isRowSelected", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("IsRowSelected", dbus_interface=ATSPI_TABLE)
                 return func(row)
 
         def isSelected(self, row, column):
@@ -283,7 +283,7 @@ class Table(Accessible):
                 @return True if the specified cell is currently selected, False
                 if not.
                 """
-                func = self.get_dbus_method("isSelected", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("IsSelected", dbus_interface=ATSPI_TABLE)
                 return func(row, column)
 
         def removeColumnSelection(self, column):
@@ -294,7 +294,7 @@ class Table(Accessible):
                 @return True if the specified column was successfully de-selected,
                 False if not.
                 """
-                func = self.get_dbus_method("removeColumnSelection", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("RemoveColumnSelection", dbus_interface=ATSPI_TABLE)
                 return func(column)
 
         def removeRowSelection(self, row):
@@ -319,7 +319,7 @@ class Table(Accessible):
         caption = property(fget=get_caption, doc=_captionDoc)
 
         def get_nColumns(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "nColumns"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "NColumns"))
         _nColumnsDoc = \
                 """
                 The total number of columns in this table (including empty columns),
@@ -330,7 +330,7 @@ class Table(Accessible):
         nColumns = property(fget=get_nColumns, doc=_nColumnsDoc)
 
         def get_nRows(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "nRows"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "NRows"))
         _nRowsDoc = \
                 """
                 The total number of rows in this table (including empty rows),
@@ -340,7 +340,7 @@ class Table(Accessible):
         nRows = property(fget=get_nRows, doc=_nRowsDoc)
 
         def get_nSelectedColumns(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "nSelectedColumns"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "NSelectedColumns"))
         _nSelectedColumnsDoc = \
                 """
                 The number of columns currently selected. A selected column is
@@ -349,7 +349,7 @@ class Table(Accessible):
         nSelectedColumns = property(fget=get_nSelectedColumns, doc=_nSelectedColumnsDoc)
 
         def get_nSelectedRows(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "nSelectedRows"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "NSelectedRows"))
         _nSelectedRowsDoc = \
                 """
                 The number of rows currently selected. A selected row is one

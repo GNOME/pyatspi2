@@ -281,7 +281,7 @@ class DeviceEventController(object):
                 for the requested KeySet, ControllerEventMask, event types, and
                 EventListenerMode; otherwise returns False.
                 """
-                func = self._dec.get_dbus_method("registerKeystrokeListener")
+                func = self._dec.get_dbus_method("RegisterKeystrokeListener")
                 return func(event_listener,
                             _dbus.Array(keys, signature="(iisi)"),
                             event_mask,
@@ -304,7 +304,7 @@ class DeviceEventController(object):
                 @param : type
                 A list of KeyEventType
                 """
-                func = self._dec.get_dbus_method("deregisterKeystrokeListener")
+                func = self._dec.get_dbus_method("DeregisterKeystrokeListener")
                 return func(event_listener,
                             keys,
                             event_mask,
@@ -323,7 +323,7 @@ class DeviceEventController(object):
                 A list of EventType indicating which event types to listen for.
                 @return True if successful, False if not
                 """
-                func = self._dec.get_dbus_method("registerDeviceEventListener")
+                func = self._dec.get_dbus_method("RegisterDeviceEventListener")
                 return func(event_listener, event_types)
 
         def deregisterDeviceEventListener(self,
@@ -337,7 +337,7 @@ class DeviceEventController(object):
                 A List of EventType indicating which event types to stop listening
                 for.
                 """
-                func = self._dec.get_dbus_method("deregisterDeviceEventListener")
+                func = self._dec.get_dbus_method("DeregisterDeviceEventListener")
                 return func(event_listener, event_types)
 
         def notifyListenersSync(self, event):
@@ -354,7 +354,7 @@ class DeviceEventController(object):
                 e.g. the currently active application in the case of mouse or
                 keyboard events).
                 """
-                func = self._dec.get_dbus_method("notifyListenersSync")
+                func = self._dec.get_dbus_method("NotifyListenersSync")
                 return func(event)
 
         def notifyListenersAsync(self, event):
@@ -366,7 +366,7 @@ class DeviceEventController(object):
                 is potentially pre-emptible. notifyListenersSync should be used
                 instead.
                 """
-                func = self._dec.get_dbus_method("notifyListenersAsync")
+                func = self._dec.get_dbus_method("NotifyListenersAsync")
                 return func(event)
 
         def generateKeyboardEvent(self, keycode, keystring, type):
@@ -383,7 +383,7 @@ class DeviceEventController(object):
                 string (for instance from an internationalized or complex text
                 input method, or a composed character).
                 """
-                func = self._dec.get_dbus_method("generateKeyboardEvent")
+                func = self._dec.get_dbus_method("GenerateKeyboardEvent")
                 return func(keycode, keystring, type)
 
         def generateMouseEvent(self, x, y, name):
@@ -396,7 +396,7 @@ class DeviceEventController(object):
                 @param : name
                 A string indicating the type of mouse event, e.g. "button1up"
                 """
-                func = self._dec.get_dbus_method("generateMouseEvent")
+                func = self._dec.get_dbus_method("GenerateMouseEvent")
                 return func(x, y, name)
 
 #------------------------------------------------------------------------------

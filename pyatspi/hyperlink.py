@@ -60,7 +60,7 @@ class Hyperlink(Accessible):
                 @return a string corresponding to the URI of the Hyperlink's
                 'ith' anchor, if one exists, or a NIL string otherwise.
                 """
-                func = self.get_dbus_method("getURI", dbus_interface=ATSPI_HYPERLINK)
+                func = self.get_dbus_method("GetURI", dbus_interface=ATSPI_HYPERLINK)
                 return func(index)
 
         def isValid(self):
@@ -71,11 +71,11 @@ class Hyperlink(Accessible):
                 the hyperlink's URI is invalid, or a connection to the resource
                 can not be established.
                 """
-                func = self.get_dbus_method("isValid", dbus_interface=ATSPI_HYPERLINK)
+                func = self.get_dbus_method("IsValid", dbus_interface=ATSPI_HYPERLINK)
                 return func()
 
         def get_endIndex(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "endIndex"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "EndIndex"))
         _endIndexDoc = \
                 """
                 the ending offset within the containing Hypertext content with
@@ -86,7 +86,7 @@ class Hyperlink(Accessible):
         endIndex = property(fget=get_endIndex, doc=_endIndexDoc)
 
         def get_nAnchors(self):
-                return dbus.Int16(self._pgetter(self._dbus_interface, "nAnchors"))
+                return dbus.Int16(self._pgetter(self._dbus_interface, "NAnchors"))
         _nAnchorsDoc = \
                 """
                 the number of separate anchors associated with this Hyperlink
@@ -94,7 +94,7 @@ class Hyperlink(Accessible):
         nAnchors = property(fget=get_nAnchors, doc=_nAnchorsDoc)
 
         def get_startIndex(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "startIndex"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "StartIndex"))
         _startIndexDoc = \
                 """
                 the starting offset within the containing Hypertext content with

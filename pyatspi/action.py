@@ -42,7 +42,7 @@ class Action(Accessible):
                 @return : an array of an array of strings in the form
                 [[name, description, keybinding], ...]
                 """
-                func = self.get_dbus_method("getActions", dbus_interface=ATSPI_ACTION)
+                func = self.get_dbus_method("GetActions", dbus_interface=ATSPI_ACTION)
                 return func()
 
         def doAction(self, index):
@@ -53,7 +53,7 @@ class Action(Accessible):
                 Causes the object to perform the specified action.
                 @return : a boolean indicating success or failure.
                 """
-                func = self.get_dbus_method("doAction", dbus_interface=ATSPI_ACTION)
+                func = self.get_dbus_method("DoAction", dbus_interface=ATSPI_ACTION)
                 return func(index)
 
         def getDescription(self, index):
@@ -67,7 +67,7 @@ class Action(Accessible):
                 @return : a string containing the description of the specified
                 action.
                 """
-                func = self.get_dbus_method("getDescription", dbus_interface=ATSPI_ACTION)
+                func = self.get_dbus_method("GetDescription", dbus_interface=ATSPI_ACTION)
                 return func(index)
 
         def getKeyBinding(self, index):
@@ -79,7 +79,7 @@ class Action(Accessible):
                 @return : a string containing the key binding for the specified
                 action, or an empty string ("") if none exists.
                 """
-                func = self.get_dbus_method("getKeyBinding", dbus_interface=ATSPI_ACTION)
+                func = self.get_dbus_method("GetKeyBinding", dbus_interface=ATSPI_ACTION)
                 return func(index)
 
         def getName(self, index):
@@ -92,11 +92,11 @@ class Action(Accessible):
                 the result of invoking the action.
                 @return : a string containing the name of the specified action.
                 """
-                func = self.get_dbus_method("getName", dbus_interface=ATSPI_ACTION)
+                func = self.get_dbus_method("GetName", dbus_interface=ATSPI_ACTION)
                 return func(index)
 
         def get_nActions(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "nActions"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "NActions"))
         _nActionsDoc = \
                 """
                 nActions: a long containing the number of actions this object
