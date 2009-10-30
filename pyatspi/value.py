@@ -32,7 +32,7 @@ class Value(Accessible):
         """
 
         def get_currentValue(self):
-                return dbus.Double(self._pgetter(self._dbus_interface, "currentValue"))
+                return dbus.Double(self._pgetter(self._dbus_interface, "CurrentValue"))
         def set_currentValue(self, value):
                 self._psetter(self._dbus_interface, "currentValue", dbus.Double(value, variant_level=1))
         _currentValueDoc = \
@@ -42,7 +42,7 @@ class Value(Accessible):
         currentValue = property(fget=get_currentValue, fset=set_currentValue, doc=_currentValueDoc)
 
         def get_maximumValue(self):
-                return dbus.Double(self._pgetter(self._dbus_interface, "maximumValue"))
+                return dbus.Double(self._pgetter(self._dbus_interface, "MaximumValue"))
         _maximumValueDoc = \
                 """
                 The maximum value allowed by this valuator.
@@ -50,7 +50,7 @@ class Value(Accessible):
         maximumValue = property(fget=get_maximumValue, doc=_maximumValueDoc)
 
         def get_minimumIncrement(self):
-                return dbus.Double(self._pgetter(self._dbus_interface, "minimumIncrement"))
+                return dbus.Double(self._pgetter(self._dbus_interface, "MinimumIncrement"))
         _minimumIncrementDoc = \
                 """
                 The smallest incremental change which this valuator allows. If
@@ -60,7 +60,7 @@ class Value(Accessible):
         minimumIncrement = property(fget=get_minimumIncrement, doc=_minimumIncrementDoc)
 
         def get_minimumValue(self):
-                return dbus.Double(self._pgetter(self._dbus_interface, "minimumValue"))
+                return dbus.Double(self._pgetter(self._dbus_interface, "MinimumValue"))
         _minimumValueDoc = \
                 """
                 The minimum value allowed by this valuator.

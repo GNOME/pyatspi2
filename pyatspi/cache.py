@@ -102,7 +102,7 @@ class ApplicationCache(object):
                                             introspect=False)
                 self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
 
-                apps = self._app_register.getApplications()
+                apps = self._app_register.GetApplications()
                 for app in apps:
                         that_pid = self._bus_object.GetConnectionUnixProcessID(app)
                         if this_pid != that_pid:
@@ -236,7 +236,7 @@ class AccessibleCache(object):
 
         _PATH = '/org/freedesktop/atspi/tree'
         _INTERFACE = 'org.freedesktop.atspi.Tree'
-        _GET_METHOD = 'getTree'
+        _GET_METHOD = 'GetTree'
         _UPDATE_SIGNAL = 'updateAccessible'
         _REMOVE_SIGNAL = 'removeAccessible'
 
@@ -262,7 +262,7 @@ class AccessibleCache(object):
                 self._updateMatch = self._tree_itf.connect_to_signal(self._UPDATE_SIGNAL, self._update_single)
                 self._removeMatch = self._tree_itf.connect_to_signal(self._REMOVE_SIGNAL, self._remove_object)
 
-                self._root = self._tree_itf.getRoot()
+                self._root = self._tree_itf.GetRoot()
 
         def set_factory (self, factory):
                 pass

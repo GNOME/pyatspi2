@@ -91,7 +91,7 @@ class Component(Accessible):
                 @return True if the specified point lies within the Component's
                 bounding box, False otherwise.
                 """
-                func = self.get_dbus_method("contains", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("Contains", dbus_interface=ATSPI_COMPONENT)
                 return func(x, y, UInt32(coord_type))
 
         def getAccessibleAtPoint(self, x, y, coord_type):
@@ -111,7 +111,7 @@ class Component(Accessible):
                 alpha value of 0.0 indicates that the object is fully transparent.
                 Negative alpha values have no defined meaning at this time.
                 """
-                func = self.get_dbus_method("getAlpha", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetAlpha", dbus_interface=ATSPI_COMPONENT)
                 return func()
 
         def getExtents(self, coord_type):
@@ -122,7 +122,7 @@ class Component(Accessible):
                 @return a BoundingBox which entirely contains the object's onscreen
                 visual representation.
                 """
-                func = self.get_dbus_method("getExtents", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetExtents", dbus_interface=ATSPI_COMPONENT)
                 extents = func(UInt32(coord_type))
                 return BoundingBox(*extents)
 
@@ -130,7 +130,7 @@ class Component(Accessible):
                 """
                 @return the ComponentLayer in which this object resides.
                 """
-                func = self.get_dbus_method("getLayer", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetLayer", dbus_interface=ATSPI_COMPONENT)
                 return ComponentLayer(func())
 
         def getMDIZOrder(self):
@@ -142,7 +142,7 @@ class Component(Accessible):
                 @return an integer indicating the object's place in the stacking
                 order.
                 """
-                func = self.get_dbus_method("getMDIZOrder", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetMDIZOrder", dbus_interface=ATSPI_COMPONENT)
                 return func()
 
         def getPosition(self, coord_type):
@@ -157,7 +157,7 @@ class Component(Accessible):
                 an out parameter which will be back-filled with the returned
                 y coordinate.
                 """
-                func = self.get_dbus_method("getPosition", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetPosition", dbus_interface=ATSPI_COMPONENT)
                 return func(UInt32(coord_type))
 
         def getSize(self):
@@ -170,7 +170,7 @@ class Component(Accessible):
                 @param : height
                 the object's vertical extents in the specified coordinate system.
                 """
-                func = self.get_dbus_method("getSize", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetSize", dbus_interface=ATSPI_COMPONENT)
                 return func()
 
         def grabFocus(self):
@@ -179,7 +179,7 @@ class Component(Accessible):
                 @return True if keyboard focus was successfully transferred to
                 the Component.
                 """
-                func = self.get_dbus_method("grabFocus", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GrabFocus", dbus_interface=ATSPI_COMPONENT)
                 return func()
 
 #END----------------------------------------------------------------------------

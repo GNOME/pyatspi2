@@ -39,7 +39,7 @@ class EditableText(Text):
                 the offset of the first character past the end of the range of
                 text being copied.
                 """
-                func = self.get_dbus_method("copyText", dbus_interface=ATSPI_EDITABLE_TEXT)
+                func = self.get_dbus_method("CopyText", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(start, end)
 
         def cutText(self, start, end):
@@ -54,7 +54,7 @@ class EditableText(Text):
                 text being cut. 
                 @return True if the text was successfully cut, False otherwise.
                 """
-                func = self.get_dbus_method("cutText", dbus_interface=ATSPI_EDITABLE_TEXT)
+                func = self.get_dbus_method("CutText", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(start, end)
 
         def deleteText(self, start, end):
@@ -69,7 +69,7 @@ class EditableText(Text):
                 text being deleted. 
                 @return True if the text was successfully deleted, False otherwise.
                 """
-                func = self.get_dbus_method("deleteText", dbus_interface=ATSPI_EDITABLE_TEXT)
+                func = self.get_dbus_method("DeleteText", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(start, end)
 
         def insertText(self, position, text, length):
@@ -89,7 +89,7 @@ class EditableText(Text):
                 @return True if the text content was successfully inserted, False
                 otherwise.
                 """
-                func = self.get_dbus_method("insertText", dbus_interface=ATSPI_EDITABLE_TEXT)
+                func = self.get_dbus_method("InsertText", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(position, text, length)
 
         def pasteText(self, position):
@@ -101,7 +101,7 @@ class EditableText(Text):
                 @return True if the text was successfully pasted into the Text
                 object, False otherwise.
                 """
-                func = self.get_dbus_method("pasteText", dbus_interface=ATSPI_EDITABLE_TEXT)
+                func = self.get_dbus_method("PasteText", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(position)
 
         def setTextContents(self, contents):
@@ -114,7 +114,7 @@ class EditableText(Text):
                 @return True if the text content was successfully changed, False
                 otherwise.
                 """
-                func = self.get_dbus_method("setTextContents", dbus_interface=ATSPI_EDITABLE_TEXT)
+                func = self.get_dbus_method("SetTextContents", dbus_interface=ATSPI_EDITABLE_TEXT)
                 return func(contents)
 
 #END----------------------------------------------------------------------------

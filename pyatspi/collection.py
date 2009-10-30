@@ -25,31 +25,31 @@ __all__ = [
 class Collection(Accessible):
 
         def createMatchRule(self, *args, **kwargs):
-                func = self.get_dbus_method("createMatchRule", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("CreateMatchRule", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         def freeMatchRule(self, *args, **kwargs):
-                func = self.get_dbus_method("freeMatchRule", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("FreeMatchRule", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         def getActiveDescendant(self, *args, **kwargs):
-                func = self.get_dbus_method("getActiveDescendant", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("GetActiveDescendant", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         def getMatches(self, *args, **kwargs):
-                func = self.get_dbus_method("getMatches", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("GetMatches", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         def getMatchesFrom(self, *args, **kwargs):
-                func = self.get_dbus_method("getMatchesFrom", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("GetMatchesFrom", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         def getMatchesTo(self, *args, **kwargs):
-                func = self.get_dbus_method("getMatchesTo", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("GetMatchesTo", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         def isAncestorOf(self, *args, **kwargs):
-                func = self.get_dbus_method("isAncestorOf", dbus_interface=ATSPI_COLLECTION)
+                func = self.get_dbus_method("IsAncestorOf", dbus_interface=ATSPI_COLLECTION)
                 return func(*args, **kwargs)
 
         class MatchType(Enum):

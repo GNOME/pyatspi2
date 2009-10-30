@@ -52,7 +52,7 @@ class Hypertext(Accessible):
                 offset characterIndex, or -1 if no Hyperlink is associated with
                 that character offset.
                 """
-                func = self.get_dbus_method("getLinkIndex", dbus_interface=ATSPI_HYPERTEXT)
+                func = self.get_dbus_method("GetLinkIndex", dbus_interface=ATSPI_HYPERTEXT)
                 return func(character_index)
 
         def getNLinks(self):
@@ -61,7 +61,7 @@ class Hypertext(Accessible):
                 @return the number of Hyperlinks associated with this Hypertext
                 object, as a long integer.
                 """
-                func = self.get_dbus_method("getNLinks", dbus_interface=ATSPI_HYPERTEXT)
+                func = self.get_dbus_method("GetNLinks", dbus_interface=ATSPI_HYPERTEXT)
                 return func()
 
 #END----------------------------------------------------------------------------

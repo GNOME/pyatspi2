@@ -42,7 +42,7 @@ class Selection(Accessible):
                 @return True if the selections were successfully cleared, False
                 otherwise.
                 """
-                func = self.get_dbus_method("clearSelection", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("ClearSelection", dbus_interface=ATSPI_SELECTION)
                 return func()
 
         def deselectChild(self, childIndex):
@@ -55,7 +55,7 @@ class Selection(Accessible):
                 to be selected.
                 @return True if the child was successfully selected, False otherwise.
                 """
-                func = self.get_dbus_method("deselectChild", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("DeselectChild", dbus_interface=ATSPI_SELECTION)
                 return func(childIndex)
 
         def deselectSelectedChild(self, index):
@@ -69,7 +69,7 @@ class Selection(Accessible):
                 @return True if the child was successfully deselected, False
                 otherwise.
                 """
-                func = self.get_dbus_method("deselectSelectedChild", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("DeselectSelectedChild", dbus_interface=ATSPI_SELECTION)
                 return func(index)
 
         def getSelectedChild(self, index):
@@ -95,7 +95,7 @@ class Selection(Accessible):
                 @return True if the specified child is currently selected, False
                 otherwise.
                 """
-                func = self.get_dbus_method("isChildSelected", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("IsChildSelected", dbus_interface=ATSPI_SELECTION)
                 return func(index)
 
         def selectAll(self):
@@ -106,7 +106,7 @@ class Selection(Accessible):
                 support this operation).
                 @return True if successful, False otherwise.
                 """
-                func = self.get_dbus_method("selectAll", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("SelectAll", dbus_interface=ATSPI_SELECTION)
                 return func()
 
         def selectChild(self, index):
@@ -117,11 +117,11 @@ class Selection(Accessible):
                 be selected.
                 @return True if the child was successfully selected, False otherwise.
                 """
-                func = self.get_dbus_method("selectChild", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("SelectChild", dbus_interface=ATSPI_SELECTION)
                 return func(index)
 
         def get_nSelectedChildren(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "nSelectedChildren"))
+                return dbus.Int32(self._pgetter(self._dbus_interface, "NSelectedChildren"))
         _nSelectedChildrenDoc = \
                 """
                 The number of children of a Selection implementor which are currently
