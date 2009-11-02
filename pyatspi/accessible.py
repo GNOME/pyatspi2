@@ -213,7 +213,7 @@ class AccessibleImpl (BaseProxy):
                 return self.acc_factory.create_application(self.app_name)
 
         def getAttributes(self):
-                func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetAttributes", dbus_interface=ATSPI_ACCESSIBLE)
                 attr = func ()
                 return [key + ':' + value for key, value in attr.iteritems()]
 
@@ -221,16 +221,16 @@ class AccessibleImpl (BaseProxy):
                 count = Int32(self._pgetter(self.dbus_interface, "childCount"))
                 if index >= count:
                         raise IndexError
-                func = self.get_dbus_method("getChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
                 path = func (index)
                 return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
 
         def getLocalizedRoleName(self):
-                func = self.get_dbus_method("getLocalizedRoleName", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetLocalizedRoleName", dbus_interface=ATSPI_ACCESSIBLE)
                 return func()
 
         def getRelationSet(self):
-                func = self.get_dbus_method("getRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
                 relation_set = func()
                 return _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
 
@@ -239,15 +239,15 @@ class AccessibleImpl (BaseProxy):
                 return func()
 
         def getRole(self):
-                func = self.get_dbus_method("getRole", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetRole", dbus_interface=ATSPI_ACCESSIBLE)
                 return func()
 
         def getRoleName(self):
-                func = self.get_dbus_method("getRole", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetRole", dbus_interface=ATSPI_ACCESSIBLE)
                 return ROLE_NAMES[func()]
 
         def getState(self):
-                func = self.get_dbus_method("getState", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetState", dbus_interface=ATSPI_ACCESSIBLE)
                 return _marshal_state_set(func())
 
         def get_childCount(self):
@@ -265,7 +265,7 @@ class AccessibleImpl (BaseProxy):
                                                           ATSPI_ACCESSIBLE)
 
         def get_interfaces (self):
-                func = self.get_dbus_method("getInterfaces", dbus_interface=ATSPI_ACCESSIBLE)
+                func = self.get_dbus_method("GetInterfaces", dbus_interface=ATSPI_ACCESSIBLE)
                 return func()
 
 #------------------------------------------------------------------------------
@@ -294,7 +294,7 @@ class AccessibleImplCached (AccessibleImpl):
                 if self._relation_set is not None:
                         return self._relation_set
                 else:
-                        func = self.get_dbus_method("getRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
+                        func = self.get_dbus_method("GetRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
                         relation_set = func()
                         self._relation_set = _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
                         return self._relation_set
