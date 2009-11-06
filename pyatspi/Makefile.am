@@ -1,6 +1,6 @@
 
-if RELOCATE_PYATSPI
-pyatspidir = $(pythondir)/$(PYATSPI_SUBDIR)/pyatspi
+if RELOCATE
+pyatspidir = $(pythondir)/pyatspi-dbus/pyatspi
 else
 pyatspidir = $(pythondir)/pyatspi
 endif
@@ -39,7 +39,7 @@ pyatspi_PYTHON = \
 		utils.py		\
 		value.py
 
-if RELOCATE_PYATSPI
+if RELOCATE
 install-exec-local: Makefile
 	@$(MKDIR_P) $(DESTDIR)$(pyexecdir)
 	cp pyatspi-dbus.pth $(DESTDIR)$(pyexecdir)
