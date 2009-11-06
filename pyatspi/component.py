@@ -100,8 +100,10 @@ class Component(Accessible):
                 specified point.
                 """
                 func = self.get_dbus_method("getAccessibleAtPoint", dbus_interface=ATSPI_COMPONENT)
-                return self.acc_factory.create_accessible(self._app_name,
-                                                          func(x, y, UInt32(coord_type)),
+                (name, path) = func(x, y, UInt32(coord_type))
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name, path,
                                                           interfaces.ATSPI_ACCESSIBLE)
 
         def getAlpha(self):
