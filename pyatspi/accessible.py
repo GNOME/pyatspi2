@@ -287,8 +287,10 @@ class AccessibleImplCached (AccessibleImpl):
                 return self.cache(self.app_name, self.acc_path)
 
         def getChildAtIndex(self, index):
-                path = self.cached_data.children[index]
-                return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
+                (name, path) = self.cached_data.children[index]
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name, path, ATSPI_ACCESSIBLE)
 
         def getRelationSet(self):
                 if self._relation_set is not None:
@@ -328,8 +330,11 @@ class AccessibleImplCached (AccessibleImpl):
                 return self.cached_data.name
 
         def get_parent(self):
-                return self.acc_factory.create_accessible(self._app_name,
-                                                          self.cached_data.parent,
+                [name, path] = self.cached_data.parent
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name,
+                                                          path,
                                                           ATSPI_ACCESSIBLE)
 
         def get_interfaces (self):

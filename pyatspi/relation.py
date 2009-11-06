@@ -34,39 +34,41 @@ class RelationType(_Enum):
                 5:'RELATION_MEMBER_OF',
                 6:'RELATION_TOOLTIP_FOR',
                 7:'RELATION_NODE_CHILD_OF',
-                8:'RELATION_EXTENDED',
-                9:'RELATION_FLOWS_TO',
-                10:'RELATION_FLOWS_FROM',
-                11:'RELATION_SUBWINDOW_OF',
-                12:'RELATION_EMBEDS',
-                13:'RELATION_EMBEDDED_BY',
-                14:'RELATION_POPUP_FOR',
-                15:'RELATION_PARENT_WINDOW_OF',
-                16:'RELATION_DESCRIPTION_FOR',
-                17:'RELATION_DESCRIBED_BY',
-                18:'RELATION_LAST_DEFINED',
+                8:'RELATION_NODE_PARENT_OF',
+                9:'RELATION_EXTENDED',
+                10:'RELATION_FLOWS_TO',
+                11:'RELATION_FLOWS_FROM',
+                12:'RELATION_SUBWINDOW_OF',
+                13:'RELATION_EMBEDS',
+                14:'RELATION_EMBEDDED_BY',
+                15:'RELATION_POPUP_FOR',
+                16:'RELATION_PARENT_WINDOW_OF',
+                17:'RELATION_DESCRIPTION_FOR',
+                18:'RELATION_DESCRIBED_BY',
+                19:'RELATION_LAST_DEFINED',
         }
 
 #------------------------------------------------------------------------------
 
 RELATION_CONTROLLED_BY = RelationType(4)
 RELATION_CONTROLLER_FOR = RelationType(3)
-RELATION_DESCRIBED_BY = RelationType(17)
-RELATION_DESCRIPTION_FOR = RelationType(16)
-RELATION_EMBEDDED_BY = RelationType(13)
-RELATION_EMBEDS = RelationType(12)
-RELATION_EXTENDED = RelationType(8)
-RELATION_FLOWS_FROM = RelationType(10)
-RELATION_FLOWS_TO = RelationType(9)
+RELATION_DESCRIBED_BY = RelationType(18)
+RELATION_DESCRIPTION_FOR = RelationType(17)
+RELATION_EMBEDDED_BY = RelationType(14)
+RELATION_EMBEDS = RelationType(13)
+RELATION_EXTENDED = RelationType(9)
+RELATION_FLOWS_FROM = RelationType(11)
+RELATION_FLOWS_TO = RelationType(10)
 RELATION_LABELLED_BY = RelationType(2)
 RELATION_LABEL_FOR = RelationType(1)
 RELATION_LAST_DEFINED = RelationType(18)
 RELATION_MEMBER_OF = RelationType(5)
 RELATION_NODE_CHILD_OF = RelationType(7)
+RELATION_NODE_PARENT_OF = RelationType(8)
 RELATION_NULL = RelationType(0)
-RELATION_PARENT_WINDOW_OF = RelationType(15)
-RELATION_POPUP_FOR = RelationType(14)
-RELATION_SUBWINDOW_OF = RelationType(11)
+RELATION_PARENT_WINDOW_OF = RelationType(16)
+RELATION_POPUP_FOR = RelationType(15)
+RELATION_SUBWINDOW_OF = RelationType(12)
 RELATION_TOOLTIP_FOR = RelationType(6)
 
 #------------------------------------------------------------------------------
@@ -130,8 +132,11 @@ class Relation(object):
                 e.g. the Object at index i in the list of Objects having the
                 specified relationship to this Accessible.
                 """
-                return self._cache.create_accessible(self._app_name,
-                                                     self._objects[index],
+                (name, path) = self._objects[index]
+                if (name == ""):
+                        name = self._app_name
+                return self._cache.create_accessible(name,
+                                                     path,
                                                      interfaces.ATSPI_ACCESSIBLE)
 
 #END----------------------------------------------------------------------------

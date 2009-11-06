@@ -72,7 +72,10 @@ class Table(Accessible):
                 cell.
                 """
                 func = self.get_dbus_method("getAccessibleAt", dbus_interface=ATSPI_TABLE)
-                return self.acc_factory.create_accessible(self._app_name, func(row, column),
+                (name, path) = func(row, column)
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name, path,
                                                           interfaces.ATSPI_ACCESSIBLE)
 
         def getColumnAtIndex(self, index):
@@ -309,8 +312,10 @@ class Table(Accessible):
                 return func(row)
 
         def get_caption(self):
-                accessible = self._pgetter(self._dbus_interface, "caption")
-                return self.acc_factory.create_accessible(self._app_name, accessible,
+                (name, path) = self._pgetter(self._dbus_interface, "caption")
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name, path,
                                                           interfaces.ATSPI_ACCESSIBLE)
         _captionDoc = \
                 """
@@ -358,8 +363,10 @@ class Table(Accessible):
         nSelectedRows = property(fget=get_nSelectedRows, doc=_nSelectedRowsDoc)
 
         def get_summary(self):
-                accessible = self._pgetter(self._dbus_interface, "summary")
-                return self.acc_factory.create_accessible(self._app_name, accessible,
+                (name, path) = self._pgetter(self._dbus_interface, "summary")
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name, path,
                                                           interfaces.ATSPI_ACCESSIBLE)
         _summaryDoc = \
                 """
