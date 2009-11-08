@@ -17,8 +17,6 @@ __version__ = (1, 9, 0)
 import constants
 from Accessibility import *
 
-from settings import *
-
 #This is a re-creation of the namespace pollution implemented
 #by PyORBit.
 import sys

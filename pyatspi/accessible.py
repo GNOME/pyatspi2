@@ -22,6 +22,8 @@ from role import Role, ROLE_NAMES
 from dbus.types import UInt32, Int32
 from dbus import UnknownMethodException, DBusException
 
+from exceptions import *
+
 __all__ = [
            "LOCALE_TYPE",
            "LOCALE_TYPE_COLLATE",
@@ -170,6 +172,20 @@ class BaseProxy (object):
         def dbus_object (self):
                 return self._dbus_object
 
+        # Proxy Equality ----------------------------------------------------------
+
+        def __eq__(self, other):
+                if other is None:
+                        return False
+                try:
+                        if self.app_name == other.app_name and \
+                           self.acc_path == other.acc_path:
+                                return True
+                        else:
+                                return False
+                except AttributeError:
+                        return False
+
         # D-Bus method wrapper ----------------------------------------------------------
 
         def get_dbus_method (self, *args, **kwargs):
@@ -198,7 +214,8 @@ class AccessibleImpl (BaseProxy):
 
         def getAttributes(self):
                 func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_ACCESSIBLE)
-                return [key + ':' + value for key, value in func().iteritems()]
+                attr = func ()
+                return [key + ':' + value for key, value in attr.iteritems()]
 
         def getChildAtIndex(self, index):
                 count = Int32(self._pgetter(self.dbus_interface, "childCount"))
@@ -216,6 +233,10 @@ class AccessibleImpl (BaseProxy):
                 func = self.get_dbus_method("getRelationSet", dbus_interface=ATSPI_ACCESSIBLE)
                 relation_set = func()
                 return _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
+
+        def getIndexInParent(self):
+                func = self.get_dbus_method("getIndexInParent", dbus_interface=ATSPI_ACCESSIBLE)
+                return func()
 
         def getRole(self):
                 func = self.get_dbus_method("getRole", dbus_interface=ATSPI_ACCESSIBLE)
@@ -277,6 +298,16 @@ class AccessibleImplCached (AccessibleImpl):
                         relation_set = func()
                         self._relation_set = _marshal_relation_set(self.acc_factory, self._app_name, relation_set)
                         return self._relation_set
+
+        def getIndexInParent(self):
+                parent = self.get_parent()
+                if parent == None:
+                        return -1
+                for i in range(0, parent.childCount):
+                        child = parent.getChildAtIndex(i)
+                        if self == child:
+                                return i
+                raise AccessibleObjectNoLongerExists("Child not found within parent")
 
         def getRole(self):
                 return Role(self.cached_data.role)
@@ -426,13 +457,7 @@ class Accessible(BaseProxy):
                 @return : a long integer indicating this object's index in the
                 parent's list.
                 """
-                if self.parent == None:
-                        return -1
-                for i in range(0, self.parent.childCount):
-                        child = self.parent.getChildAtIndex(i)
-                        if self.isEqual(child):
-                                return i
-                raise AccessibleObjectNoLongerExists("Child not found within parent")
+                return self._impl.getIndexInParent()
 
         def getLocalizedRoleName(self):
                 """

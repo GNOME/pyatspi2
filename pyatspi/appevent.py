@@ -265,6 +265,7 @@ class _ApplicationEventRegister (object):
         def __init__ (self, bus):
                 self._bus = bus
                 self._cache = None
+                self._factory = None
                 self._event_listeners = {}
 
                 # All of this special casing is for the 'faked'
@@ -286,16 +287,47 @@ class _ApplicationEventRegister (object):
         def setCache (self, cache):
                 self._cache = cache
 
-        def notifyNameChange(self, event):
+        def setFactory (self, factory):
+                self._factory = factory
+
+        def notifyNameChange(self, name, path):
+                event = Event(self._factory,
+                              path,
+                              name,
+                              "org.freedesktop.atspi.Event.Object",
+                              "property-change",
+                              ("accessible-name", 0, 0, newdata.name))
                 self._callClients(self._name_listeners, event)
 
-        def notifyDescriptionChange(self, event):
+        def notifyDescriptionChange(self, name, path):
+                event = Event(self._factory,
+                              path,
+                              name,
+                              "org.freedesktop.atspi.Event.Object",
+                              "property-change",
+                              ("accessible-description", 0, 0, newdata.description))
                 self._callClients(self._description_listeners, event)
 
-        def notifyParentChange(self, event):
+        def notifyParentChange(self, name, path):
+                event = Event(self._factory,
+                              path,
+                              name,
+                              "org.freedesktop.atspi.Event.Object",
+                              "property-change",
+                              ("accessible-parent", 0, 0, ""))
                 self._callClients(self._parent_listeners, event)
 
-        def notifyChildrenChange(self, event):
+        def notifyChildrenChange(self, name, path, added):
+                if added:
+                        detail = "add"
+                else:
+                        detail = "remove"
+                event = Event(self._factory,
+                              path,
+                              name,
+                              "org.freedesktop.atspi.Event.Object",
+                              "children-changed",
+                              (detail, 0, 0, ""))
                 self._callClients(self._children_changed_listeners, event)
 
         def _registerFake(self, type, register, client, *names):
@@ -397,6 +429,9 @@ class _ApplicationEventRegister (object):
 class _NullApplicationEventRegister (object):
 
         def setCache (self, cache):
+                pass
+
+        def setFactory (self, factory):
                 pass
 
         def notifyNameChange(self, event):

@@ -274,51 +274,21 @@ class AccessibleCache(object):
 
         def _dispatch_event(self, olddata, newdata):
                 if olddata.name != newdata.name:
-                        event = Event(self._event_dispatcher.cache,
-                                       newdata.path,
-                                       self._bus_name,
-                                       "org.freedesktop.atspi.Event.Object",
-                                       "property-change",
-                                       ("accessible-name", 0, 0, newdata.name))
-                        self._event_dispatcher.notifyNameChange(event)
+                        self._event_dispatcher.notifyNameChange(self._bus_name, newdata.path)
 
                 if olddata.description != newdata.description:
-                        event = Event(self._event_dispatcher.cache,
-                                       newdata.path,
-                                       self._bus_name,
-                                       "org.freedesktop.atspi.Event.Object",
-                                       "property-change",
-                                       ("accessible-description", 0, 0, newdata.description))
-                        self._event_dispatcher.notifyDescriptionChange(event)
+                        self._event_dispatcher.notifyDescriptionChange(self._bus_name, newdata.path)
 
                 if olddata.parent != newdata.parent:
-                        event = Event(self._event_dispatcher.cache,
-                                       newdata.path,
-                                       self._bus_name,
-                                       "org.freedesktop.atspi.Event.Object",
-                                       "property-change",
-                                       ("accessible-parent", 0, 0, ""))
-                        self._event_dispatcher.notifyParentChange(event)
+                        self._event_dispatcher.notifyParentChange(self._bus_name, newdata.path)
 
                 removed, added = _list_items_added_removed (olddata.children, newdata.children)
 
                 if added:
-                        event = Event(self._event_dispatcher.cache,
-                                       newdata.path,
-                                       self._bus_name,
-                                       "org.freedesktop.atspi.Event.Object",
-                                       "children-changed",
-                                       ("add", 0, 0, ""))
-                        self._event_dispatcher.notifyChildrenChange(event)
+                        self._event_dispatcher.notifyChildrenChange(self._bus_name, newdata.path, True)
 
                 if removed:
-                        event = Event(self._event_dispatcher.cache,
-                                       newdata.path,
-                                       self._bus_name,
-                                       "org.freedesktop.atspi.Event.Object",
-                                       "children-changed",
-                                       ("remove", 0, 0, ""))
-                        self._event_dispatcher.notifyChildrenChange(event)
+                        self._event_dispatcher.notifyChildrenChange(self._bus_name, newdata.path, False)
 
         # TODO This should be the other way around. Single is more common than many.
         def _update_single(self, object):

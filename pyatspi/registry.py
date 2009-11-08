@@ -21,12 +21,36 @@
 
 #------------------------------------------------------------------------------
 
+import dbus
+import os as _os
+
+from factory import CachedAccessibleFactory, AccessibleFactory
+from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
+from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
+from desktop import *
+from cache import *
+from loop import *
+
 from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
 from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
 
 from interfaces import ATSPI_REGISTRY_NAME as _ATSPI_REGISTRY_NAME
 from interfaces import ATSPI_DESKTOP_PATH as _ATSPI_DESKTOP_PATH
 from interfaces import ATSPI_DESKTOP as _ATSPI_DESKTOP
+
+__all__ = ["Registry",
+           "set_default_registry",
+           "MAIN_LOOP_GLIB",
+           "MAIN_LOOP_NONE",
+           "MAIN_LOOP_QT"]
+
+#------------------------------------------------------------------------------
+
+MAIN_LOOP_GLIB = 'GLib'
+MAIN_LOOP_NONE = 'None'
+MAIN_LOOP_QT   = 'Qt'
+
+#------------------------------------------------------------------------------
 
 class Registry(object):
         """
@@ -52,14 +76,16 @@ class Registry(object):
         """
         __shared_state = {}
 
-        def __init__(self, device_event_register, app_event_register, desktop, accessible_factory, main_loop):
+        def __init__(self):
                 self.__dict__ = self.__shared_state
 
-                self.device_event_register = device_event_register
-                self.app_event_register = app_event_register
-                self.desktop = desktop
-                self.accessible_factory = accessible_factory
-                self.main_loop = main_loop
+                self.has_implementations = False
+
+                self.device_event_register = None
+                self.app_event_register = None
+                self.desktop = None
+                self.accessible_factory = None
+                self.main_loop = None
 
         def __call__(self):
                 """
@@ -67,6 +93,80 @@ class Registry(object):
                 @rtype: L{Registry}
                 """
                 return self
+
+        def _set_registry (self, main_loop_type, app_name=None):
+                """
+                Creates a new 'Registry' object and sets this object
+                as the default returned by pyatspi.Registry.
+
+                The default registry (without calling this function) uses the
+                GLib main loop with caching. It connects to a registry daemon.
+
+                This function should be called before pyatspi is used if you
+                wish to change these defaults.
+
+                @param main_loop_type: 'GLib', 'None' or 'Qt'. If 'None' is selected then caching
+                                       is disabled.
+
+                @param use_registry: Whether to connect to a registry daemon for device events.
+                                     Without this the application to connect to must be declared in the
+                                     app_name parameter.
+
+                @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
+                """
+                connection = dbus.SessionBus()
+
+                # Set up the main loop
+                if main_loop_type == MAIN_LOOP_GLIB:
+                        loop   = GObjectMain()
+                        proxy  = GObjectProxy
+                elif main_loop_type == MAIN_LOOP_NONE:
+                        loop    = NullMain()
+                        proxy  = dbus.connection.ProxyObject
+                else:
+                        raise Exception ("Unknown main loop specified")
+
+                # Set up the device event controllers
+                if app_name:
+                        devreg = _NullDeviceEventRegister()
+                        appreg = _NullApplicationEventRegister()
+                else:
+                        devreg = _DeviceEventRegister(connection)
+                        appreg = _ApplicationEventRegister(connection)
+
+                # Set up the cache / desktop and accesible factories.
+                if main_loop_type == MAIN_LOOP_GLIB:
+                        if app_name:
+                                cache = AccessibleCache(appreg, connection, app_name)
+                        else:
+                                cache = ApplicationCache(appreg, connection)
+                        appreg.setCache (cache)
+                        factory = CachedAccessibleFactory (cache, connection, proxy)
+                        desktop = CachedDesktop (cache, factory)
+
+                elif main_loop_type == MAIN_LOOP_NONE:
+                        factory = AccessibleFactory(connection, proxy)
+                        if app_name:
+                                desktop = TestDesktop (connection, app_name, factory)
+                        else:
+                                desktop = Desktop (connection, factory)
+
+                else:
+                        raise Exception ("Unknown main loop specified")
+       
+                appreg.setFactory (factory)
+
+                # Create the registry object
+                self.has_implementations = True
+
+                self.device_event_register = devreg
+                self.app_event_register = appreg
+                self.desktop = desktop
+                self.accessible_factory = factory
+                self.main_loop = loop
+
+        def _set_default_registry (self):
+                self._set_registry (MAIN_LOOP_GLIB)
 
         def start(self, async=False, gil=True):
                 """
@@ -81,6 +181,8 @@ class Registry(object):
                         Note - No Longer used.
                 @type gil: boolean
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 try:
                         self.main_loop.run()
                 except KeyboardInterrupt:
@@ -90,6 +192,8 @@ class Registry(object):
                 """
                 Quits the main loop.
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.main_loop.stop()
 
         def getDesktopCount(self):
@@ -110,6 +214,8 @@ class Registry(object):
                 @return: Desktop reference
                 @rtype: Accessibility.Desktop
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 return self.desktop
 
         def registerEventListener(self, client, *names):
@@ -132,6 +238,8 @@ class Registry(object):
                 @param names: List of full or partial event names
                 @type names: list of string
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.app_event_register.registerEventListener (client, *names)
 
         def deregisterEventListener(self, client, *names):
@@ -151,6 +259,8 @@ class Registry(object):
                         registered?
                 @rtype: boolean
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.app_event_register.deregisterEventListener (client, *names)
 
         # -------------------------------------------------------------------------------
@@ -191,6 +301,8 @@ class Registry(object):
                         AT-SPI is in the foreground? (requires xevie)
                 @type global_: boolean
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.device_event_register.registerKeystrokeListener (client,
                                                                       key_set,
                                                                       mask,
@@ -224,6 +336,8 @@ class Registry(object):
                 @type kind: list
                 @raise KeyError: When the client isn't already registered for events
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.device_event_register.deregisterKeystrokeListener (client, key_set, mask, kind)
 
         # -------------------------------------------------------------------------------
@@ -256,6 +370,8 @@ class Registry(object):
                 @param kind: Kind of event to synthesize
                 @type kind: integer
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.device_event_register.generateKeyboardEvent (keycode, keysym, kind)
 
         def generateMouseEvent(self, x, y, name):
@@ -272,4 +388,12 @@ class Registry(object):
                 @param name: Name of the event to generate
                 @type name: string
                 """
+                if not self.has_implementations:
+                        self._set_default_registry ()
                 self.device_event_register.generateMouseEvent (x, y, name)
+
+#------------------------------------------------------------------------------
+
+def set_default_registry (main_loop, app_name=None):
+        registry = Registry ()
+        registry._set_registry (main_loop, app_name)
