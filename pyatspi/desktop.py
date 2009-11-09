@@ -398,7 +398,7 @@ class BaseDesktop (object):
                 else:
                                 raise NotImplementedError(
                                                 "%s not supported by accessible object at path %s"
-                                                % (interface, self._acc_path))
+                                                % (interface, self.acc_path))
 
 #------------------------------------------------------------------------------
 
