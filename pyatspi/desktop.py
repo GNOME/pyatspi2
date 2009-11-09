@@ -216,6 +216,14 @@ class BaseDesktop (object):
 
         # Bonobo interface --------------------------------------------------------------
 
+        def get_interfaces(self):
+                return [ATSPI_ACCESSIBLE, ATSPI_DESKTOP, ATSPI_COMPONENT]
+        _interfacesDoc = \
+                """
+                D-Bus interfaces supported by this accessible object.
+                """
+        interfaces = property(fget=get_interfaces, doc=_interfacesDoc)
+
         def queryInterface(self, interface):
                 """
                 Gets a different accessible interface for this object

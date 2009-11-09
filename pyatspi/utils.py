@@ -23,6 +23,8 @@ import relation
 import state
 import registry
 
+from deviceevent import *
+
 __all__ = [
                 "setCacheLevel",
                 "getCacheLevel",
@@ -159,7 +161,7 @@ def allModifiers():
         L{registry.Registry.registerKeystrokeListener}.
         """
         mask = 0
-        while mask <= (1 << registry.MODIFIER_NUMLOCK):
+        while mask <= (1 << MODIFIER_NUMLOCK):
                 yield mask
                 mask += 1
 

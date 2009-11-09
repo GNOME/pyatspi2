@@ -12,10 +12,8 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-from settings import get_registry, MAIN_LOOP_GLIB
-Registry = get_registry (MAIN_LOOP_GLIB)
-del get_registry
-del MAIN_LOOP_GLIB
+from registry import *
+Registry = Registry()
 
 from constants import *
 from utils import *
