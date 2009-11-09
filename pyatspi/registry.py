@@ -44,6 +44,11 @@ __all__ = ["Registry",
            "MAIN_LOOP_NONE",
            "MAIN_LOOP_QT"]
 
+import gobject
+from dbus.mainloop.glib import DBusGMainLoop
+DBusGMainLoop (set_as_default=True)
+del DBusGMainLoop
+
 #------------------------------------------------------------------------------
 
 MAIN_LOOP_GLIB = 'GLib'
