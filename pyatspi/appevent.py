@@ -14,6 +14,7 @@
 
 import interfaces
 from accessible import BoundingBox
+from exceptions import *
 
 __all__ = [
                 "Event",
@@ -119,7 +120,7 @@ class EventType(str):
 
 #------------------------------------------------------------------------------
 
-def event_type_to_signal_reciever(bus, cache, event_handler, event_type):
+def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
         kwargs = {
                         'sender_keyword':'sender',
                         'interface_keyword':'interface',
@@ -137,7 +138,7 @@ def event_type_to_signal_reciever(bus, cache, event_handler, event_type):
 
         def handler_wrapper(minor, detail1, detail2, any_data,
                             sender=None, interface=None, member=None, path=None):
-                event = Event(cache, path, sender, interface, member, (minor, detail1, detail2, any_data))
+                event = Event(factory, path, sender, interface, member, (minor, detail1, detail2, any_data))
                 return event_handler(event)
 
         return bus.add_signal_receiver(handler_wrapper, **kwargs)
@@ -222,7 +223,7 @@ class Event(object):
                 #TODO TODO
                 if not self._application:
                         try:
-                                return self.acc_factory.create_application(self._source_application)
+                                return self._acc_factory.create_application(self._source_application)
                         except AccessibleObjectNotAvailable:
                                 pass
                 return self._application
@@ -231,10 +232,10 @@ class Event(object):
         def source(self):
                 if not self._source:
                         try:
-                                self._source = self._cache.create_accessible(self._source_application,
-                                                                             self._source_path,
-                                                                             interfaces.ATSPI_ACCESSIBLE)
-                        except AccessibleObjectNotAvailable:
+                                self._source = self._acc_factory.create_accessible(self._source_application,
+                                                                                   self._source_path,
+                                                                                   interfaces.ATSPI_ACCESSIBLE)
+                        except AccessibleObjectNoLongerExists:
                                 pass
                 return self._source
 
@@ -290,22 +291,22 @@ class _ApplicationEventRegister (object):
         def setFactory (self, factory):
                 self._factory = factory
 
-        def notifyNameChange(self, name, path):
+        def notifyNameChange(self, name, path, acc_name):
                 event = Event(self._factory,
                               path,
                               name,
                               "org.freedesktop.atspi.Event.Object",
                               "property-change",
-                              ("accessible-name", 0, 0, newdata.name))
+                              ("accessible-name", 0, 0, acc_name))
                 self._callClients(self._name_listeners, event)
 
-        def notifyDescriptionChange(self, name, path):
+        def notifyDescriptionChange(self, name, path, acc_desc):
                 event = Event(self._factory,
                               path,
                               name,
                               "org.freedesktop.atspi.Event.Object",
                               "property-change",
-                              ("accessible-description", 0, 0, newdata.description))
+                              ("accessible-description", 0, 0, acc_desc))
                 self._callClients(self._description_listeners, event)
 
         def notifyParentChange(self, name, path):
@@ -383,7 +384,7 @@ class _ApplicationEventRegister (object):
                 for name in names:
                         new_type = EventType(name)
                         registered.append((new_type.name,
-                                           event_type_to_signal_reciever(self._bus, self._cache, client, new_type)))
+                                           event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
 
                 self._registerFake(self._name_type, self._name_listeners, client, *names)
                 self._registerFake(self._description_type, self._description_listeners, client, *names)
@@ -434,16 +435,16 @@ class _NullApplicationEventRegister (object):
         def setFactory (self, factory):
                 pass
 
-        def notifyNameChange(self, event):
+        def notifyNameChange(self, name, path, acc_name):
                 pass
 
-        def notifyDescriptionChange(self, event):
+        def notifyDescriptionChange(self, name, path, acc_desc):
                 pass
 
-        def notifyParentChange(self, event):
+        def notifyParentChange(self, name, path):
                 pass
 
-        def notifyChildrenChange(self, event):
+        def notifyChildrenChange(self, name, path, added):
                 pass
 
         def registerEventListener(self, client, *names):
