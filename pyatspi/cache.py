@@ -81,6 +81,7 @@ class ApplicationCache(object):
         def __init__(self, event_dispatcher, connection):
                 self._connection = connection
                 self._event_dispatcher = event_dispatcher
+                self._factory = None
 
                 self._application_list = []
                 self._application_cache = {}
@@ -97,6 +98,9 @@ class ApplicationCache(object):
                 self._application_list.extend(self._app_register.GetApplications())
                 for bus_name in self._application_list:
                         self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
+
+        def set_factory (self, factory):
+                self._factory = factory
 
         @property
         def application_list (self):
@@ -121,22 +125,22 @@ class ApplicationCache(object):
                                 self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                                     self._connection,
                                                                                     bus_name)
-                                event = Event(self,
-                                               ATSPI_DESKTOP_PATH,
-                                               ATSPI_REGISTRY_NAME,
-                                               "org.freedesktop.atspi.Event.Object",
-                                               "children-changed",
-                                               ("add", 0, 0, ""))
+                                event = Event(self._factory,
+                                              ATSPI_DESKTOP_PATH,
+                                              ATSPI_REGISTRY_NAME,
+                                              "org.freedesktop.atspi.Event.Object",
+                                              "children-changed",
+                                              ("add", 0, 0, ""))
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
-                        event = Event(self,
-                                       ATSPI_DESKTOP_PATH,
-                                       ATSPI_REGISTRY_NAME,
-                                       "org.freedesktop.atspi.Event.Object",
-                                       "children-changed",
-                                       ("remove", 0, 0, ""))
+                        event = Event(self._factory,
+                                      ATSPI_DESKTOP_PATH,
+                                      ATSPI_REGISTRY_NAME,
+                                      "org.freedesktop.atspi.Event.Object",
+                                      "children-changed",
+                                      ("remove", 0, 0, ""))
 
                 self._event_dispatcher.notifyChildrenChange(event)
 
@@ -248,6 +252,9 @@ class AccessibleCache(object):
 
                 self._root = self._tree_itf.GetRoot()
 
+        def set_factory (self, factory):
+                pass
+
         @property
         def application_list (self):
                 return [self._bus_name]
@@ -274,10 +281,10 @@ class AccessibleCache(object):
 
         def _dispatch_event(self, olddata, newdata):
                 if olddata.name != newdata.name:
-                        self._event_dispatcher.notifyNameChange(self._bus_name, newdata.path)
+                        self._event_dispatcher.notifyNameChange(self._bus_name, newdata.path, newdata.name)
 
                 if olddata.description != newdata.description:
-                        self._event_dispatcher.notifyDescriptionChange(self._bus_name, newdata.path)
+                        self._event_dispatcher.notifyDescriptionChange(self._bus_name, newdata.path, newdata.description)
 
                 if olddata.parent != newdata.parent:
                         self._event_dispatcher.notifyParentChange(self._bus_name, newdata.path)

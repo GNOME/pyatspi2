@@ -124,7 +124,8 @@ class Registry(object):
                 # Set up the main loop
                 if main_loop_type == MAIN_LOOP_GLIB:
                         loop   = GObjectMain()
-                        proxy  = GObjectProxy
+                        proxy  = dbus.connection.ProxyObject
+                        #proxy  = GObjectProxy
                 elif main_loop_type == MAIN_LOOP_NONE:
                         loop    = NullMain()
                         proxy  = dbus.connection.ProxyObject
@@ -147,6 +148,7 @@ class Registry(object):
                                 cache = ApplicationCache(appreg, connection)
                         appreg.setCache (cache)
                         factory = CachedAccessibleFactory (cache, connection, proxy)
+                        cache.set_factory(factory)
                         desktop = CachedDesktop (cache, factory)
 
                 elif main_loop_type == MAIN_LOOP_NONE:
