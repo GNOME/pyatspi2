@@ -200,9 +200,9 @@ class Text(Accessible):
                 @return the attributes at offset, as a semicolon-delimited set
                 of colon-delimited name-value pairs.
                 """
-                func = self.get_dbus_method("getAttributes", dbus_interface=ATSPI_TEXT)
+                func = self.get_dbus_method("GetAttributes", dbus_interface=ATSPI_TEXT)
                 [attrs, startOffset, endOffset] = func(Int32(offset))
-                dict = [key + ':' + value for key, value in attrs]
+                dict = [key + ':' + attrs[key] for key in attrs]
                 return [dict, startOffset, endOffset]
 
         def getBoundedRanges(self, x, y, width, height, coordType, xClipType, yClipType):
