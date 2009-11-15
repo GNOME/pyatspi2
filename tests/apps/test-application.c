@@ -203,7 +203,7 @@ static DBusObjectPathVTable test_vtable =
 };
 
 static void
-init_dbus_interface(void)
+init_dbus_interface(gchar *bus_name)
 {
   DBusError error;
 
@@ -213,6 +213,9 @@ init_dbus_interface(void)
 
   if (!dbus_bus)
     g_error("Couldn't get the session bus - %s\n", error.message);
+
+  if (bus_name)
+    dbus_bus_request_name (dbus_bus, bus_name, DBUS_NAME_FLAG_DO_NOT_QUEUE, &error);
 
   g_assert(dbus_connection_register_object_path(dbus_bus,
 						"/org/codethink/atspi/test",
@@ -240,12 +243,14 @@ send_started_signal(void)
 static gchar *tmodule_path = NULL;
 static gchar *amodule_path = NULL;
 static gchar *tdata_path = NULL;
+static gchar *bus_name = NULL;
 
 static GOptionEntry optentries[] = 
 {
   {"test-module", 0, 0, G_OPTION_ARG_STRING, &tmodule_path, "Module containing test scenario", NULL},
   {"test-atspi-library", 0, 0, G_OPTION_ARG_STRING, &amodule_path, "Gtk module with atk-atspi adaptor", NULL},
   {"test-data-directory", 0, 0, G_OPTION_ARG_STRING, &tdata_path, "Path to directory of test data", NULL},
+  {"atspi-dbus-name", 0, 0, G_OPTION_ARG_STRING, &bus_name, "Bus name", NULL},
   {NULL}
 };
 
@@ -276,7 +281,7 @@ main(int argc, char *argv[])
   setup_atk_util();
   load_test_module(tmodule_path, tdata_path);
   load_atspi_module(amodule_path, &argc, &argv);
-  init_dbus_interface();
+  init_dbus_interface(bus_name);
   send_started_signal();
 
   mainloop = g_main_loop_new (NULL, FALSE);
