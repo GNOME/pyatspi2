@@ -12,6 +12,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import string
 import interfaces
 from accessible import BoundingBox
 from exceptions import *
@@ -120,6 +121,26 @@ class EventType(str):
 
 #------------------------------------------------------------------------------
 
+def atspi_to_dbus(name):
+	ret = string.upper(name[0])
+	for i in range(1,len(name)):
+		if (name[i] == '-'):
+			pass
+		elif (name[i-1] == '-'):
+			ret += string.upper(name[i])
+		else:
+			ret += name[i]
+	return ret
+
+def dbus_to_atspi(name):
+	ret = string.lower(name[0])
+	for i in range(1,len(name)):
+		if (name[i] == str.lower(name[i])):
+			ret += name[i]
+		else:
+			ret += "-" + string.lower(name[++i])
+	return ret
+
 def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
         kwargs = {
                         'sender_keyword':'sender',
@@ -128,7 +149,7 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
                         'path_keyword':'path',
                  }
         if event_type.major:
-                major = event_type.major.replace('-', '_')
+                major = atspi_to_dbus(event_type.major)
         if event_type.klass:
                 kwargs['dbus_interface'] = _klass_to_interface[event_type.klass]
         if event_type.major:
@@ -147,7 +168,7 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
 
 def signal_spec_to_event_string (interface, name, minor):
         interface = _interface_to_klass[interface]
-        name = name.replace('_', '-')
+        name = dbus_to_atspi(name)
 
         if interface == "focus":
                 return "focus:"
