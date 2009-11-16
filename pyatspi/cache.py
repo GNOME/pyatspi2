@@ -12,6 +12,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+import os
 import dbus
 
 from appevent import Event
@@ -86,6 +87,12 @@ class ApplicationCache(object):
                 self._application_list = []
                 self._application_cache = {}
 
+                self._bus_object = connection.get_object("org.freedesktop.DBus",
+                                                         "/org/freedesktop/DBus",
+                                                         "org.freedektop.DBus")
+
+                this_pid = os.getpid()
+
                 self._regsig = connection.add_signal_receiver(self._update_handler,
                                                               dbus_interface=ATSPI_REGISTRY_INTERFACE,
                                                               signal_name="updateApplications")
@@ -95,9 +102,16 @@ class ApplicationCache(object):
                                             introspect=False)
                 self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
 
-                self._application_list.extend(self._app_register.getApplications())
+                apps = self._app_register.getApplications()
+                for app in apps:
+                        that_pid = self._bus_object.GetConnectionUnixProcessID(app)
+                        if this_pid != that_pid:
+                                self._application_list.append(app)
+                        
                 for bus_name in self._application_list:
-                        self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher, self._connection, bus_name)
+                                self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
+                                                                                    self._connection,
+                                                                                    bus_name)
 
         def set_factory (self, factory):
                 self._factory = factory
@@ -119,18 +133,16 @@ class ApplicationCache(object):
         def _update_handler (self, update_type, bus_name):
                 if update_type == ApplicationCache._APPLICATIONS_ADD:
                         #TODO Check that app does not already exist
-                        #TODO Excuding this app is a hack, need to have re-entrant method calls.
-                        if bus_name != self._connection.get_unique_name ():
-                                self._application_list.append(bus_name)
-                                self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
-                                                                                    self._connection,
-                                                                                    bus_name)
-                                event = Event(self._factory,
-                                              ATSPI_DESKTOP_PATH,
-                                              ATSPI_REGISTRY_NAME,
-                                              "org.freedesktop.atspi.Event.Object",
-                                              "children-changed",
-                                              ("add", 0, 0, ""))
+                        self._application_list.append(bus_name)
+                        self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
+                                                                            self._connection,
+                                                                            bus_name)
+                        event = Event(self._factory,
+                                      ATSPI_DESKTOP_PATH,
+                                      ATSPI_REGISTRY_NAME,
+                                      "org.freedesktop.atspi.Event.Object",
+                                      "children-changed",
+                                      ("add", 0, 0, ""))
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
