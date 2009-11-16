@@ -95,7 +95,7 @@ class ApplicationCache(object):
 
                 self._regsig = connection.add_signal_receiver(self._update_handler,
                                                               dbus_interface=ATSPI_REGISTRY_INTERFACE,
-                                                              signal_name="updateApplications")
+                                                              signal_name="UpdateApplications")
 
                 obj = connection.get_object(ATSPI_REGISTRY_NAME,
                                             ATSPI_REGISTRY_PATH,
@@ -237,8 +237,8 @@ class AccessibleCache(object):
         _PATH = '/org/freedesktop/atspi/tree'
         _INTERFACE = 'org.freedesktop.atspi.Tree'
         _GET_METHOD = 'GetTree'
-        _UPDATE_SIGNAL = 'updateAccessible'
-        _REMOVE_SIGNAL = 'removeAccessible'
+        _UPDATE_SIGNAL = 'UpdateAccessible'
+        _REMOVE_SIGNAL = 'RemoveAccessible'
 
         def __init__(self, event_dispatcher, connection, bus_name):
                 """

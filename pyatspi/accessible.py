@@ -218,7 +218,7 @@ class AccessibleImpl (BaseProxy):
                 return [key + ':' + value for key, value in attr.iteritems()]
 
         def getChildAtIndex(self, index):
-                count = Int32(self._pgetter(self.dbus_interface, "childCount"))
+                count = Int32(self._pgetter(self.dbus_interface, "ChildCount"))
                 if index >= count:
                         raise IndexError
                 func = self.get_dbus_method("GetChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
@@ -251,17 +251,17 @@ class AccessibleImpl (BaseProxy):
                 return _marshal_state_set(func())
 
         def get_childCount(self):
-                return Int32(self._pgetter(self.dbus_interface, "childCount"))
+                return Int32(self._pgetter(self.dbus_interface, "ChildCount"))
 
         def get_description(self):
-                return self._pgetter(self.dbus_interface, "description")
+                return self._pgetter(self.dbus_interface, "Description")
 
         def get_name(self):
-                return self._pgetter(self.dbus_interface, "name")
+                return self._pgetter(self.dbus_interface, "Name")
 
         def get_parent(self):
                 return self.acc_factory.create_accessible(self._app_name,
-                                                          self._pgetter (self.dbus_interface, "parent"),
+                                                          self._pgetter (self.dbus_interface, "Parent"),
                                                           ATSPI_ACCESSIBLE)
 
         def get_interfaces (self):

@@ -493,7 +493,7 @@ class KeyboardDeviceEventListener(_service.Object):
         @_service.method(dbus_interface=ATSPI_DEVICE_EVENT_LISTENER_INTERFACE,
                          in_signature="(uinnisb)",
                          out_signature="b")
-        def notifyEvent(self, ev):
+        def NotifyEvent(self, ev):
                 """
                 Notifies the L{Registry} that an event has occurred. Wraps the raw event 
                 object in our L{Event} class to support automatic ref and unref calls. An
