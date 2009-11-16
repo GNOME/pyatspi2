@@ -37,10 +37,6 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(DBUS_LIBS)
         AC_SUBST(DBUS_CFLAGS)
 
-        PKG_CHECK_MODULES(DROUTE, [droute-0.1 >= 0.1])
-        AC_SUBST(DROUTE_LIBS)
-        AC_SUBST(DROUTE_CFLAGS)
-
         PKG_CHECK_MODULES(DBIND, [dbind-0.1 >= 0.1])
         AC_SUBST(DBIND_LIBS)
         AC_SUBST(DBIND_CFLAGS)
