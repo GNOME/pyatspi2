@@ -312,7 +312,7 @@ class Table(Accessible):
                 return func(row)
 
         def get_caption(self):
-                (name, path) = self._pgetter(self._dbus_interface, "caption")
+                (name, path) = self._pgetter(self._dbus_interface, "Caption")
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory.create_accessible(name, path,
@@ -363,7 +363,7 @@ class Table(Accessible):
         nSelectedRows = property(fget=get_nSelectedRows, doc=_nSelectedRowsDoc)
 
         def get_summary(self):
-                (name, path) = self._pgetter(self._dbus_interface, "summary")
+                (name, path) = self._pgetter(self._dbus_interface, "Summary")
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory.create_accessible(name, path,
