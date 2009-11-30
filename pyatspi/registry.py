@@ -29,7 +29,6 @@ from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
 from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
 from desktop import *
 from cache import *
-from loop import *
 
 from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
 from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
@@ -39,21 +38,17 @@ from interfaces import ATSPI_DESKTOP_PATH as _ATSPI_DESKTOP_PATH
 from interfaces import ATSPI_DESKTOP as _ATSPI_DESKTOP
 
 __all__ = ["Registry",
-           "set_default_registry",
-           "MAIN_LOOP_GLIB",
-           "MAIN_LOOP_NONE",
-           "MAIN_LOOP_QT"]
+	   "MAIN_LOOP_GLIB",
+	   "MAIN_LOOP_NONE",
+	   "set_default_registry"]
 
 import gobject
-from dbus.mainloop.glib import DBusGMainLoop
-DBusGMainLoop (set_as_default=True)
-del DBusGMainLoop
 
 #------------------------------------------------------------------------------
 
 MAIN_LOOP_GLIB = 'GLib'
-MAIN_LOOP_NONE = 'None'
 MAIN_LOOP_QT   = 'Qt'
+MAIN_LOOP_NONE = 'None'
 
 #------------------------------------------------------------------------------
 
@@ -90,7 +85,7 @@ class Registry(object):
                 self.app_event_register = None
                 self.desktop = None
                 self.accessible_factory = None
-                self.main_loop = None
+		self.main_loop = gobject.MainLoop()
 
         def __call__(self):
                 """
@@ -119,44 +114,32 @@ class Registry(object):
 
                 @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
                 """
-                connection = dbus.SessionBus()
-
-                # Set up the main loop
-                if main_loop_type == MAIN_LOOP_GLIB:
-                        loop   = GObjectMain()
-                        proxy  = dbus.connection.ProxyObject
-                        #proxy  = GObjectProxy
-                elif main_loop_type == MAIN_LOOP_NONE:
-                        loop    = NullMain()
-                        proxy  = dbus.connection.ProxyObject
-                else:
-                        raise Exception ("Unknown main loop specified")
-
                 # Set up the device event controllers
                 if app_name:
                         devreg = _NullDeviceEventRegister()
                         appreg = _NullApplicationEventRegister()
                 else:
-                        devreg = _DeviceEventRegister(connection)
-                        appreg = _ApplicationEventRegister(connection)
+                        devreg = _DeviceEventRegister()
+                        appreg = _ApplicationEventRegister()
 
                 # Set up the cache / desktop and accesible factories.
                 if main_loop_type == MAIN_LOOP_GLIB:
                         if app_name:
-                                cache = AccessibleCache(appreg, connection, app_name)
+                                cache = AccessibleCache(appreg, app_name)
                         else:
-                                cache = ApplicationCache(appreg, connection)
+                                cache = ApplicationCache(appreg)
+
                         appreg.setCache (cache)
-                        factory = CachedAccessibleFactory (cache, connection, proxy)
+                        factory = CachedAccessibleFactory (cache)
                         cache.set_factory(factory)
                         desktop = CachedDesktop (cache, factory)
 
                 elif main_loop_type == MAIN_LOOP_NONE:
-                        factory = AccessibleFactory(connection, proxy)
+                        factory = AccessibleFactory()
                         if app_name:
-                                desktop = TestDesktop (connection, app_name, factory)
+                                desktop = TestDesktop (app_name, factory)
                         else:
-                                desktop = Desktop (connection, factory)
+                                desktop = Desktop (factory)
 
                 else:
                         raise Exception ("Unknown main loop specified")
@@ -170,7 +153,6 @@ class Registry(object):
                 self.app_event_register = appreg
                 self.desktop = desktop
                 self.accessible_factory = factory
-                self.main_loop = loop
 
         def _set_default_registry (self):
                 self._set_registry (MAIN_LOOP_GLIB)
@@ -201,7 +183,7 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.main_loop.stop()
+                self.main_loop.quit()
 
         def getDesktopCount(self):
                 """

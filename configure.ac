@@ -74,7 +74,7 @@ fi
 
 AC_PATH_XTRA
 
-AC_ARG_ENABLE(relocate, [  --enable-relocate  Relocate to coexist with CORBA [default=no]], enable_relocate="$enableval", enable_relocate=no)
+AC_ARG_ENABLE(relocate, [--enable-relocate  Relocate to coexist with CORBA [default=no]], enable_relocate="$enableval", enable_relocate=no)
 if test x$enable_relocate = xyes ; then
 	AC_DEFINE(RELOCATE, , [Relocate to coexist with CORBA])
 fi
@@ -88,6 +88,7 @@ AC_CONFIG_FILES([Makefile
 		 tests/pyatspi/pasytest/Makefile
 		 tests/apps/Makefile
 		 pyatspi/Makefile
+		 pyatspi/busutils/Makefile
 		 pyatspi/pyatspi-dbus.pth
 		])
 

@@ -18,6 +18,9 @@ import dbus as _dbus
 import dbus.service as _service
 
 from enum import Enum as _Enum
+from busutils import AccessibilityBus
+
+import traceback
 
 #------------------------------------------------------------------------------
 
@@ -251,8 +254,7 @@ class DeviceEventController(object):
 
         def __init__ (self, connection):
                 dec_object = connection.get_object(ATSPI_REGISTRY_NAME,
-                                                   ATSPI_DEVICE_EVENT_CONTROLLER_PATH,
-                                                   introspect=True)
+                                                   ATSPI_DEVICE_EVENT_CONTROLLER_PATH)
                 self._dec = _dbus.Interface(dec_object, ATSPI_DEVICE_EVENT_CONTROLLER_INTERFACE)
 
         def registerKeystrokeListener(self,
@@ -510,7 +512,8 @@ class KeyboardDeviceEventListener(_service.Object):
                 try:
                         # wrap the device event
                         event = DeviceEvent(*ev)
-                        return self._registry._handleDeviceEvent(event, self)
+                        ret = self._registry._handleDeviceEvent(event, self)
+			return ret
                 except Exception, e:
                         import traceback
                         traceback.print_exc()
@@ -520,9 +523,9 @@ class KeyboardDeviceEventListener(_service.Object):
 
 class _DeviceEventRegister (object):
         
-        def __init__ (self, bus):
-                self.dev = DeviceEventController (bus)
-                self._bus = bus
+        def __init__ (self):
+                self._bus = AccessibilityBus ()
+                self.dev = DeviceEventController (self._bus)
                 self.deviceClients = {}
 
         def registerKeystrokeListener(self,

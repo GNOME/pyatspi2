@@ -17,6 +17,8 @@ import interfaces
 from accessible import BoundingBox
 from exceptions import *
 
+from busutils import AccessibilityBus
+
 __all__ = [
                 "Event",
                 "EventType",
@@ -159,7 +161,7 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
 
         def handler_wrapper(minor, detail1, detail2, any_data,
                             sender=None, interface=None, member=None, path=None):
-                event = Event(factory, path, sender, interface, member, (minor, detail1, detail2, any_data))
+                event = Event((minor, detail1, detail2, any_data), factory, path, sender, interface, member)
                 return event_handler(event)
 
         return bus.add_signal_receiver(handler_wrapper, **kwargs)
@@ -208,7 +210,12 @@ class Event(object):
         @ivar source: Source of the event
         @type source: Accessibility.Accessible
         """
-        def __init__(self, acc_factory, source_path, source_application, interface, name, event):
+        def __init__(self, event,
+		     acc_factory=None,
+	             source_path=None,
+		     source_application=None,
+		     interface=None,
+		     name=None):
                 """
                 Extracts information from the provided event. If the event is a "normal" 
                 event, pulls the detail1, detail2, any_data, and source values out of the
@@ -221,23 +228,38 @@ class Event(object):
                 @param event: Event from an AT-SPI callback
                 @type event: Accessibility.Event or Accessibility.DeviceEvent
                 """
-                self._acc_factory = acc_factory
-                self._source_path = source_path
-                self._source_application = source_application
 
-                self._source = None
-                self._application = None
+		if acc_factory == None:
+			#This alternative init is provided for compatibility with the old API.
+			#The old API apparently allowed the event to be delivered as a class with
+			#named parameters. (Something like a copy constructor)
+			#Old API used in orca - focus_tracking_presenter.py line 1106
+			self._source = event.source
+			self._application = event.source
 
-                self.type = EventType(signal_spec_to_event_string(interface, name, event[0]))
+			self.type = event.type
+			self.detail1 = event.detail1
+			self.detail2 = event.detail2
+			self.any_data = event.any_data
+		else:
+                	self._acc_factory = acc_factory
+                	self._source_path = source_path
+                	self._source_application = source_application
 
-                self.detail1 = event[1]
-                self.detail2 = event[2]
+                	self._source = None
+                	self._application = None
 
-                data = event[3]
-                if name == "object_bounds_changed":
-                        self.any_data = BoundingBox(*data)
-                else:
-                        self.any_data = data
+                	self.type = EventType(signal_spec_to_event_string(interface, name, event[0]))
+
+                	self.detail1 = event[1]
+                	self.detail2 = event[2]
+
+                	data = event[3]
+
+                	if name == "object_bounds_changed":
+                        	self.any_data = BoundingBox(*data)
+                	else:
+                        	self.any_data = data
 
         @property
         def host_application(self):
@@ -284,8 +306,8 @@ class Event(object):
 
 class _ApplicationEventRegister (object):
 
-        def __init__ (self, bus):
-                self._bus = bus
+        def __init__ (self):
+                self._bus = AccessibilityBus ()
                 self._cache = None
                 self._factory = None
                 self._event_listeners = {}
@@ -313,30 +335,33 @@ class _ApplicationEventRegister (object):
                 self._factory = factory
 
         def notifyNameChange(self, name, path, acc_name):
-                event = Event(self._factory,
+                event = Event(("accessible-name", 0, 0, acc_name),
+			      self._factory,
                               path,
                               name,
                               "org.freedesktop.atspi.Event.Object",
-                              "property-change",
-                              ("accessible-name", 0, 0, acc_name))
+                              "property-change")
+                              
                 self._callClients(self._name_listeners, event)
 
         def notifyDescriptionChange(self, name, path, acc_desc):
-                event = Event(self._factory,
+                event = Event(("accessible-description", 0, 0, acc_desc),
+			      self._factory,
                               path,
                               name,
                               "org.freedesktop.atspi.Event.Object",
-                              "property-change",
-                              ("accessible-description", 0, 0, acc_desc))
+                              "property-change")
+                              
                 self._callClients(self._description_listeners, event)
 
         def notifyParentChange(self, name, path):
-                event = Event(self._factory,
+                event = Event(("accessible-parent", 0, 0, ""),
+			      self._factory,
                               path,
                               name,
                               "org.freedesktop.atspi.Event.Object",
-                              "property-change",
-                              ("accessible-parent", 0, 0, ""))
+                              "property-change")
+                              
                 self._callClients(self._parent_listeners, event)
 
         def notifyChildrenChange(self, name, path, added):
@@ -344,12 +369,13 @@ class _ApplicationEventRegister (object):
                         detail = "add"
                 else:
                         detail = "remove"
-                event = Event(self._factory,
+                event = Event((detail, 0, 0, ""),
+			      self._factory,
                               path,
                               name,
                               "org.freedesktop.atspi.Event.Object",
-                              "children-changed",
-                              (detail, 0, 0, ""))
+                              "children-changed")
+                              
                 self._callClients(self._children_changed_listeners, event)
 
         def _registerFake(self, type, register, client, *names):

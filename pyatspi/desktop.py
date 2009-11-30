@@ -22,6 +22,8 @@ from component import LAYER_WIDGET
 
 import dbus
 
+from busutils import AccessibilityBus
+
 __all__ = [
            "Desktop",
            "CachedDesktop",
@@ -411,11 +413,10 @@ class TestDesktop (BaseDesktop):
         _TREE_PATH = '/org/freedesktop/atspi/tree'
         _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
 
-        def __init__(self, connection, app_name):
+        def __init__(self, app_name):
                 Accessible.__init__(self, *args);
-                obj = connection.get_object (app_name,
-                                             self._TREE_PATH,
-                                             introspect=False)
+                obj = AccessibilityBus().get_object (app_name,
+                                                     self._TREE_PATH)
                 tree = dbus.Interface (obj, self._TREE_INTERFACE)
 
                 self._single_app = app_name

@@ -19,6 +19,8 @@ from appevent import Event
 
 from interfaces import *
 
+from busutils import AccessibilityBus
+
 __all__ = [
            "ApplicationCache",
            "TestApplicationCache",
@@ -79,38 +81,38 @@ class ApplicationCache(object):
         _APPLICATIONS_ADD = 1
         _APPLICATIONS_REMOVE = 0
 
-        def __init__(self, event_dispatcher, connection):
-                self._connection = connection
+        def __init__(self, event_dispatcher):
+                self._connection = AccessibilityBus ()
                 self._event_dispatcher = event_dispatcher
                 self._factory = None
 
                 self._application_list = []
                 self._application_cache = {}
 
-                self._bus_object = connection.get_object("org.freedesktop.DBus",
-                                                         "/org/freedesktop/DBus",
-                                                         "org.freedektop.DBus")
+                self._bus_object = self._connection.get_object("org.freedesktop.DBus",
+                                                               "/org/freedesktop/DBus")
 
-                this_pid = os.getpid()
 
-                self._regsig = connection.add_signal_receiver(self._update_handler,
-                                                              dbus_interface=ATSPI_REGISTRY_INTERFACE,
-                                                              signal_name="UpdateApplications")
+                self._regsig = self._connection.add_signal_receiver(self._update_handler,
+                                                                    dbus_interface=ATSPI_REGISTRY_INTERFACE,
+                                                                    signal_name="UpdateApplications")
 
-                obj = connection.get_object(ATSPI_REGISTRY_NAME,
-                                            ATSPI_REGISTRY_PATH,
-                                            introspect=False)
+                obj = self._connection.get_object(ATSPI_REGISTRY_NAME,
+                                                  ATSPI_REGISTRY_PATH)
                 self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
 
                 apps = self._app_register.GetApplications()
-                for app in apps:
-                        that_pid = self._bus_object.GetConnectionUnixProcessID(app)
-                        if this_pid != that_pid:
-                                self._application_list.append(app)
+
+                #this_pid = os.getpid()
+                #for app in apps:
+                #        that_pid = self._bus_object.GetConnectionUnixProcessID(app)
+                #        if not this_pid == that_pid:
+                #                self._application_list.append(app)
+
+		self._application_list.extend(apps)
                         
                 for bus_name in self._application_list:
                                 self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
-                                                                                    self._connection,
                                                                                     bus_name)
 
         def set_factory (self, factory):
@@ -135,24 +137,25 @@ class ApplicationCache(object):
                         #TODO Check that app does not already exist
                         self._application_list.append(bus_name)
                         self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
-                                                                            self._connection,
                                                                             bus_name)
-                        event = Event(self._factory,
+                        event = Event(("add", 0, 0, ""),
+				      self._factory,
                                       ATSPI_DESKTOP_PATH,
                                       ATSPI_REGISTRY_NAME,
                                       "org.freedesktop.atspi.Event.Object",
-                                      "children-changed",
-                                      ("add", 0, 0, ""))
+                                      "children-changed")
+                                      
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
-                        event = Event(self._factory,
+                        event = Event(("remove", 0, 0, ""),
+				      self._factory,
                                       ATSPI_DESKTOP_PATH,
                                       ATSPI_REGISTRY_NAME,
                                       "org.freedesktop.atspi.Event.Object",
-                                      "children-changed",
-                                      ("remove", 0, 0, ""))
+                                      "children-changed")
+                                      
 
                 self._event_dispatcher.notifyChildrenChange(event)
 
@@ -240,7 +243,7 @@ class AccessibleCache(object):
         _UPDATE_SIGNAL = 'UpdateAccessible'
         _REMOVE_SIGNAL = 'RemoveAccessible'
 
-        def __init__(self, event_dispatcher, connection, bus_name):
+        def __init__(self, event_dispatcher, bus_name):
                 """
                 Creates a cache.
 
@@ -248,10 +251,10 @@ class AccessibleCache(object):
                 busName    - Name of DBus connection where cache interface resides.
                 """
                 self._event_dispatcher = event_dispatcher
-                self._connection = connection
+                self._connection = AccessibilityBus()
                 self._bus_name = bus_name
 
-                obj = connection.get_object(bus_name, self._PATH, introspect=False)
+                obj = self._connection.get_object(bus_name, self._PATH)
                 self._tree_itf = dbus.Interface(obj, self._INTERFACE)
 
                 self._objects = {}

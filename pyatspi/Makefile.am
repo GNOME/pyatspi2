@@ -1,4 +1,4 @@
-
+SUBDIRS=busutils
 if RELOCATE
 pyatspidir = $(pythondir)/pyatspi-dbus/pyatspi
 else
@@ -27,7 +27,6 @@ pyatspi_PYTHON = \
 		image.py		\
 		__init__.py		\
 		interfaces.py		\
-                loop.py                 \
 		registry.py		\
 		relation.py		\
 		role.py			\
@@ -36,7 +35,7 @@ pyatspi_PYTHON = \
 		table.py		\
 		text.py			\
 		utils.py		\
-		value.py
+		value.py		
 
 if RELOCATE
 install-exec-local: Makefile

@@ -17,9 +17,15 @@ __version__ = (1, 9, 0)
 import constants
 from Accessibility import *
 
+from dbus.mainloop.glib import DBusGMainLoop
+DBusGMainLoop (set_as_default=True)
+del DBusGMainLoop
+
 #This is a re-creation of the namespace pollution implemented
 #by PyORBit.
 import sys
 import Accessibility
 sys.modules['Accessibility'] = Accessibility
 del sys
+
+import appevent as event

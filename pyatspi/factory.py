@@ -32,6 +32,7 @@ from table import *
 from value import *
 
 from accessible import AccessibleImpl, AccessibleImplCached
+from busutils import AccessibilityBus
 
 import dbus
 
@@ -39,10 +40,9 @@ import dbus
 
 class Factory (object):
 
-        def __init__ (self, connection, proxy_class):
+        def __init__ (self):
 
-                self._connection = connection
-                self._proxy_class = proxy_class
+                self._connection = AccessibilityBus() 
 
                 self._interfaces = { 
                         interfaces.ATSPI_ACCESSIBLE:Accessible,
@@ -67,7 +67,7 @@ class Factory (object):
 
         def create_accessible (self, name, path, itf, dbus_object=None):
                 if dbus_object == None:
-                        dbus_object = self._proxy_class (self._connection, name, path, introspect=False)
+                        dbus_object = self._connection.get_object (name, path)
         
                 # Hack to link applications 'parent' property up to the desktop object.
                 if name == interfaces.ATSPI_REGISTRY_NAME or path == interfaces.ATSPI_DESKTOP_PATH:
