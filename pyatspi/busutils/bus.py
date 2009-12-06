@@ -42,18 +42,18 @@ class _AccessibilityBus (_bus.BusConnection):
 
 		self._signal_queue = _queue.Queue ()
 
-                gobject.idle_add(self._event_dispatch)
 
 	def _event_dispatch (self):
 		while not self._signal_queue.empty():
 			(func, args, kwargs) = self._signal_queue.get (False)
 			func (*args, **kwargs)
-		return True
+		return False
 
 	def add_signal_receiver (self, func, *args, **kwargs):
 		
 		def wrapper (*iargs, **ikwargs):
 			self._signal_queue.put ((func, iargs, ikwargs))
+                	gobject.idle_add(self._event_dispatch)
 
 		return _bus.BusConnection.add_signal_receiver (self, wrapper, *args, **kwargs)
 
