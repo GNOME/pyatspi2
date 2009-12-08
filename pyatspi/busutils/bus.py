@@ -17,9 +17,33 @@ import Queue as _queue
 import dbus.bus as _bus
 import dbus.connection as _connection
 
+import os as _os
+
 import gobject
 
 from proxy import AccessibilityProxy
+
+import sys
+import traceback
+
+def _get_accessibility_bus_address ():
+
+	from Xlib import display, Xatom
+
+	if "AT_SPI_DISPLAY" in _os.environ.keys():
+		dname = _os.environ["AT_SPI_DISPLAY"]
+	else:
+		dname = None
+
+	if dname:
+		d = display.Display(dname)
+	else:
+		d = display.Display()
+	a = d.get_atom ("AT_SPI_BUS")
+	s = d.screen().root
+	p = s.get_property (a, Xatom.STRING, 0, 100)
+
+	return p.value
 
 class _AccessibilityBus (_bus.BusConnection):
 	"""
@@ -37,11 +61,12 @@ class _AccessibilityBus (_bus.BusConnection):
 	normal during signal delivery.
 	"""
 
-	def __init__ (self):
-                _bus.BusConnection.__init__(self, _bus.BusConnection.TYPE_SESSION, mainloop=None)
+	def __new__ (cls, address, mainloop):
+		return _bus.BusConnection.__new__(cls, address, mainloop)
 
+	def __init__ (self, address, mainloop):
+		_bus.BusConnection.__init__(self, address, mainloop)
 		self._signal_queue = _queue.Queue ()
-
 
 	def _event_dispatch (self):
 		while not self._signal_queue.empty():
@@ -73,5 +98,17 @@ class AccessibilityBus (_AccessibilityBus):
 		if AccessibilityBus._shared_instance:
 			return AccessibilityBus._shared_instance
 		else:
-			AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls)
+			try:
+				AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls, _get_accessibility_bus_address(), None)
+			except Exception:
+				print "AT-SPI: Could not find accessibility bus, using session bus"
+				AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
+			
 			return AccessibilityBus._shared_instance
+
+	def __init__ (self):
+		try:
+			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
+		except Exception:
+			print "AT-SPI: Could not find accessibility bus, using session bus"
+			_AccessibilityBus.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)

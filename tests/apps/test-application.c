@@ -250,7 +250,7 @@ static GOptionEntry optentries[] =
   {"test-module", 0, 0, G_OPTION_ARG_STRING, &tmodule_path, "Module containing test scenario", NULL},
   {"test-atspi-library", 0, 0, G_OPTION_ARG_STRING, &amodule_path, "Gtk module with atk-atspi adaptor", NULL},
   {"test-data-directory", 0, 0, G_OPTION_ARG_STRING, &tdata_path, "Path to directory of test data", NULL},
-  {"atspi-dbus-name", 0, 0, G_OPTION_ARG_STRING, &bus_name, "Bus name", NULL},
+  {"test-dbus-name", 0, 0, G_OPTION_ARG_STRING, &bus_name, "Bus name", NULL},
   {NULL}
 };
 
