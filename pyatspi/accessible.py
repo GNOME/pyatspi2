@@ -15,7 +15,8 @@
 from interfaces import *
 from enum import Enum
 
-from state import StateSet, _marshal_state_set
+from state import *
+from state import _marshal_state_set
 from relation import _marshal_relation_set
 from role import Role, ROLE_NAMES
 
@@ -222,8 +223,10 @@ class AccessibleImpl (BaseProxy):
                 if index >= count:
                         raise IndexError
                 func = self.get_dbus_method("GetChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
-                path = func (index)
-                return self.acc_factory.create_accessible(self._app_name, path, ATSPI_ACCESSIBLE)
+                (name, path) = func (index)
+                if (name == ""):
+                        name = self._app_name
+                return self.acc_factory.create_accessible(name, path, ATSPI_ACCESSIBLE)
 
         def getLocalizedRoleName(self):
                 func = self.get_dbus_method("GetLocalizedRoleName", dbus_interface=ATSPI_ACCESSIBLE)
@@ -287,10 +290,17 @@ class AccessibleImplCached (AccessibleImpl):
                 return self.cache(self.app_name, self.acc_path)
 
         def getChildAtIndex(self, index):
-                (name, path) = self.cached_data.children[index]
-                if (name == ""):
-                        name = self._app_name
-                return self.acc_factory.create_accessible(name, path, ATSPI_ACCESSIBLE)
+                if (self.cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
+                        func = self.get_dbus_method("GetChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
+                        (name, path) = func (index)
+                        if (name == ""):
+                                name = self._app_name
+                        return self.acc_factory.create_accessible(name, path, ATSPI_ACCESSIBLE)
+                else:
+                        (name, path) = self.cached_data.children[index]
+                        if (name == ""):
+                                name = self._app_name
+                        return self.acc_factory.create_accessible(name, path, ATSPI_ACCESSIBLE)
 
         def getRelationSet(self):
                 if self._relation_set is not None:
@@ -321,7 +331,10 @@ class AccessibleImplCached (AccessibleImpl):
                 return _marshal_state_set(self.cached_data.state)
 
         def get_childCount(self):
-                return len(self.cached_data.children)
+                if (self.cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
+                        return Int32(self._pgetter(self.dbus_interface, "ChildCount"))
+                else:
+                        return len(self.cached_data.children)
 
         def get_description(self):
                 return self.cached_data.description
