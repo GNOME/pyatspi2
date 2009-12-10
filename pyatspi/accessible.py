@@ -263,8 +263,9 @@ class AccessibleImpl (BaseProxy):
                 return self._pgetter(self.dbus_interface, "Name")
 
         def get_parent(self):
+		name, path = self._pgetter (self.dbus_interface, "Parent")
                 return self.acc_factory.create_accessible(self._app_name,
-                                                          self._pgetter (self.dbus_interface, "Parent"),
+                                                          path,
                                                           ATSPI_ACCESSIBLE)
 
         def get_interfaces (self):

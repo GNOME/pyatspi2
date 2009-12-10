@@ -14,7 +14,6 @@
 
 import dbus.connection as _connection
 import gobject
-import gtk
 
 import Queue
 

@@ -101,7 +101,6 @@ class AccessibilityBus (_AccessibilityBus):
 			try:
 				AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls, _get_accessibility_bus_address(), None)
 			except Exception:
-				print "AT-SPI: Could not find accessibility bus, using session bus"
 				AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
 			
 			return AccessibilityBus._shared_instance
@@ -110,5 +109,4 @@ class AccessibilityBus (_AccessibilityBus):
 		try:
 			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
 		except Exception:
-			print "AT-SPI: Could not find accessibility bus, using session bus"
 			_AccessibilityBus.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)

@@ -413,22 +413,26 @@ class TestDesktop (BaseDesktop):
         _TREE_PATH = '/org/freedesktop/atspi/tree'
         _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
 
-        def __init__(self, app_name):
-                Accessible.__init__(self, *args);
+        def __init__(self, app_name, factory):
+                BaseDesktop.__init__(self, factory);
                 obj = AccessibilityBus().get_object (app_name,
                                                      self._TREE_PATH)
                 tree = dbus.Interface (obj, self._TREE_INTERFACE)
 
                 self._single_app = app_name
-                self._root = self.tree.getRoot ()
+                self._root = tree.GetRoot ()
 
         def getChildAtIndex(self, index):
-                return self.create_application (self._root)
+		#TODO - Check index
+                return self._acc_factory.create_accessible (self._single_app,
+                                                            self._root,
+                                                            interfaces.ATSPI_APPLICATION)
 
         def create_application (self, app_name):
-                return self.acc_factory.create_accessible (app_name,
-                                                           self._root,
-                                                           interfaces.ATSPI_APPLICATION)
+		#TODO - Check name
+                return self._acc_factory.create_accessible (self._single_app,
+                                                            self._root,
+                                                            interfaces.ATSPI_APPLICATION)
 
         def get_childCount(self):
                 return 1
@@ -445,32 +449,30 @@ class Desktop (BaseDesktop):
         _TREE_PATH = '/org/freedesktop/atspi/tree'
         _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
 
-        def __init__(self, connection, *args):
+        def __init__(self, *args):
                 BaseDesktop.__init__(self, *args);
 
-                self._connection = connection
-                obj = connection.get_object(interfaces.ATSPI_REGISTRY_NAME,
-                                            interfaces.ATSPI_REGISTRY_PATH,
-                                            introspect=False)
+                self._connection = AccessibilityBus()
+                obj = self._connection.get_object(interfaces.ATSPI_REGISTRY_NAME,
+                                                  interfaces.ATSPI_REGISTRY_PATH)
                 self._app_register = dbus.Interface(obj, interfaces.ATSPI_REGISTRY_INTERFACE)
 
         def create_application (self, app_name):
                 obj = self._connection.get_object (app_name,
-                                                   self._TREE_PATH,
-                                                   introspect=False)
+                                                   self._TREE_PATH)
                 tree = dbus.Interface (obj, self._TREE_INTERFACE)
-                root = tree.getRoot ()
+                root = tree.GetRoot ()
 
                 return self.acc_factory.create_accessible (app_name,
                                                            root,
                                                            interfaces.ATSPI_APPLICATION)
 
         def getChildAtIndex(self, index):
-                applications = self._app_register.getApplications()
+                applications = self._app_register.GetApplications()
                 return self.acc_factory.create_application(applications[index])
 
         def get_childCount(self):
-                applications = self._app_register.getApplications()
+                applications = self._app_register.GetApplications()
                 return len (applications)
 
 #------------------------------------------------------------------------------
