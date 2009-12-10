@@ -202,8 +202,9 @@ class Text(Accessible):
                 """
                 func = self.get_dbus_method("GetAttributes", dbus_interface=ATSPI_TEXT)
                 [attrs, startOffset, endOffset] = func(Int32(offset))
-                dict = [key + ':' + attrs[key] for key in attrs]
-                return [dict, startOffset, endOffset]
+                arr = [key + ':' + value for key, value in attrs.items()]
+		str = ';'.join (arr)
+                return [str, startOffset, endOffset]
 
         def getBoundedRanges(self, x, y, width, height, coordType, xClipType, yClipType):
                 #TODO Return a list of range structures
