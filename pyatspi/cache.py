@@ -138,26 +138,17 @@ class ApplicationCache(object):
                         self._application_list.append(bus_name)
                         self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                             bus_name)
-                        event = Event(("add", 0, 0, ""),
-				      self._factory,
-                                      ATSPI_DESKTOP_PATH,
-                                      ATSPI_REGISTRY_NAME,
-                                      "org.freedesktop.atspi.Event.Object",
-                                      "children-changed")
+                	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
+								    ATSPI_DESKTOP_PATH,
+								    True)
                                       
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
-                        event = Event(("remove", 0, 0, ""),
-				      self._factory,
-                                      ATSPI_DESKTOP_PATH,
-                                      ATSPI_REGISTRY_NAME,
-                                      "org.freedesktop.atspi.Event.Object",
-                                      "children-changed")
-                                      
-
-                self._event_dispatcher.notifyChildrenChange(event)
+                	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
+								    ATSPI_DESKTOP_PATH,
+								    False)
 
         def _refresh(self):
                 new = self._app_register.getApplications()
