@@ -76,7 +76,7 @@ class Table(Accessible):
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory.create_accessible(name, path,
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                                                          ATSPI_ACCESSIBLE)
 
         def getColumnAtIndex(self, index):
                 """
@@ -129,7 +129,7 @@ class Table(Accessible):
                 """
                 func = self.get_dbus_method("GetColumnHeader", dbus_interface=ATSPI_TABLE)
                 return self.acc_factory.create_accessible(self._app_name, func(index),
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                                                          ATSPI_ACCESSIBLE)
 
         def getIndexAt(self, row, column):
                 """
@@ -237,7 +237,7 @@ class Table(Accessible):
 		if (name == ""):
 			name = self._app_name
                 return self.acc_factory.create_accessible(name, path,
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                                                          ATSPI_ACCESSIBLE)
 
         def getSelectedColumns(self):
                 """
@@ -319,7 +319,7 @@ class Table(Accessible):
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory.create_accessible(name, path,
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                                                          ATSPI_ACCESSIBLE)
         _captionDoc = \
                 """
                 An Accessible which represents of a caption for a Table.
@@ -370,7 +370,7 @@ class Table(Accessible):
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory.create_accessible(name, path,
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                                                          ATSPI_ACCESSIBLE)
         _summaryDoc = \
                 """
                 An accessible object which summarizes the contents of a Table.
