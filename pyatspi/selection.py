@@ -83,7 +83,7 @@ class Selection(Accessible):
                 """
                 func = self.get_dbus_method("GetSelectedChild", dbus_interface=ATSPI_SELECTION)
                 return self.acc_factory.create_accessible(self._app_name, func(index),
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                                                          ATSPI_ACCESSIBLE)
 
         def isChildSelected(self, index):
                 """
