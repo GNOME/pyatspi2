@@ -7,6 +7,7 @@ export TEST_APPLICATION=$top_builddir/tests/apps/test-application
 
 $PYTHON $top_srcdir/tests/pyatspi/testrunner -l libaccessibleapp.so -m accessibletest -n AccessibleTest
 $PYTHON $top_srcdir/tests/pyatspi/testrunner -l libactionapp.so -m actiontest -n ActionTest
+$PYTHON $top_srcdir/tests/pyatspi/testrunner -l libaccessibleapp.so -m collectiontest -n AccessibleTest
 $PYTHON $top_srcdir/tests/pyatspi/testrunner -l libcomponentapp.so -m componenttest -n ComponentTest
 $PYTHON $top_srcdir/tests/pyatspi/testrunner -l librelationapp.so -m relationtest -n RelationTest
 $PYTHON $top_srcdir/tests/pyatspi/testrunner -l libaccessibleapp.so -m statetest -n StateTest

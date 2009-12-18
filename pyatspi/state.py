@@ -253,4 +253,20 @@ class StateSet(object):
                 """
                 return list(self.states)
 
+        def raw(self):
+                """
+                Gets the sequence of all states in this set as a pair of
+                32-bit flags, suitable for transmitting via dbus..
+
+                @return: List of two 32-bit flags representing the states
+                @rtype: list
+                """
+		lower = upper = 0
+                for i in range (0, 32):
+                        if (self.contains(i)):
+                                lower |= (1 << i)
+                for i in range (32, 64):
+                        if (self.contains(i)):
+                                upper |= (1 << (i - 32))
+                return [lower, upper]
 #END----------------------------------------------------------------------------

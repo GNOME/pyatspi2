@@ -409,7 +409,7 @@ class Accessible(BaseProxy):
                 or raises a NotImplemented error if the given interface
                 is not supported.
                 """
-                if interface in self.interfaces:
+                if interface in self.interfaces or interface == "org.freedesktop.atspi.Collection":
                         return self.acc_factory.create_accessible(self.app_name,
                                                                   self.acc_path,
                                                                   interface,
