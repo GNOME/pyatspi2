@@ -71,7 +71,7 @@ class Table(Accessible):
                 @return an Accessible object representing the specified table
                 cell.
                 """
-                func = self.get_dbus_method("getAccessibleAt", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetAccessibleAt", dbus_interface=ATSPI_TABLE)
                 (name, path) = func(row, column)
                 if (name == ""):
                         name = self._app_name
@@ -127,7 +127,7 @@ class Table(Accessible):
                 @return an Accessible representatin of the specified table column,
                 if available.
                 """
-                func = self.get_dbus_method("getColumnHeader", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("GetColumnHeader", dbus_interface=ATSPI_TABLE)
                 return self.acc_factory.create_accessible(self._app_name, func(index),
                                                           interfaces.ATSPI_ACCESSIBLE)
 
@@ -232,8 +232,11 @@ class Table(Accessible):
                 @return an Accessible representatin of the specified table row,
                 if available.
                 """
-                func = self.get_dbus_method("getRowHeader", dbus_interface=ATSPI_TABLE)
-                return self.acc_factory.create_accessible(self._app_name, func(row),
+                func = self.get_dbus_method("GetRowHeader", dbus_interface=ATSPI_TABLE)
+		(name, path) = func (row)
+		if (name == ""):
+			name = self._app_name
+                return self.acc_factory.create_accessible(name, path,
                                                           interfaces.ATSPI_ACCESSIBLE)
 
         def getSelectedColumns(self):
