@@ -81,7 +81,7 @@ class Selection(Accessible):
                 @return a pointer to a selected Accessible child object, specified
                 by selectedChildIndex.
                 """
-                func = self.get_dbus_method("getSelectedChild", dbus_interface=ATSPI_SELECTION)
+                func = self.get_dbus_method("GetSelectedChild", dbus_interface=ATSPI_SELECTION)
                 return self.acc_factory.create_accessible(self._app_name, func(index),
                                                           interfaces.ATSPI_ACCESSIBLE)
 
