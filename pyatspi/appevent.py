@@ -267,7 +267,7 @@ class Event(object):
                 if not self._application:
                         try:
                                 return self._acc_factory.create_application(self._source_application)
-                        except AccessibleObjectNotAvailable:
+                        except AccessibleObjectNoLongerExists:
                                 pass
                 return self._application
 
