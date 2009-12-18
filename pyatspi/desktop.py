@@ -487,7 +487,10 @@ class CachedDesktop (BaseDesktop):
                 self.cache = cache
 
         def create_application (self, app_name):
-                acc_path = self.cache.get_app_root(app_name)
+                if app_name == interfaces.ATSPI_REGISTRY_NAME:
+                        path = interfaces.ATSPI_DESKTOP_PATH
+                else:
+                        acc_path = self.cache.get_app_root(app_name)
 
                 return self.acc_factory.create_accessible (app_name,
                                                            acc_path, 
