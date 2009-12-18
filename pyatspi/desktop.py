@@ -488,7 +488,7 @@ class CachedDesktop (BaseDesktop):
 
         def create_application (self, app_name):
                 if app_name == interfaces.ATSPI_REGISTRY_NAME:
-                        path = interfaces.ATSPI_DESKTOP_PATH
+                        acc_path = interfaces.ATSPI_DESKTOP_PATH
                 else:
                         acc_path = self.cache.get_app_root(app_name)
 
