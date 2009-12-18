@@ -269,4 +269,7 @@ class StateSet(object):
                         if (self.contains(i)):
                                 upper |= (1 << (i - 32))
                 return [lower, upper]
+
+	def unref(self):
+		pass
 #END----------------------------------------------------------------------------

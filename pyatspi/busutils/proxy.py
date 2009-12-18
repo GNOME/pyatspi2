@@ -18,7 +18,7 @@ import gobject
 import Queue
 
 class _MainLoopPool (Queue.Queue):
-	_RE_ENTRANCY_LIMIT = 30
+	_RE_ENTRANCY_LIMIT = 100
 	
 	def __init__ (self):
 		Queue.Queue.__init__(self)
