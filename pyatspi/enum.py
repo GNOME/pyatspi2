@@ -27,13 +27,13 @@ class Enum(UInt32):
         def __eq__(self, other):
                 if other is None:
                         return False
-		try:
-                	if int(self) == int(other):
-                        	return True
-                	else:
-                        	return False
-		except ValueError:
-			return False
+                try:
+                        if int(self) == int(other):
+                                return True
+                        else:
+                                return False
+                except ValueError:
+                        return False
 
         def __hash__(self):
                 return int(self)
