@@ -155,15 +155,6 @@ def relationToString(value):
         """
         return relation.RELATION_VALUE_TO_NAME.get(value)
 
-def allModifiers():
-        """
-        Generates all possible keyboard modifiers for use with 
-        L{registry.Registry.registerKeystrokeListener}.
-        """
-        mask = 0
-        while mask <= (1 << MODIFIER_NUMLOCK):
-                yield mask
-                mask += 1
 
 def findDescendant(acc, pred, breadth_first=False):
         """

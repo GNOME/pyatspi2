@@ -102,6 +102,16 @@ MODIFIER_NUMLOCK = ModifierType(7)
 MODIFIER_SHIFT = ModifierType(0)
 MODIFIER_SHIFTLOCK = ModifierType(1)
 
+def allModifiers():
+        """
+        Generates all possible keyboard modifiers for use with 
+        L{registry.Registry.registerKeystrokeListener}.
+        """
+        mask = 0
+        while mask <= (1 << MODIFIER_NUMLOCK):
+                yield mask
+                mask += 1
+
 #------------------------------------------------------------------------------
 
 class DeviceEvent(list):
@@ -547,7 +557,7 @@ class _DeviceEventRegister (object):
                         self.deviceClients[client] = ob
                 if mask is None:
                         # None means all modifier combinations
-                        mask = utils.allModifiers()
+                        mask = allModifiers()
                 # register for new keystrokes on the observer
                 ob.register(self.dev, key_set, mask, kind)
 
@@ -560,7 +570,7 @@ class _DeviceEventRegister (object):
                 ob = self.deviceClients[client]
                 if mask is None:
                         # None means all modifier combinations
-                        mask = utils.allModifiers()
+                        mask = allModifiers()
                 # register for new keystrokes on the observer
                 ob.unregister(self.dev, key_set, mask, kind)
 
