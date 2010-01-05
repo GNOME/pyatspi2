@@ -160,9 +160,9 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
         if event_type.minor:
                 kwargs['arg0'] = event_type.minor
 
-        def handler_wrapper(minor, detail1, detail2, any_data,
+        def handler_wrapper(app, minor, detail1, detail2, any_data,
                             sender=None, interface=None, member=None, path=None):
-                event = Event((minor, detail1, detail2, any_data), factory, path, sender, interface, member)
+                event = Event((minor, detail1, detail2, any_data), factory, path, app, interface, member)
                 return event_handler(event)
 
         return bus.add_signal_receiver(handler_wrapper, **kwargs)
@@ -203,7 +203,7 @@ class Event(object):
         @ivar any_data: Extra AT-SPI data payload
         @type any_data: object
         @ivar host_application: Application owning the event source
-        @type host_application: Accessibility.Application
+        @type host_application: Tuple (Name, Path)
         @ivar source_name: Name of the event source at the time of event dispatch
         @type source_name: string
         @ivar source_role: Role of the event source at the time of event dispatch
@@ -264,10 +264,10 @@ class Event(object):
 
         @property
         def host_application(self):
-                #TODO TODO
                 if not self._application:
                         try:
-                                return self._acc_factory.create_application(self._source_application)
+                                name, path = self._source_application
+                                return self._acc_factory (name, path, interfaces.ATSPI_APPLICATION)
                         except AccessibleObjectNoLongerExists:
                                 pass
                 return self._application
@@ -276,8 +276,9 @@ class Event(object):
         def source(self):
                 if not self._source:
                         try:
-                                self._source = self._acc_factory (self._source_application,
-                                                                  self._source_path,
+                                name, path = self._source_application
+                                self._source = self._acc_factory (name,
+                                                                  path,
                                                                   interfaces.ATSPI_ACCESSIBLE)
                         except AccessibleObjectNoLongerExists:
                                 pass
@@ -329,11 +330,6 @@ class _ApplicationEventRegister (object):
                         registered.append((new_type.name,
                                            event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
 
-                self._registerFake(self._name_type, self._name_listeners, client, *names)
-                self._registerFake(self._description_type, self._description_listeners, client, *names)
-                self._registerFake(self._parent_type, self._parent_listeners, client, *names)
-                self._registerFake(self._children_changed_type, self._children_changed_listeners, client, *names)
-
         def deregisterEventListener(self, client, *names):
                 try:
                         registered = self._event_listeners[client]
@@ -359,12 +355,6 @@ class _ApplicationEventRegister (object):
 
                 if registered == []:
                         del(self._event_listeners[client])
-
-                #TODO Do these account for missing also?
-                self._deregisterFake(self._name_type, self._name_listeners, client, *names)
-                self._deregisterFake(self._description_type, self._description_listeners, client, *names)
-                self._deregisterFake(self._parent_type, self._parent_listeners, client, *names)
-                self._deregisterFake(self._children_changed_type, self._children_changed_listeners, client, *names)
 
                 return missing
 
