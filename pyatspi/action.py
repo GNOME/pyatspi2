@@ -96,7 +96,7 @@ class Action(Accessible):
                 return func(index)
 
         def get_nActions(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "NActions"))
+                return dbus.Int32(self._pgetter(ATSPI_ACTION, "NActions"))
         _nActionsDoc = \
                 """
                 nActions: a long containing the number of actions this object

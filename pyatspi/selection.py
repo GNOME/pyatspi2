@@ -85,8 +85,7 @@ class Selection(Accessible):
                 (name, path) = func (index)
                 if (name == ""):
                         name = self._app_name
-                return self.acc_factory.create_accessible(name, path,
-                                                          ATSPI_ACCESSIBLE)
+                return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
 
         def isChildSelected(self, index):
                 """

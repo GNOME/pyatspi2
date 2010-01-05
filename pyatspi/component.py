@@ -103,8 +103,7 @@ class Component(Accessible):
                 (name, path) = func(x, y, UInt32(coord_type))
                 if (name == ""):
                         name = self._app_name
-                return self.acc_factory.create_accessible(name, path,
-                                                          interfaces.ATSPI_ACCESSIBLE)
+                return self.acc_factory (name, path, interfaces.ATSPI_ACCESSIBLE)
 
         def getAlpha(self):
                 """

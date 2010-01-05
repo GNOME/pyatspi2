@@ -101,11 +101,11 @@ class Relation(object):
         a "one-to-many" correspondance.
         """
 
-        def __init__(self, cache, app_name, type, objects):
+        def __init__(self, factory, app_name, type, objects):
                 self._type = type
                 self._objects = objects
 
-                self._cache = cache
+                self._factory = factory
                 self._app_name = app_name
 
         def getNTargets(self):
@@ -135,8 +135,6 @@ class Relation(object):
                 (name, path) = self._objects[index]
                 if (name == ""):
                         name = self._app_name
-                return self._cache.create_accessible(name,
-                                                     path,
-                                                     interfaces.ATSPI_ACCESSIBLE)
+                return self._factory (name, path, interfaces.ATSPI_ACCESSIBLE)
 
 #END----------------------------------------------------------------------------

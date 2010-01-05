@@ -24,7 +24,7 @@
 import dbus
 import os as _os
 
-from factory import CachedAccessibleFactory, AccessibleFactory
+from factory import AccessibleFactory
 from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
 from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
 from desktop import *
@@ -84,7 +84,7 @@ class Registry(object):
                 self.device_event_register = None
                 self.app_event_register = None
                 self.desktop = None
-                self.accessible_factory = None
+
 		self.main_loop = gobject.MainLoop()
 
         def __call__(self):
@@ -114,6 +114,9 @@ class Registry(object):
 
                 @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
                 """
+
+		factory = AccessibleFactory()
+
                 # Set up the device event controllers
                 if app_name:
                         devreg = _NullDeviceEventRegister()
@@ -122,29 +125,23 @@ class Registry(object):
                         devreg = _DeviceEventRegister()
                         appreg = _ApplicationEventRegister()
 
-                # Set up the cache / desktop and accesible factories.
-                if main_loop_type == MAIN_LOOP_GLIB:
-                        if app_name:
-                                cache = AccessibleCache(appreg, app_name)
-                        else:
-                                cache = ApplicationCache(appreg)
 
-                        appreg.setCache (cache)
-                        factory = CachedAccessibleFactory (cache)
-                        cache.set_factory(factory)
-                        desktop = CachedDesktop (cache, factory)
-
-                elif main_loop_type == MAIN_LOOP_NONE:
-                        factory = AccessibleFactory()
-                        if app_name:
-                                desktop = TestDesktop (app_name, factory)
-                        else:
-                                desktop = Desktop (factory)
-
+                if app_name:
+                        desktop = TestDesktop (app_name, factory)
                 else:
-                        raise Exception ("Unknown main loop specified")
-       
-                appreg.setFactory (factory)
+                        desktop = Desktop (factory)
+
+                # Set up the cache
+		cache = None
+
+                #if main_loop_type == MAIN_LOOP_GLIB:
+                #        if app_name:
+                #                cache = AccessibleCache(app_name)
+                #        else:
+                #                cache = ApplicationCache()
+
+                factory.set_cache (cache)
+		factory.set_desktop (desktop)
 
                 # Create the registry object
                 self.has_implementations = True
@@ -152,7 +149,6 @@ class Registry(object):
                 self.device_event_register = devreg
                 self.app_event_register = appreg
                 self.desktop = desktop
-                self.accessible_factory = factory
 
         def _set_default_registry (self):
                 self._set_registry (MAIN_LOOP_GLIB)

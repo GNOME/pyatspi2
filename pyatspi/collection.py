@@ -102,8 +102,7 @@ class Collection(Accessible):
                         (name, path) = ret[i]
                         if (name == ""):
                                 name = self._app_name
-                        ret[i] = self.acc_factory.create_accessible(name, path,
-                                ATSPI_ACCESSIBLE)
+                        ret[i] = self.acc_factory (name, path, ATSPI_ACCESSIBLE)
                 return ret;
 
         def getMatches(self, rule, sortby, count, traverse):

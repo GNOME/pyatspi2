@@ -19,7 +19,6 @@ from action import *
 from application import *
 from collection import *
 from component import *
-from desktop import *
 from document import *
 from editabletext import *
 from hyperlink import *
@@ -31,14 +30,17 @@ from text import *
 from table import *
 from value import *
 
-from accessible import AccessibleImpl, AccessibleImplCached
+import dbus
+
 from busutils import AccessibilityBus
 
-import dbus
+__all__ = [
+           "AccessibleFactory"
+          ]
 
 #------------------------------------------------------------------------------
 
-class Factory (object):
+class _AccessibleFactory (object):
 
         def __init__ (self):
 
@@ -62,10 +64,16 @@ class Factory (object):
                         interfaces.ATSPI_VALUE:Value,
                 }
 
-        def set_desktop (self, desktop):
-                self._desktop = desktop
+                self._cache = None
+                self._desktop = None
 
-        def create_accessible (self, name, path, itf, dbus_object=None):
+	def set_cache (self, cache):
+		self._cache = cache
+
+	def set_desktop (self, desktop):
+		self._desktop = desktop
+
+        def __call__ (self, name, path, itf, dbus_object=None):
                 if dbus_object == None:
                         dbus_object = self._connection.get_object (name, path)
         
@@ -73,33 +81,23 @@ class Factory (object):
                 if name == interfaces.ATSPI_REGISTRY_NAME or path == interfaces.ATSPI_DESKTOP_PATH:
                         return self._desktop
                 else:
-                        impl = self._get_accessible_impl (name, path, dbus_object)
-                        return self._interfaces[itf] (impl, name, path, self, itf, dbus_object)
+                        return self._interfaces[itf] (self._cache, self, name, path, dbus_object)
 
-        def create_application (self, name):
-                return self._desktop.create_application (name)
+class AccessibleFactory (_AccessibleFactory):
+	"""
+	Shared instance of the D-Bus bus used for accessibility.
+	"""
 
-#------------------------------------------------------------------------------
+	_shared_instance = None
+	
+	def __new__ (cls):
+		if AccessibleFactory._shared_instance:
+			return AccessibleFactory._shared_instance
+		else:
+			AccessibleFactory._shared_instance = _AccessibleFactory.__new__ (cls)
+			return AccessibleFactory._shared_instance
 
-class CachedAccessibleFactory (Factory):
-
-        def __init__ (self, cache, *args):
-                Factory.__init__(self, *args)
-                self._cache = cache
-
-        def _get_accessible_impl (self, name, path, dbus_object):
-                return AccessibleImplCached (self._cache,
-                                             name,
-                                             path,
-                                             self,
-                                             interfaces.ATSPI_ACCESSIBLE,
-                                             dbus_object)
-
-#------------------------------------------------------------------------------
-
-class AccessibleFactory (Factory):
-
-        def _get_accessible_impl (self, name, path, dbus_object):
-                return AccessibleImpl (name, path, self, interfaces.ATSPI_ACCESSIBLE, dbus_object)
+	def __init__ (self):
+		_AccessibleFactory.__init__ (self)
 
 #END----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#Copyright (C) 2008 Codethink Ltd
+#Copyright (C) 2008, 2009, 2010 Codethink Ltd
 
 #This library is free software; you can redistribute it and/or
 #modify it under the terms of the GNU Lesser General Public
@@ -23,10 +23,10 @@ from component import LAYER_WIDGET
 import dbus
 
 from busutils import AccessibilityBus
+from factory import AccessibleFactory
 
 __all__ = [
            "Desktop",
-           "CachedDesktop",
            "TestDesktop",
           ]
 
@@ -138,11 +138,15 @@ class BaseDesktop (object):
         The interface which is implemented by all accessible objects.
         """
 
+        _CACHE_PATH = '/org/at_spi/cache'
+        _CACHE_INTERFACE = 'org.freedesktop.atspi.Cache'
+
         __metaclass__ = AccessibleMeta
 
-        def __init__ (self, acc_factory):
-                self._acc_factory = acc_factory
-                self._acc_factory.set_desktop (self)
+        def __init__(self, cache):
+		self._cache = cache
+                self._connection = AccessibilityBus ()
+		self._acc_factory = AccessibleFactory ()
 
         @property
         def app_name (self):
@@ -233,6 +237,7 @@ class BaseDesktop (object):
                 return self.queryInterface(interface)
 
         # Accessible interface ----------------------------------------------------------
+
 
         def getApplication(self):
                 """
@@ -410,29 +415,18 @@ class TestDesktop (BaseDesktop):
         Does not use the registry daemon.
 
         """
-        _TREE_PATH = '/org/freedesktop/atspi/tree'
-        _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
+        def __init__(self, app_name, *args):
+                BaseDesktop.__init__(self, *args)
 
-        def __init__(self, app_name, factory):
-                BaseDesktop.__init__(self, factory);
-                obj = AccessibilityBus().get_object (app_name,
-                                                     self._TREE_PATH)
-                tree = dbus.Interface (obj, self._TREE_INTERFACE)
+                obj = self._connection.get_object (app_name, self._CACHE_PATH)
+                cache = dbus.Interface (obj, self._CACHE_INTERFACE)
 
                 self._single_app = app_name
-                self._root = tree.GetRoot ()
+                self._root = cache.GetRoot ()
 
         def getChildAtIndex(self, index):
-		#TODO - Check index
-                return self._acc_factory.create_accessible (self._single_app,
-                                                            self._root,
-                                                            interfaces.ATSPI_APPLICATION)
-
-        def create_application (self, app_name):
-		#TODO - Check name
-                return self._acc_factory.create_accessible (self._single_app,
-                                                            self._root,
-                                                            interfaces.ATSPI_APPLICATION)
+		name, path = self._root
+                return self.acc_factory (name, path, interfaces.ATSPI_APPLICATION)
 
         def get_childCount(self):
                 return 1
@@ -446,9 +440,6 @@ class Desktop (BaseDesktop):
         Does use the registry daemon.
         """
 
-        _TREE_PATH = '/org/freedesktop/atspi/tree'
-        _TREE_INTERFACE = 'org.freedesktop.atspi.Tree'
-
         def __init__(self, *args):
                 BaseDesktop.__init__(self, *args);
 
@@ -457,49 +448,18 @@ class Desktop (BaseDesktop):
                                                   interfaces.ATSPI_REGISTRY_PATH)
                 self._app_register = dbus.Interface(obj, interfaces.ATSPI_REGISTRY_INTERFACE)
 
-        def create_application (self, app_name):
-                obj = self._connection.get_object (app_name,
-                                                   self._TREE_PATH)
-                tree = dbus.Interface (obj, self._TREE_INTERFACE)
-                root = tree.GetRoot ()
-
-                return self.acc_factory.create_accessible (app_name,
-                                                           root,
-                                                           interfaces.ATSPI_APPLICATION)
-
         def getChildAtIndex(self, index):
                 applications = self._app_register.GetApplications()
-                return self.acc_factory.create_application(applications[index])
+
+		app_name = applications[index]
+                obj = self._connection.get_object (app_name, self._CACHE_PATH)
+                cache = dbus.Interface (obj, self._CACHE_INTERFACE)
+                name, path = cache.GetRoot ()
+
+                return self.acc_factory (name, path, interfaces.ATSPI_APPLICATION)
 
         def get_childCount(self):
                 applications = self._app_register.GetApplications()
                 return len (applications)
-
-#------------------------------------------------------------------------------
-
-class CachedDesktop (BaseDesktop):
-        """
-        Uses the cache to manage applications.
-        """
-
-        def __init__(self, cache, *args):
-                BaseDesktop.__init__(self, *args);
-                self.cache = cache
-
-        def create_application (self, app_name):
-                if app_name == interfaces.ATSPI_REGISTRY_NAME:
-                        acc_path = interfaces.ATSPI_DESKTOP_PATH
-                else:
-                        acc_path = self.cache.get_app_root(app_name)
-
-                return self.acc_factory.create_accessible (app_name,
-                                                           acc_path, 
-                                                           interfaces.ATSPI_APPLICATION)
-
-        def getChildAtIndex(self, index):
-                return self.create_application (self.cache.application_list[index])
-
-        def get_childCount(self):
-                return len(self.cache.application_list)
 
 #END----------------------------------------------------------------------------

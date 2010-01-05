@@ -18,6 +18,7 @@ from accessible import BoundingBox
 from exceptions import *
 
 from busutils import AccessibilityBus
+from factory import AccessibleFactory
 
 __all__ = [
                 "Event",
@@ -275,9 +276,9 @@ class Event(object):
         def source(self):
                 if not self._source:
                         try:
-                                self._source = self._acc_factory.create_accessible(self._source_application,
-                                                                                   self._source_path,
-                                                                                   interfaces.ATSPI_ACCESSIBLE)
+                                self._source = self._acc_factory (self._source_application,
+                                                                  self._source_path,
+                                                                  interfaces.ATSPI_ACCESSIBLE)
                         except AccessibleObjectNoLongerExists:
                                 pass
                 return self._source
@@ -308,118 +309,13 @@ class _ApplicationEventRegister (object):
 
         def __init__ (self):
                 self._bus = AccessibilityBus ()
-                self._cache = None
-                self._factory = None
+		self._factory = AccessibleFactory ()
+
                 self._event_listeners = {}
-
-                # All of this special casing is for the 'faked'
-                # events caused by cache updates.
-
-                self._name_type = EventType("object:property-change:name")
-                self._name_listeners = {}
-                self._description_type = EventType("object:property-change:description")
-                self._description_listeners = {}
-                self._parent_type = EventType("object:property-change:parent")
-                self._parent_listeners = {}
-                self._children_changed_type = EventType("object:children-changed")
-                self._children_changed_listeners = {}
 
         def _callClients(self, register, event):
                 for client in register.keys():
                         client(event)
-
-        def setCache (self, cache):
-                self._cache = cache
-
-        def setFactory (self, factory):
-                self._factory = factory
-
-        def notifyNameChange(self, name, path, acc_name):
-                event = Event(("accessible-name", 0, 0, acc_name),
-			      self._factory,
-                              path,
-                              name,
-                              "org.freedesktop.atspi.Event.Object",
-                              "property-change")
-                              
-                self._callClients(self._name_listeners, event)
-
-        def notifyDescriptionChange(self, name, path, acc_desc):
-                event = Event(("accessible-description", 0, 0, acc_desc),
-			      self._factory,
-                              path,
-                              name,
-                              "org.freedesktop.atspi.Event.Object",
-                              "property-change")
-                              
-                self._callClients(self._description_listeners, event)
-
-        def notifyParentChange(self, name, path):
-                event = Event(("accessible-parent", 0, 0, ""),
-			      self._factory,
-                              path,
-                              name,
-                              "org.freedesktop.atspi.Event.Object",
-                              "property-change")
-                              
-                self._callClients(self._parent_listeners, event)
-
-        def notifyChildrenChange(self, name, path, added):
-                if added:
-                        detail = "add"
-                else:
-                        detail = "remove"
-                event = Event((detail, 0, 0, ""),
-			      self._factory,
-                              path,
-                              name,
-                              "org.freedesktop.atspi.Event.Object",
-                              "children-changed")
-                              
-                self._callClients(self._children_changed_listeners, event)
-
-        def _registerFake(self, type, register, client, *names):
-                """
-                Registers a client from a register of clients
-                for 'Fake' events emitted by the cache.
-                """
-                try:
-                        registered = register[client]
-                except KeyError:
-                        registered = []
-                        register[client] = registered
-
-                for name in names:
-                        new_type = EventType(name)
-                        if new_type.is_subtype(type):
-                                registered.append(new_type.name)
-
-                if registered == []:
-                        del(register[client])
-
-        def _deregisterFake(self, type, register, client, *names):
-                """
-                Deregisters a client from a register of clients
-                for 'Fake' events emitted by the cache.
-                """
-                try:
-                        registered = register[client]
-                except KeyError:
-                        return True
-
-                for name in names:
-                        remove_type = EventType(name)
-
-                        copy = registered[:]
-                        for i in range(0, len(copy)):
-                                type_name = copy[i]
-                                registered_type = EventType(type_name)
-
-                                if remove_type.is_subtype(registered_type):
-                                        del(registered[i])
-
-                if registered == []:
-                        del(register[client])
 
         def registerEventListener(self, client, *names):
                 try:
@@ -475,24 +371,6 @@ class _ApplicationEventRegister (object):
 #------------------------------------------------------------------------------
 
 class _NullApplicationEventRegister (object):
-
-        def setCache (self, cache):
-                pass
-
-        def setFactory (self, factory):
-                pass
-
-        def notifyNameChange(self, name, path, acc_name):
-                pass
-
-        def notifyDescriptionChange(self, name, path, acc_desc):
-                pass
-
-        def notifyParentChange(self, name, path):
-                pass
-
-        def notifyChildrenChange(self, name, path, added):
-                pass
 
         def registerEventListener(self, client, *names):
                 pass

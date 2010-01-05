@@ -23,47 +23,8 @@ from busutils import AccessibilityBus
 
 __all__ = [
            "ApplicationCache",
-           "TestApplicationCache",
            "AccessibleCache"
           ]
-
-#------------------------------------------------------------------------------
-
-class TestApplicationCache(object):
-
-        """
-        Test application store, accesses a single application.
-
-        The store object acts as a central class for creating accessible objects.
-        It interfaces with the ATSPI registry to keep account of all accessible
-        applications. It contains the accessible cache objects from each application.
-
-        @registry:   Each accessible cache object must have a reference to the registry
-                     object to send update events.
-
-        @connection: D-Bus connection used to access applications.
-
-        @bus_name:   The test store only accesses one accessible application, this is its
-                     D-Bus path.
-        """
-
-        def __init__(self, event_dispatcher, connection, bus_name):
-                self._application_list = [bus_name]
-                self._application_cache = {bus_name:AccessibleCache(event_dispatcher, connection, bus_name)}
-
-        @property
-        def application_list (self):
-                return self._application_list
-
-        def get_app_root (self, app_name):
-                return self._application_cache[app_name].root
-
-        def __call__ (self, app_name, acc_path): 
-                """
-                Returns the cache tuple for the given application and accessible
-                object path. Throws an IndexError if the cache data is not found.
-                """
-                return self._application_cache[app_name][acc_path]
 
 #------------------------------------------------------------------------------
 
@@ -83,7 +44,6 @@ class ApplicationCache(object):
 
         def __init__(self, event_dispatcher):
                 self._connection = AccessibilityBus ()
-                self._event_dispatcher = event_dispatcher
                 self._factory = None
 
                 self._application_list = []
@@ -115,16 +75,6 @@ class ApplicationCache(object):
                                 self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                                     bus_name)
 
-        def set_factory (self, factory):
-                self._factory = factory
-
-        @property
-        def application_list (self):
-                return self._application_list
-
-        def get_app_root (self, app_name):
-                return self._application_cache[app_name].root
-
         def __call__ (self, app_name, acc_path): 
                 """
                 Returns the cache tuple for the given application and accessible
@@ -132,41 +82,35 @@ class ApplicationCache(object):
                 """
                 return self._application_cache[app_name][acc_path]
 
+	def __getitem__ (self, key):
+		try:
+			name, path = key
+			return self._application_cache[app_name][key]
+		except Exception:
+			raise KeyError ()
+
+        def __contains__ (self, key):
+                try:
+                        name, path = key
+                        return key in self._application_cache[app_name]
+                except Exception:
+                        return False
+
         def _update_handler (self, update_type, bus_name):
                 if update_type == ApplicationCache._APPLICATIONS_ADD:
-                        #TODO Check that app does not already exist
                         self._application_list.append(bus_name)
                         self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
                                                                             bus_name)
-                	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
-								    ATSPI_DESKTOP_PATH,
-								    True)
-                                      
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
-                        #TODO Fail safely if app does not exist
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
-                	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
-								    ATSPI_DESKTOP_PATH,
-								    False)
-
-        def _refresh(self):
-                new = self._app_register.getApplications()
-                removed = [item for item in self._application_list if item not in new]
-                added   = [item for item in new if item not in self._application_list]
-                for item in added:
-                        self._update_handler (self._APPLICATIONS_ADD, item)
-                for item in removed:
-                        self._update_handler (self._APPLICATIONS_REMOVE, item)
-
-                for item in self._application_cache.values():
-                        item._refresh()
 
 #------------------------------------------------------------------------------
 
 class _CacheData(object):
         __slots__ = [
                         'path',
+                        'application',
                         'parent',
                         'interfaces',
                         'children',
@@ -181,6 +125,7 @@ class _CacheData(object):
 
         def __str__(self):
                 return (str(self.path) + '\n' +
+                        str(self.application) + '\n' +
                         str(self.parent) + '\n' +
                         str(self.children) + '\n' +
                         str(self.interfaces) + '\n' +
@@ -191,6 +136,7 @@ class _CacheData(object):
 
         def _update(self, data):
                 (self.path,
+                 self.application,
                  self.parent,
                  self.children,
                  self.interfaces,
@@ -228,9 +174,9 @@ class AccessibleCache(object):
         busName    - Name of DBus connection where cache interface resides.
         """
 
-        _PATH = '/org/freedesktop/atspi/tree'
-        _INTERFACE = 'org.freedesktop.atspi.Tree'
-        _GET_METHOD = 'GetTree'
+        _PATH = '/org/at_spi/cache'
+        _INTERFACE = 'org.freedesktop.atspi.Cache'
+        _GET_METHOD = 'GetItems'
         _UPDATE_SIGNAL = 'UpdateAccessible'
         _REMOVE_SIGNAL = 'RemoveAccessible'
 
@@ -256,87 +202,37 @@ class AccessibleCache(object):
                 self._updateMatch = self._tree_itf.connect_to_signal(self._UPDATE_SIGNAL, self._update_single)
                 self._removeMatch = self._tree_itf.connect_to_signal(self._REMOVE_SIGNAL, self._remove_object)
 
-                self._root = self._tree_itf.GetRoot()
-
-        def set_factory (self, factory):
-                pass
-
-        @property
-        def application_list (self):
-                return [self._bus_name]
-
-        def get_app_root (self, app_name):
-                if app_name != self._bus_name:
-                        raise KeyError
-                return self._root
-
-        def __call__ (self, app_name, acc_path): 
-                """
-                Returns the cache tuple for the given application and accessible
-                object path. Throws an IndexError if the cache data is not found.
-                """
-                if app_name != self._bus_name:
-                        raise KeyError
-                return self[acc_path]
-
         def __getitem__(self, key):
-                return self._objects[key]
+                try:
+                        name, path = key
+                        if name != self_bus_name:
+                                raise KeyError ()
+                        return self._objects[path]
+                except Exception:
+                        raise KeyError ()
 
         def __contains__(self, key):
-                return key in self._objects
+                try:
+                        name, path = key
+                        if name != self_bus_name:
+                                return False
+                        return path in self._objects
+                except Exception:
+                        return False
 
-        def _dispatch_event(self, olddata, newdata):
-                if olddata.name != newdata.name:
-                        self._event_dispatcher.notifyNameChange(self._bus_name, newdata.path, newdata.name)
+        def _update_object (self, object):
+                #First element is the object path.
+                path = data[0]
+                self._objects[path] = _CacheData (data)
 
-                if olddata.description != newdata.description:
-                        self._event_dispatcher.notifyDescriptionChange(self._bus_name, newdata.path, newdata.description)
-
-                if olddata.parent != newdata.parent:
-                        self._event_dispatcher.notifyParentChange(self._bus_name, newdata.path)
-
-                removed, added = _list_items_added_removed (olddata.children, newdata.children)
-
-                if added:
-                        self._event_dispatcher.notifyChildrenChange(self._bus_name, newdata.path, True)
-
-                if removed:
-                        self._event_dispatcher.notifyChildrenChange(self._bus_name, newdata.path, False)
-
-        # TODO This should be the other way around. Single is more common than many.
-        def _update_single(self, object):
-                self._update_objects ([object])
-
-        def _update_objects(self, objects):
-                cache_update_objects = []
+        def _update_objects (self, objects):
                 for data in objects:
-                        #First element is the object path.
-                        path = data[0]
-                        if path in self._objects:
-                                olddata = self._objects[path]
-                                newdata = _CacheData(data)
-                                cache_update_objects.append((olddata, newdata))
-                                self._objects[path] = newdata
-                        else:
-                                self._objects[path] = _CacheData(data)
-                for old, new in cache_update_objects:
-                        self._dispatch_event(old, new)
+                        self._update_object (data)
 
         def _remove_object(self, path):
-                # TODO I'm squashing a possible error here
-                # I've seen things appear to be deleted twice
-                # which needs investigation
                 try:
                         del(self._objects[path])
                 except KeyError:
                         pass
-
-        def _refresh(self):
-                get_method = self._tree_itf.get_dbus_method(self._GET_METHOD)
-                self._update_objects(get_method())
-
-        @property
-        def root(self):
-                return self._root
 
 #END----------------------------------------------------------------------------
