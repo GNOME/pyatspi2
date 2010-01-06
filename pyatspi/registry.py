@@ -134,11 +134,11 @@ class Registry(object):
                 # Set up the cache
 		cache = None
 
-                #if main_loop_type == MAIN_LOOP_GLIB:
-                #        if app_name:
-                #                cache = AccessibleCache(app_name)
-                #        else:
-                #                cache = ApplicationCache()
+                if main_loop_type == MAIN_LOOP_GLIB:
+                        if app_name:
+                                cache = AccessibleCache(app_name)
+                        else:
+                                cache = ApplicationCache()
 
                 factory.set_cache (cache)
 		factory.set_desktop (desktop)

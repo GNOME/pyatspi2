@@ -33,16 +33,13 @@ class ApplicationCache(object):
         Keeps a store of the caches for all accessible applications.
         Updates as new applications are added or removed.
 
-        @event_dispatcher:   Each accessible cache object must have an
-                             object to send update events.
-
         @connection: D-Bus connection used to access applications.
         """
 
         _APPLICATIONS_ADD = 1
         _APPLICATIONS_REMOVE = 0
 
-        def __init__(self, event_dispatcher):
+        def __init__(self):
                 self._connection = AccessibilityBus ()
                 self._factory = None
 
@@ -72,8 +69,7 @@ class ApplicationCache(object):
 		self._application_list.extend(apps)
                         
                 for bus_name in self._application_list:
-                                self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
-                                                                                    bus_name)
+                                self._application_cache[bus_name] = AccessibleCache(bus_name)
 
         def __call__ (self, app_name, acc_path): 
                 """
@@ -99,8 +95,7 @@ class ApplicationCache(object):
         def _update_handler (self, update_type, bus_name):
                 if update_type == ApplicationCache._APPLICATIONS_ADD:
                         self._application_list.append(bus_name)
-                        self._application_cache[bus_name] = AccessibleCache(self._event_dispatcher,
-                                                                            bus_name)
+                        self._application_cache[bus_name] = AccessibleCache(bus_name)
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
@@ -180,14 +175,15 @@ class AccessibleCache(object):
         _UPDATE_SIGNAL = 'UpdateAccessible'
         _REMOVE_SIGNAL = 'RemoveAccessible'
 
-        def __init__(self, event_dispatcher, bus_name):
+        _ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
+
+        def __init__(self, bus_name):
                 """
                 Creates a cache.
 
                 connection - DBus connection.
                 busName    - Name of DBus connection where cache interface resides.
                 """
-                self._event_dispatcher = event_dispatcher
                 self._connection = AccessibilityBus()
                 self._bus_name = bus_name
 
@@ -199,8 +195,21 @@ class AccessibleCache(object):
                 get_method = self._tree_itf.get_dbus_method(self._GET_METHOD)
                 self._update_objects(get_method())
 
-                self._updateMatch = self._tree_itf.connect_to_signal(self._UPDATE_SIGNAL, self._update_single)
+                self._updateMatch = self._tree_itf.connect_to_signal(self._UPDATE_SIGNAL, self._update_object)
                 self._removeMatch = self._tree_itf.connect_to_signal(self._REMOVE_SIGNAL, self._remove_object)
+
+                self._connection.add_signal_receiver(self._property_change_handler,
+                                                     dbus_interface=self._ATSPI_EVENT_OBJECT_INTERFACE,
+                                                     signal_name="property_change",
+						     member_keyword="member",
+						     sender_keyword="sender",
+						     path_keyword="path")
+                self._connection.add_signal_receiver(self._children_changed_handler,
+                                                     dbus_interface=self._ATSPI_EVENT_OBJECT_INTERFACE,
+                                                     signal_name="children_changed",
+						     member_keyword="member",
+						     sender_keyword="sender",
+						     path_keyword="path")
 
         def __getitem__(self, key):
                 try:
@@ -234,5 +243,25 @@ class AccessibleCache(object):
                         del(self._objects[path])
                 except KeyError:
                         pass
+
+	def _property_change_handler (self, app, minor, detail1, detail2, any_data,
+				            sender=None, member=None, path=None):
+                if (sender, path) in self:
+			item = self[(sender, path)]
+			if minor == "accessible-name":
+				item.name = any_data
+			elif minor == "accessible-description":
+				item.description = any_data
+			elif minor == "accessible-parent":
+				item.parent = any_data
+
+	def _children_changed_handler (self, app, minor, detail1, detail2, any_data,
+				             sender=None, member=None, path=None):
+		if (sender, path) in self:
+			item = self[(sender, path)]
+			if minor == "add":
+				item.children.insert (detail1, any_data)
+			elif minor == "remove":
+				item.remove (detail1 + 1)
 
 #END----------------------------------------------------------------------------
