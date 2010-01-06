@@ -12,20 +12,38 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-__version__ = (1, 9, 0)
+try:
+    import gconf
+    gconfClient = gconf.client_get_default()
+    useCorba = gconfClient.get_bool("/desktop/gnome/interface/at-spi-corba")
+except:
+    useCorba = False
+finally:
+    del gconfClient
+    del gconf
 
-import constants
-from Accessibility import *
+if useCorba:
+    import sys
+    import pyatspi_corba
+    sys.modules['pyatspi'] = pyatspi_corba
+    del sys
+else:
+    __version__ = (1, 9, 0)
 
-from dbus.mainloop.glib import DBusGMainLoop
-DBusGMainLoop (set_as_default=True)
-del DBusGMainLoop
+    import constants
+    from Accessibility import *
 
-#This is a re-creation of the namespace pollution implemented
-#by PyORBit.
-import sys
-import Accessibility
-sys.modules['Accessibility'] = Accessibility
-del sys
+    from dbus.mainloop.glib import DBusGMainLoop
+    DBusGMainLoop (set_as_default=True)
+    del DBusGMainLoop
 
-import appevent as event
+    #This is a re-creation of the namespace pollution implemented
+    #by PyORBit.
+    import sys
+    import Accessibility
+    sys.modules['Accessibility'] = Accessibility
+    del sys
+
+    import appevent as event
+
+del useCorba
