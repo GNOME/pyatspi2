@@ -1,6 +1,6 @@
 SUBDIRS=busutils
 if RELOCATE
-pyatspidir = $(pythondir)/pyatspi-dbus/pyatspi
+pyatspidir = $(pythondir)/pyatspi_dbus
 else
 pyatspidir = $(pythondir)/pyatspi
 endif
@@ -36,14 +36,5 @@ pyatspi_PYTHON = \
 		text.py			\
 		utils.py		\
 		value.py		
-
-if RELOCATE
-install-exec-local: Makefile
-	@$(MKDIR_P) $(DESTDIR)$(pyexecdir)
-	cp pyatspi-dbus.pth $(DESTDIR)$(pyexecdir)
-
-uninstall-local:
-	@rm $(DESTDIR)$(pyexecdir)/pyatspi-dbus.pth
-endif
 
 CLEANFILES = *.pyc

@@ -89,7 +89,6 @@ AC_CONFIG_FILES([Makefile
 		 tests/apps/Makefile
 		 pyatspi/Makefile
 		 pyatspi/busutils/Makefile
-		 pyatspi/pyatspi-dbus.pth
 		])
 
 AC_OUTPUT

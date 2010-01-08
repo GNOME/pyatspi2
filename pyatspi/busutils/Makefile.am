@@ -1,5 +1,5 @@
 if RELOCATE
-pyatspidir = $(pythondir)/pyatspi-dbus/pyatspi
+pyatspidir = $(pythondir)/pyatspi_dbus
 else
 pyatspidir = $(pythondir)/pyatspi
 endif
