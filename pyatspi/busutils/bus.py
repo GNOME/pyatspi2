@@ -83,8 +83,8 @@ class _AccessibilityBus (_bus.BusConnection):
 		return _bus.BusConnection.add_signal_receiver (self, wrapper, *args, **kwargs)
 
 	def get_object (self, name, path):
-		#return _connection.ProxyObject (self, name, path, introspect=False)
-		return AccessibilityProxy (self, name, path, introspect=False)
+		return _connection.ProxyObject (self, name, path, introspect=False)
+		#return AccessibilityProxy (self, name, path, introspect=False)
 
 
 class AccessibilityBus (_AccessibilityBus):
