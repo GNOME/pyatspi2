@@ -39,9 +39,11 @@ class ApplicationCache(object):
         _APPLICATIONS_ADD = 1
         _APPLICATIONS_REMOVE = 0
 
-        def __init__(self):
+        def __init__(self, event_dispatcher=None):
                 self._connection = AccessibilityBus ()
                 self._factory = None
+
+		self._event_dispatcher = event_dispatcher
 
                 self._application_list = []
                 self._application_cache = {}
@@ -81,7 +83,7 @@ class ApplicationCache(object):
 	def __getitem__ (self, key):
 		try:
 			name, path = key
-			return self._application_cache[app_name][key]
+			return self._application_cache[name][key]
 		except Exception:
 			raise KeyError ()
 
@@ -96,9 +98,20 @@ class ApplicationCache(object):
                 if update_type == ApplicationCache._APPLICATIONS_ADD:
                         self._application_list.append(bus_name)
                         self._application_cache[bus_name] = AccessibleCache(bus_name)
+			if self._event_dispatcher:
+                        	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
+                                	                                    ATSPI_DESKTOP_PATH,
+									    self._application_cache[bus_name].root, 
+                                        	                            True)
                 elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
+			if self._event_dispatcher:
+                        	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
+                                	                                    ATSPI_DESKTOP_PATH,
+									    self._application_cache[bus_name].root, 
+                                        	                            False)
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
+
 
 #------------------------------------------------------------------------------
 
@@ -177,6 +190,9 @@ class AccessibleCache(object):
 
         _ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
 
+        _CACHE_PATH = '/org/at_spi/cache'
+        _CACHE_INTERFACE = 'org.freedesktop.atspi.Cache'
+
         def __init__(self, bus_name):
                 """
                 Creates a cache.
@@ -210,6 +226,11 @@ class AccessibleCache(object):
 						     member_keyword="member",
 						     sender_keyword="sender",
 						     path_keyword="path")
+
+                obj = self._connection.get_object (bus_name, self._CACHE_PATH)
+                cache = dbus.Interface (obj, self._CACHE_INTERFACE)
+
+                self.root = cache.GetRoot ()
 
         def __getitem__(self, key):
                 try:

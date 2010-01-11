@@ -267,14 +267,14 @@ class Accessible(BaseProxy):
         # Cache data --------------------------------------------------------------------
 
         @property
-	def cached (self):
+	def _cached (self):
                 if self._cache is not None:
 		        return (self.app_name, self.acc_path) in self._cache
                 else:
                         return False
 
         @property
-	def cached_data (self):
+	def _cached_data (self):
                 if self._cache is not None:
 		        return self._cache[(self.app_name, self.acc_path)]
                 else:
@@ -287,8 +287,8 @@ class Accessible(BaseProxy):
                 Get the containing Application for this object.
                 @return the Application instance to which this object belongs.
                 """
-                if self.cached:
-                	return self.acc_factory (*self.cached_data.application)
+                if self._cached:
+                	return self.acc_factory (*self._cached_data.application)
 		else:
                         func = self.get_dbus_method("GetApplication", dbus_interface=ATSPI_ACCESSIBLE)
 			name, path = func ()
@@ -336,8 +336,8 @@ class Accessible(BaseProxy):
                 an in parameter indicating which child is requested (zero-indexed).
                 @return : the 'nth' Accessible child of this object.
                 """
-                if self.cached:
-                        (name, path) = self.cached_data.children[index]
+                if self._cached:
+                        (name, path) = self._cached_data.children[index]
                 else:
                         count = Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
                         if index >= count:
@@ -353,7 +353,7 @@ class Accessible(BaseProxy):
                 @return : a long integer indicating this object's index in the
                 parent's list.
                 """
-                if self.cached:
+                if self._cached:
                         parent = self.get_parent()
                         if parent == None:
                                 return -1
@@ -396,8 +396,8 @@ class Accessible(BaseProxy):
                 @return : a Role indicating the type of UI role played by this
                 object.
                 """
-                if self.cached:
-                        return Role(self.cached_data.role)
+                if self._cached:
+                        return Role(self._cached_data.role)
                 else:
                         func = self.get_dbus_method("GetRole", dbus_interface=ATSPI_ACCESSIBLE)
                         return Role(func())
@@ -416,8 +416,8 @@ class Accessible(BaseProxy):
                 @return : a StateSet encapsulating the currently true states
                 of the object.
                 """
-                if self.cached:
-                        return _marshal_state_set(cached_data.state)
+                if self._cached:
+                        return _marshal_state_set(_cached_data.state)
                 else:
                         func = self.get_dbus_method("GetState", dbus_interface=ATSPI_ACCESSIBLE)
                         return _marshal_state_set(func())
@@ -437,8 +437,8 @@ class Accessible(BaseProxy):
                 return self.__eq__(other)
 
         def get_childCount(self):
-                if self.cached:
-                        return len(self.cached_data.children)
+                if self._cached:
+                        return len(self._cached_data.children)
                 else:
                         return Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
         _childCountDoc = \
@@ -450,8 +450,8 @@ class Accessible(BaseProxy):
         getChildCount = get_childCount
 
         def get_description(self):
-                if self.cached:
-                        return self.cached_data.description
+                if self._cached:
+                        return self._cached_data.description
                 else:
                         return self._pgetter(ATSPI_ACCESSIBLE, "Description")
         _descriptionDoc = \
@@ -461,8 +461,8 @@ class Accessible(BaseProxy):
         description = property(fget=get_description, doc=_descriptionDoc)
 
         def get_name(self):
-                if self.cached:
-                        return self.cached_data.name
+                if self._cached:
+                        return self._cached_data.name
                 else:
                         return self._pgetter(ATSPI_ACCESSIBLE, "Name")
         _nameDoc = \
@@ -472,8 +472,8 @@ class Accessible(BaseProxy):
         name = property(fget=get_name, doc=_nameDoc)
 
         def get_parent(self):
-                if self.cached:
-                        name, path = self.cached_data.parent
+                if self._cached:
+                        name, path = self._cached_data.parent
                 else:
 		        name, path = self._pgetter (ATSPI_ACCESSIBLE, "Parent")
                 return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
@@ -484,8 +484,8 @@ class Accessible(BaseProxy):
         parent = property(fget=get_parent, doc=_parentDoc)
 
         def get_interfaces(self):
-                if self.cached:
-                        return self.cached_data.interfaces
+                if self._cached:
+                        return self._cached_data.interfaces
                 else:
                         func = self.get_dbus_method("GetInterfaces", dbus_interface=ATSPI_ACCESSIBLE)
                         return func()

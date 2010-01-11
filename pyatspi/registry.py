@@ -138,7 +138,7 @@ class Registry(object):
                         if app_name:
                                 cache = AccessibleCache(app_name)
                         else:
-                                cache = ApplicationCache()
+                                cache = ApplicationCache(appreg)
 
                 factory.set_cache (cache)
 		factory.set_desktop (desktop)
