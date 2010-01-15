@@ -13,6 +13,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 try:
+    gconf = None
+    gconfClient = None
     import gconf
     gconfClient = gconf.client_get_default()
     useCorba = gconfClient.get_bool("/desktop/gnome/interface/at-spi-corba")
