@@ -250,7 +250,7 @@ class AccessibleCache(object):
                 except Exception:
                         return False
 
-        def _update_object (self, object):
+        def _update_object (self, data):
                 #First element is the object path.
                 path = data[0]
                 self._objects[path] = _CacheData (data)
