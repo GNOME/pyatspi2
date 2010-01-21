@@ -27,14 +27,14 @@ import os as _os
 from factory import AccessibleFactory
 from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
 from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
-from desktop import *
+from busutils import AccessibilityBus
 from cache import *
 
 from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
 from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
 
 from interfaces import ATSPI_REGISTRY_NAME as _ATSPI_REGISTRY_NAME
-from interfaces import ATSPI_DESKTOP_PATH as _ATSPI_DESKTOP_PATH
+from interfaces import ATSPI_ROOT_PATH as _ATSPI_ROOT_PATH
 from interfaces import ATSPI_DESKTOP as _ATSPI_DESKTOP
 
 __all__ = ["Registry",
@@ -115,33 +115,30 @@ class Registry(object):
                 @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
                 """
 
-		factory = AccessibleFactory()
-
-                # Set up the device event controllers
-                if app_name:
-                        devreg = _NullDeviceEventRegister()
-                        appreg = _NullApplicationEventRegister()
-                else:
-                        devreg = _DeviceEventRegister()
-                        appreg = _ApplicationEventRegister()
-
-
-                if app_name:
-                        desktop = TestDesktop (app_name, factory)
-                else:
-                        desktop = Desktop (factory)
+                _connection = AccessibilityBus ()
+                _bus_object = _connection.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
 
                 # Set up the cache
 		cache = None
 
                 if main_loop_type == MAIN_LOOP_GLIB:
                         if app_name:
-                                cache = AccessibleCache(app_name)
+                                cache = AccessibleCache(app_name, _ATSPI_ROOT_PATH)
                         else:
-                                cache = ApplicationCache(appreg)
+                                cache = ApplicationCache()
 
-                factory.set_cache (cache)
-		factory.set_desktop (desktop)
+		factory = AccessibleFactory(cache)
+
+                # Set up the device event controllers
+                if app_name:
+                        devreg = _NullDeviceEventRegister()
+                        appreg = _NullApplicationEventRegister()
+			name = _bus_object.GetNameOwner (app_name)
+                        desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
+                else:
+                        devreg = _DeviceEventRegister()
+                        appreg = _ApplicationEventRegister(factory)
+                        desktop = factory (_ATSPI_REGISTRY_NAME, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
 
                 # Create the registry object
                 self.has_implementations = True

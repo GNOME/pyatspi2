@@ -314,75 +314,11 @@ class Event(object):
 
 class _ApplicationEventRegister (object):
 
-        def __init__ (self):
+        def __init__ (self, factory):
                 self._bus = AccessibilityBus ()
-		self._factory = AccessibleFactory ()
+		self._factory = factory
 
                 self._event_listeners = {}
-
-                self._children_changed_type = EventType("object:children-changed")
-                self._children_changed_listeners = {}
-
-        def _callClients(self, register, event):
-                for client in register.keys():
-                        client(event)
-
-        def notifyChildrenChange(self, name, path, childref, added):
-                if added:
-                        detail = "add"
-                else:
-                        detail = "remove"
-                event = Event((detail, 0, 0, childref),
-                              self._factory,
-                              path,
-                              name,
-                              "org.freedesktop.atspi.Event.Object",
-                              "children-changed")
-
-                self._callClients(self._children_changed_listeners, event)
-
-        def _registerFake(self, type, register, client, *names):
-                """
-                Registers a client from a register of clients
-                for 'Fake' events emitted by the cache.
-                """
-                try:
-                        registered = register[client]
-                except KeyError:
-                        registered = []
-                        register[client] = registered
-
-                for name in names:
-                        new_type = EventType(name)
-                        if new_type.is_subtype(type):
-                                registered.append(new_type.name)
-
-                if registered == []:
-                        del(register[client])
-
-        def _deregisterFake(self, type, register, client, *names):
-                """
-                Deregisters a client from a register of clients
-                for 'Fake' events emitted by the cache.
-                """
-                try:
-                        registered = register[client]
-                except KeyError:
-                        return True
-
-                for name in names:
-                        remove_type = EventType(name)
-
-                        copy = registered[:]
-                        for i in range(0, len(copy)):
-                                type_name = copy[i]
-                                registered_type = EventType(type_name)
-
-                                if remove_type.is_subtype(registered_type):
-                                        del(registered[i])
-
-                if registered == []:
-                        del(register[client])
 
         def registerEventListener (self, client, *names):
                 try:
@@ -395,8 +331,6 @@ class _ApplicationEventRegister (object):
                         new_type = EventType(name)
                         registered.append((new_type.name,
                                            event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
-
-                self._registerFake(self._children_changed_type, self._children_changed_listeners, client, *names)
 
         def deregisterEventListener(self, client, *names):
                 try:
@@ -424,16 +358,11 @@ class _ApplicationEventRegister (object):
                 if registered == []:
                         del(self._event_listeners[client])
 
-                self._deregisterFake(self._children_changed_type, self._children_changed_listeners, client, *names)
-
                 return missing
 
 #------------------------------------------------------------------------------
 
 class _NullApplicationEventRegister (object):
-
-        def notifyChildrenChange(self, name, path, added):
-		pass
 
         def registerEventListener(self, client, *names):
                 pass

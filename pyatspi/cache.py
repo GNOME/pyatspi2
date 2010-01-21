@@ -35,43 +35,34 @@ class ApplicationCache(object):
 
         @connection: D-Bus connection used to access applications.
         """
+ 
+        ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
 
-        _APPLICATIONS_ADD = 1
-        _APPLICATIONS_REMOVE = 0
-
-        def __init__(self, event_dispatcher=None):
+        def __init__(self):
                 self._connection = AccessibilityBus ()
-                self._factory = None
-
-		self._event_dispatcher = event_dispatcher
 
                 self._application_list = []
                 self._application_cache = {}
 
-                self._bus_object = self._connection.get_object("org.freedesktop.DBus",
-                                                               "/org/freedesktop/DBus")
+                obj = self._connection.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH)
+                self._desktop = dbus.Interface(obj, ATSPI_ACCESSIBLE)
+                apps = self._desktop.GetChildren()
+
+                self._connection.add_signal_receiver(self._children_changed_handler,
+						     bus_name=ATSPI_REGISTRY_NAME,
+						     path=ATSPI_ROOT_PATH,
+                                                     dbus_interface=self.ATSPI_EVENT_OBJECT_INTERFACE,
+                                                     signal_name="children_changed",
+						     member_keyword="member",
+						     sender_keyword="sender",
+						     path_keyword="path")
 
 
-                self._regsig = self._connection.add_signal_receiver(self._update_handler,
-                                                                    dbus_interface=ATSPI_REGISTRY_INTERFACE,
-                                                                    signal_name="UpdateApplications")
-
-                obj = self._connection.get_object(ATSPI_REGISTRY_NAME,
-                                                  ATSPI_REGISTRY_PATH)
-                self._app_register = dbus.Interface(obj, ATSPI_REGISTRY_INTERFACE)
-
-                apps = self._app_register.GetApplications()
-
-                #this_pid = os.getpid()
-                #for app in apps:
-                #        that_pid = self._bus_object.GetConnectionUnixProcessID(app)
-                #        if not this_pid == that_pid:
-                #                self._application_list.append(app)
 
 		self._application_list.extend(apps)
                         
-                for bus_name in self._application_list:
-                                self._application_cache[bus_name] = AccessibleCache(bus_name)
+                for bus_name, object_path in self._application_list:
+                                self._application_cache[bus_name] = AccessibleCache(bus_name, object_path)
 
         def __call__ (self, app_name, acc_path): 
                 """
@@ -94,21 +85,14 @@ class ApplicationCache(object):
                 except Exception:
                         return False
 
-        def _update_handler (self, update_type, bus_name):
-                if update_type == ApplicationCache._APPLICATIONS_ADD:
+	def _children_changed_handler (self, app, minor, detail1, detail2, any_data,
+				             sender=None, member=None, path=None):
+		if minor == "add":
+			bus_name, object_path = any_data
                         self._application_list.append(bus_name)
                         self._application_cache[bus_name] = AccessibleCache(bus_name)
-			if self._event_dispatcher:
-                        	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
-                                	                                    ATSPI_DESKTOP_PATH,
-									    self._application_cache[bus_name].root, 
-                                        	                            True)
-                elif update_type == ApplicationCache._APPLICATIONS_REMOVE:
-			if self._event_dispatcher:
-                        	self._event_dispatcher.notifyChildrenChange(ATSPI_REGISTRY_NAME,
-                                	                                    ATSPI_DESKTOP_PATH,
-									    self._application_cache[bus_name].root, 
-                                        	                            False)
+		elif minor == "remove":
+			bus_name, object_path = any_data
                         self._application_list.remove(bus_name)
                         del(self._application_cache[bus_name])
 
@@ -175,9 +159,6 @@ class AccessibleCache(object):
         For each application the accessible cache stores
         data on every accessible object within the app.
 
-        It also acts as the factory for creating client
-        side proxies for these accessible objects.
-
         connection - DBus connection.
         busName    - Name of DBus connection where cache interface resides.
         """
@@ -185,15 +166,13 @@ class AccessibleCache(object):
         _PATH = '/org/at_spi/cache'
         _INTERFACE = 'org.freedesktop.atspi.Cache'
         _GET_METHOD = 'GetItems'
-        _UPDATE_SIGNAL = 'UpdateAccessible'
-        _REMOVE_SIGNAL = 'RemoveAccessible'
 
         _ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
 
         _CACHE_PATH = '/org/at_spi/cache'
         _CACHE_INTERFACE = 'org.freedesktop.atspi.Cache'
 
-        def __init__(self, bus_name):
+        def __init__(self, bus_name, object_path):
                 """
                 Creates a cache.
 
@@ -202,17 +181,13 @@ class AccessibleCache(object):
                 """
                 self._connection = AccessibilityBus()
                 self._bus_name = bus_name
-
-                obj = self._connection.get_object(bus_name, self._PATH)
-                self._tree_itf = dbus.Interface(obj, self._INTERFACE)
+		self._object_path = object_path
 
                 self._objects = {}
 
-                get_method = self._tree_itf.get_dbus_method(self._GET_METHOD)
-                self._update_objects(get_method())
-
-                self._updateMatch = self._tree_itf.connect_to_signal(self._UPDATE_SIGNAL, self._update_object)
-                self._removeMatch = self._tree_itf.connect_to_signal(self._REMOVE_SIGNAL, self._remove_object)
+                obj = self._connection.get_object (bus_name, self._CACHE_PATH)
+                cache = dbus.Interface (obj, self._CACHE_INTERFACE)
+                self._update_objects(cache.GetItems())
 
                 self._connection.add_signal_receiver(self._property_change_handler,
                                                      dbus_interface=self._ATSPI_EVENT_OBJECT_INTERFACE,
@@ -226,11 +201,6 @@ class AccessibleCache(object):
 						     member_keyword="member",
 						     sender_keyword="sender",
 						     path_keyword="path")
-
-                obj = self._connection.get_object (bus_name, self._CACHE_PATH)
-                cache = dbus.Interface (obj, self._CACHE_INTERFACE)
-
-                self.root = cache.GetRoot ()
 
         def __getitem__(self, key):
                 try:

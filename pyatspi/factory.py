@@ -40,9 +40,12 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class _AccessibleFactory (object):
+class AccessibleFactory (object):
 
-        def __init__ (self):
+        def __new__ (cls, cache):
+		return object.__new__ (cls)
+
+        def __init__ (self, cache):
 
                 self._connection = AccessibilityBus() 
 
@@ -64,40 +67,15 @@ class _AccessibleFactory (object):
                         interfaces.ATSPI_VALUE:Value,
                 }
 
-                self._cache = None
-                self._desktop = None
-
-	def set_cache (self, cache):
 		self._cache = cache
-
-	def set_desktop (self, desktop):
-		self._desktop = desktop
 
         def __call__ (self, name, path, itf, dbus_object=None):
                 if dbus_object == None:
                         dbus_object = self._connection.get_object (name, path)
+
+		if path == interfaces.ATSPI_NULL_PATH:
+			return None
         
-                # Hack to link applications 'parent' property up to the desktop object.
-                if name == interfaces.ATSPI_REGISTRY_NAME or path == interfaces.ATSPI_DESKTOP_PATH:
-                        return self._desktop
-                else:
-                        return self._interfaces[itf] (self._cache, self, name, path, dbus_object)
-
-class AccessibleFactory (_AccessibleFactory):
-	"""
-	Shared instance of the D-Bus bus used for accessibility.
-	"""
-
-	_shared_instance = None
-	
-	def __new__ (cls):
-		if AccessibleFactory._shared_instance:
-			return AccessibleFactory._shared_instance
-		else:
-			AccessibleFactory._shared_instance = _AccessibleFactory.__new__ (cls)
-			return AccessibleFactory._shared_instance
-
-	def __init__ (self):
-		_AccessibleFactory.__init__ (self)
+                return self._interfaces[itf] (self._cache, self, name, path, dbus_object)
 
 #END----------------------------------------------------------------------------

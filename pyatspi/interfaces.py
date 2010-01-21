@@ -35,7 +35,8 @@ ATSPI_REGISTRY_INTERFACE = 'org.freedesktop.atspi.Registry'
 ATSPI_REGISTRY_PATH = '/org/freedesktop/atspi/registry'
 ATSPI_REGISTRY_NAME = 'org.freedesktop.atspi.Registry'
 
-ATSPI_DESKTOP_PATH = '/org/freedesktop/atspi/accessible/desktop'
+ATSPI_ROOT_PATH = '/org/freedesktop/atspi/accessible/root'
+ATSPI_NULL_PATH = '/org/freedesktop/atspi/null'
 
 ATSPI_DEVICE_EVENT_LISTENER_INTERFACE = 'org.freedesktop.atspi.DeviceEventListener'
 ATSPI_DEVICE_EVENT_CONTROLLER_INTERFACE = 'org.freedesktop.atspi.DeviceEventController'

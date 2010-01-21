@@ -54,7 +54,7 @@ class ComponentTest(_PasyTest):
 		pass
 
 	def test_getExtents(self, test):
-		root = self._desktop.getChildAtIndex(0)
+		root = self._desktop
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -70,8 +70,7 @@ class ComponentTest(_PasyTest):
 						extents[0], extents[1], extents[2], extents[3]))
 
 	def test_getPosition(self, test):
-		pass
-		root = self._desktop.getChildAtIndex(0)
+		root = self._desktop
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -86,7 +85,7 @@ class ComponentTest(_PasyTest):
 					 % (expected[0], expected[1], position[0], position[1]))
 
 	def test_getSize(self, test):
-		root = self._desktop.getChildAtIndex(0)
+		root = self._desktop
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -101,7 +100,7 @@ class ComponentTest(_PasyTest):
 					 % (expected[0], expected[1], size[0], size[1]))
 
 	def test_getLayer(self, test):
-		root = self._desktop.getChildAtIndex(0)
+		root = self._desktop
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -116,7 +115,7 @@ class ComponentTest(_PasyTest):
 					 % (int(layer), int(expected)))
 
 	def test_getMDIZOrder(self, test):
-		root = self._desktop.getChildAtIndex(0)
+		root = self._desktop
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 

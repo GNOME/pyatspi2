@@ -26,7 +26,6 @@ from action import *
 from application import *
 from collection import *
 from component import *
-from desktop import *
 from document import *
 from editabletext import *
 from hyperlink import *
