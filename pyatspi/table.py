@@ -312,7 +312,7 @@ class Table(Accessible):
                 return func(row)
 
         def get_caption(self):
-                (name, path) = self._pgetter(self._dbus_interface, "Caption")
+                (name, path) = self._pgetter(ATSPI_TABLE, "Caption")
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
@@ -323,7 +323,7 @@ class Table(Accessible):
         caption = property(fget=get_caption, doc=_captionDoc)
 
         def get_nColumns(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "NColumns"))
+                return dbus.Int32(self._pgetter(ATSPI_TABLE, "NColumns"))
         _nColumnsDoc = \
                 """
                 The total number of columns in this table (including empty columns),
@@ -334,7 +334,7 @@ class Table(Accessible):
         nColumns = property(fget=get_nColumns, doc=_nColumnsDoc)
 
         def get_nRows(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "NRows"))
+                return dbus.Int32(self._pgetter(ATSPI_TABLE, "NRows"))
         _nRowsDoc = \
                 """
                 The total number of rows in this table (including empty rows),
@@ -344,7 +344,7 @@ class Table(Accessible):
         nRows = property(fget=get_nRows, doc=_nRowsDoc)
 
         def get_nSelectedColumns(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "NSelectedColumns"))
+                return dbus.Int32(self._pgetter(ATSPI_TABLE, "NSelectedColumns"))
         _nSelectedColumnsDoc = \
                 """
                 The number of columns currently selected. A selected column is
@@ -353,7 +353,7 @@ class Table(Accessible):
         nSelectedColumns = property(fget=get_nSelectedColumns, doc=_nSelectedColumnsDoc)
 
         def get_nSelectedRows(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "NSelectedRows"))
+                return dbus.Int32(self._pgetter(ATSPI_TABLE, "NSelectedRows"))
         _nSelectedRowsDoc = \
                 """
                 The number of rows currently selected. A selected row is one
@@ -362,7 +362,7 @@ class Table(Accessible):
         nSelectedRows = property(fget=get_nSelectedRows, doc=_nSelectedRowsDoc)
 
         def get_summary(self):
-                (name, path) = self._pgetter(self._dbus_interface, "Summary")
+                (name, path) = self._pgetter(ATSPI_TABLE, "Summary")
                 if (name == ""):
                         name = self._app_name
                 return self.acc_factory (name, path, ATSPI_ACCESSIBLE)

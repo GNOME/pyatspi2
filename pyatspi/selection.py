@@ -123,7 +123,7 @@ class Selection(Accessible):
                 return func(index)
 
         def get_nSelectedChildren(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "NSelectedChildren"))
+                return dbus.Int32(self._pgetter(ATSPI_SELECTION, "NSelectedChildren"))
         _nSelectedChildrenDoc = \
                 """
                 The number of children of a Selection implementor which are currently

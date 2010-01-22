@@ -353,18 +353,17 @@ class Accessible(BaseProxy):
                 @return : a long integer indicating this object's index in the
                 parent's list.
                 """
-                if self._cached:
-                        parent = self.get_parent()
-                        if parent == None:
-                                return -1
-                        for i in range(0, parent.childCount):
-                                child = parent.getChildAtIndex(i)
-                                if self == child:
-                                        return i
-                        raise AccessibleObjectNoLongerExists("Child not found within parent")
-                else:
-                        func = self.get_dbus_method("GetIndexInParent", dbus_interface=ATSPI_ACCESSIBLE)
-                        return func()
+                parent = self.get_parent()
+                if parent == None:
+                        return -1
+                for i in range(0, parent.childCount):
+                        child = parent.getChildAtIndex(i)
+                        if self == child:
+                                return i
+                raise AccessibleObjectNoLongerExists("Child not found within parent")
+
+                #func = self.get_dbus_method("GetIndexInParent", dbus_interface=ATSPI_ACCESSIBLE)
+                #return func()
 
         def getLocalizedRoleName(self):
                 """

@@ -74,7 +74,7 @@ class Hyperlink(Accessible):
                 return func()
 
         def get_endIndex(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "EndIndex"))
+                return dbus.Int32(self._pgetter(ATSPI_HYPERLINK, "EndIndex"))
         _endIndexDoc = \
                 """
                 the ending offset within the containing Hypertext content with
@@ -85,7 +85,7 @@ class Hyperlink(Accessible):
         endIndex = property(fget=get_endIndex, doc=_endIndexDoc)
 
         def get_nAnchors(self):
-                return dbus.Int16(self._pgetter(self._dbus_interface, "NAnchors"))
+                return dbus.Int16(self._pgetter(ATSPI_HYPERLINK, "NAnchors"))
         _nAnchorsDoc = \
                 """
                 the number of separate anchors associated with this Hyperlink
@@ -93,7 +93,7 @@ class Hyperlink(Accessible):
         nAnchors = property(fget=get_nAnchors, doc=_nAnchorsDoc)
 
         def get_startIndex(self):
-                return dbus.Int32(self._pgetter(self._dbus_interface, "StartIndex"))
+                return dbus.Int32(self._pgetter(ATSPI_HYPERLINK, "StartIndex"))
         _startIndexDoc = \
                 """
                 the starting offset within the containing Hypertext content with

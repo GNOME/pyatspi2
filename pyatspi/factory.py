@@ -70,11 +70,11 @@ class AccessibleFactory (object):
 		self._cache = cache
 
         def __call__ (self, name, path, itf, dbus_object=None):
-                if dbus_object == None:
-                        dbus_object = self._connection.get_object (name, path)
-
 		if path == interfaces.ATSPI_NULL_PATH:
 			return None
+
+                if dbus_object == None:
+                        dbus_object = self._connection.get_object (name, path)
         
                 return self._interfaces[itf] (self._cache, self, name, path, dbus_object)
 

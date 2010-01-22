@@ -27,28 +27,6 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-_interface_to_klass = {
-                "org.freedesktop.atspi.Event.Object":"object",
-                "org.freedesktop.atspi.Event.Window":"window",
-                "org.freedesktop.atspi.Event.Mouse":"mouse",
-                "org.freedesktop.atspi.Event.Keyboard":"keyboard",
-                "org.freedesktop.atspi.Event.Terminal":"terminal",
-                "org.freedesktop.atspi.Event.Document":"document",
-                "org.freedesktop.atspi.Event.Focus":"focus",
-                }
-
-_klass_to_interface = {
-                "object":"org.freedesktop.atspi.Event.Object",
-                "window":"org.freedesktop.atspi.Event.Window",
-                "mouse":"org.freedesktop.atspi.Event.Mouse",
-                "keyboard":"org.freedesktop.atspi.Event.Keyboard",
-                "terminal":"org.freedesktop.atspi.Event.Terminal",
-                "document":"org.freedesktop.atspi.Event.Document",
-                "focus":"org.freedesktop.atspi.Event.Focus",
-                }
-
-#------------------------------------------------------------------------------
-
 class _ELessList(list):
         def __getitem__(self, index):
                 try:
@@ -124,64 +102,123 @@ class EventType(str):
 
 #------------------------------------------------------------------------------
 
-def atspi_to_dbus(name):
-	ret = string.upper(name[0])
-	for i in range(1,len(name)):
-		if (name[i] == '-'):
-			pass
-		elif (name[i-1] == '-'):
-			ret += string.upper(name[i])
-		else:
-			ret += name[i]
-	return ret
+_interface_to_klass = {
+                "org.freedesktop.atspi.Event.Object":"object",
+                "org.freedesktop.atspi.Event.Window":"window",
+                "org.freedesktop.atspi.Event.Mouse":"mouse",
+                "org.freedesktop.atspi.Event.Keyboard":"keyboard",
+                "org.freedesktop.atspi.Event.Terminal":"terminal",
+                "org.freedesktop.atspi.Event.Document":"document",
+                "org.freedesktop.atspi.Event.Focus":"focus",
+                }
 
-def dbus_to_atspi(name):
-	ret = string.lower(name[0])
-	for i in range(1,len(name)):
-		if (name[i] == str.lower(name[i])):
-			ret += name[i]
-		else:
-			ret += "-" + string.lower(name[++i])
-	return ret
+_klass_to_interface = {
+                "object":"org.freedesktop.atspi.Event.Object",
+                "window":"org.freedesktop.atspi.Event.Window",
+                "mouse":"org.freedesktop.atspi.Event.Mouse",
+                "keyboard":"org.freedesktop.atspi.Event.Keyboard",
+                "terminal":"org.freedesktop.atspi.Event.Terminal",
+                "document":"org.freedesktop.atspi.Event.Document",
+                "focus":"org.freedesktop.atspi.Event.Focus",
+                }
+
+#------------------------------------------------------------------------------
+
+def _major_to_signal_name (name):
+        ret = string.upper(name[0])
+        for i in range(1,len(name)):
+                if (name[i] == '-'):
+                        pass
+                elif (name[i-1] == '-'):
+                        ret += string.upper(name[i])
+                else:
+                        ret += name[i]
+        return ret
+
+def _signal_name_to_major (name):
+        ret = string.lower(name[0])
+        for i in range(1,len(name)):
+                if (name[i] == str.lower(name[i])):
+                        ret += name[i]
+                else:
+                        ret += "-" + string.lower(name[++i])
+        return ret
+
+#------------------------------------------------------------------------------
+
+def signal_spec_to_event_type (interface, name, minor):
+        """
+        Converts an AT-SPI D-Bus signal specification into a Corba AT-SPI
+        event type.
+        """
+        klass = _interface_to_klass[interface]
+        major = _signal_name_to_major (name)
+
+        if klass == "focus":
+                return EventType ("focus:")
+
+        event_string = klass + ':' + major + ':'
+        if minor:
+                event_string += minor
+        return EventType (event_string)
 
 def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
+        """
+        Converts a Corba AT-SPI event type to the correct D-Bus AT-SPI signal
+        reciever.
+        """
         kwargs = {
                         'sender_keyword':'sender',
                         'interface_keyword':'interface',
                         'member_keyword':'member',
                         'path_keyword':'path',
                  }
-        if event_type.major:
-                major = atspi_to_dbus(event_type.major)
         if event_type.klass:
                 kwargs['dbus_interface'] = _klass_to_interface[event_type.klass]
         if event_type.major:
-                kwargs['signal_name'] = major
+                kwargs['signal_name'] = _major_to_signal_name (event_type.major)
         if event_type.minor:
                 kwargs['arg0'] = event_type.minor
 
-        def handler_wrapper(app, minor, detail1, detail2, any_data,
-                            sender=None, interface=None, member=None, path=None):
-                event = Event((minor, detail1, detail2, any_data), factory, path, app, interface, member)
+        def handler_wrapper(source_application,
+                            minor,
+                            detail1,
+                            detail2,
+                            any_data,
+                            sender=None,
+                            interface=None,
+                            member=None,
+                            path=None):
+
+                # Convert the event type
+                type = signal_spec_to_event_type (interface, member, minor)
+
+                # Marshal the 'any_data' to correct class / structure
+                if   type.is_subtype (EventType ("object:bounds-changed")):
+                        any_data = BoundingBox(*any_data)
+                elif (type.is_subtype (EventType ("object:children-changed")) or
+                      type.is_subtype (EventType ("object:property-change:parent"))):
+                        data_name, data_path = any_data;
+                        any_data = factory (data_name, data_path, interfaces.ATSPI_ACCESSIBLE)
+
+                # Create the source application
+                source_app_name, source_app_path = source_application
+                source_application = factory (source_app_name, source_app_path, interfaces.ATSPI_APPLICATION)
+
+                # Create the source
+                source_name = sender
+                source_path = path
+                source = factory (source_name, source_path, interfaces.ATSPI_ACCESSIBLE)
+
+                event = Event (type,
+                               detail1,
+                               detail2,
+                               any_data,
+                               source_application,
+                               source)
                 return event_handler(event)
 
         return bus.add_signal_receiver(handler_wrapper, **kwargs)
-
-#------------------------------------------------------------------------------
-
-def signal_spec_to_event_string (interface, name, minor):
-        interface = _interface_to_klass[interface]
-        name = dbus_to_atspi(name)
-
-        if interface == "focus":
-                return "focus:"
-
-        result = interface + ':'
-        if name:
-                result += name + ':'
-        if minor:
-                result += minor
-        return result
 
 #------------------------------------------------------------------------------
 
@@ -204,91 +241,39 @@ class Event(object):
         @type any_data: object
         @ivar host_application: Application owning the event source
         @type host_application: Tuple (Name, Path)
-        @ivar source_name: Name of the event source at the time of event dispatch
-        @type source_name: string
-        @ivar source_role: Role of the event source at the time of event dispatch
-        @type source_role: Accessibility.Role
         @ivar source: Source of the event
         @type source: Accessibility.Accessible
         """
-        def __init__(self, event,
-		     acc_factory=None,
-	             source_path=None,
-		     source_application=None,
-		     interface=None,
-		     name=None):
-                """
-                Extracts information from the provided event. If the event is a "normal" 
-                event, pulls the detail1, detail2, any_data, and source values out of the
-                given object and stores it in this object. If the event is a device event,
-                key ID is stored in detail1, scan code is stored in detail2, key name, 
-                key modifiers (e.g. ALT, CTRL, etc.), is text flag, and timestamp are 
-                stored as a 4-tuple in any_data, and source is None (since key events are
-                global).
+        def __init__(self,
+                     type_slash_event=None,
+                     detail1=None,
+                     detail2=None,
+                     any_data=None,
+                     host_application=None,
+                     source=None):
 
-                @param event: Event from an AT-SPI callback
-                @type event: Accessibility.Event or Accessibility.DeviceEvent
-                """
+                if detail1 == None:
+                        #This alternative init is provided for compatibility with the old API.
+                        #The old API apparently allowed the event to be delivered as a class with
+                        #named parameters. (Something like a copy constructor)
+                        #Old API used in orca - focus_tracking_presenter.py line 1106
+                        event = type_slash_event
 
-		if acc_factory == None:
-			#This alternative init is provided for compatibility with the old API.
-			#The old API apparently allowed the event to be delivered as a class with
-			#named parameters. (Something like a copy constructor)
-			#Old API used in orca - focus_tracking_presenter.py line 1106
-			self._source = event.source
-			self._application = event.source
+                        self.type = event.type
+                        self.detail1 = event.detail1
+                        self.detail2 = event.detail2
+                        self.any_data = event.any_data
+                        self.source = event.source
+                        self.application = event.source
+                else:
+                        type = type_slash_event
 
-			self.type = event.type
-			self.detail1 = event.detail1
-			self.detail2 = event.detail2
-			self.any_data = event.any_data
-		else:
-                	self._acc_factory = acc_factory
-                	self._source_path = source_path
-                	self._source_application = source_application
-
-                	self._source = None
-                	self._application = None
-
-                	self.type = EventType(signal_spec_to_event_string(interface, name, event[0]))
-
-                	self.detail1 = event[1]
-                	self.detail2 = event[2]
-
-                	data = event[3]
-
-                	if self.type.is_subtype (EventType ("object:bounds-changed")):
-                        	self.any_data = BoundingBox(*data)
-                        elif self.type.is_subtype (EventType ("object:children-changed")):
-				name, path = data;
-				self.any_data = self._acc_factory (name, path, interfaces.ATSPI_ACCESSIBLE)
-				self.any_data = ""
-			elif self.type.is_subtype (EventType ("object:property-change:parent")):
-				name, path = data;
-				self.any_data = self._acc_factory (name, path, interfaces.ATSPI_ACCESSIBLE)
-                	else:
-                        	self.any_data = data
-
-        @property
-        def host_application(self):
-                if not self._application:
-                        try:
-                                name, path = self._source_application
-                                return self._acc_factory (name, path, interfaces.ATSPI_APPLICATION)
-                        except AccessibleObjectNoLongerExists:
-                                pass
-                return self._application
-
-        @property
-        def source(self):
-                if not self._source:
-                        try:
-                                self._source = self._acc_factory (self._source_application,
-                                                                  self._source_path,
-                                                                  interfaces.ATSPI_ACCESSIBLE)
-                        except AccessibleObjectNoLongerExists:
-                                pass
-                return self._source
+                        self.type = type
+                        self.detail1 = detail1
+                        self.detail2 = detail2
+                        self.any_data = any_data
+                        self.source = source
+                        self.host_application = host_application
 
         @property
         def source_name(self):
@@ -316,7 +301,7 @@ class _ApplicationEventRegister (object):
 
         def __init__ (self, factory):
                 self._bus = AccessibilityBus ()
-		self._factory = factory
+                self._factory = factory
 
                 self._event_listeners = {}
 

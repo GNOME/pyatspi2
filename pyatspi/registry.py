@@ -138,7 +138,8 @@ class Registry(object):
                 else:
                         devreg = _DeviceEventRegister()
                         appreg = _ApplicationEventRegister(factory)
-                        desktop = factory (_ATSPI_REGISTRY_NAME, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
+			name = _bus_object.GetNameOwner (_ATSPI_REGISTRY_NAME)
+                        desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
 
                 # Create the registry object
                 self.has_implementations = True

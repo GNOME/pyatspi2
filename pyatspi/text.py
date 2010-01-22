@@ -536,7 +536,7 @@ class Text(Accessible):
                 return func(selectionNum, startOffset, endOffset)
 
         def get_caretOffset(self):
-                return Int32(self._pgetter(self.dbus_interface, "CaretOffset"))
+                return Int32(self._pgetter(ATSPI_TEXT, "CaretOffset"))
         _caretOffsetDoc = \
                 """
                 The current offset of the text caret in the Text object. This
@@ -549,7 +549,7 @@ class Text(Accessible):
         caretOffset = property(fget=get_caretOffset, doc=_caretOffsetDoc)
 
         def get_characterCount(self):
-                return Int32(self._pgetter(self.dbus_interface, "CharacterCount"))
+                return Int32(self._pgetter(ATSPI_TEXT, "CharacterCount"))
         _characterCountDoc = \
                 """
                 The total current number of characters in the Text object, including

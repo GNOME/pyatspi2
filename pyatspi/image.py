@@ -85,7 +85,7 @@ class Image(Accessible):
                 return func()
 
         def get_imageDescription(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "ImageDescription"))
+                return dbus.String(self._pgetter(ATSPI_IMAGE, "ImageDescription"))
         _imageDescriptionDoc = \
                 """
                 A UTF-8 string providing a textual description of what is visually
@@ -94,7 +94,7 @@ class Image(Accessible):
         imageDescription = property(fget=get_imageDescription, doc=_imageDescriptionDoc)
 
         def get_imageLocale(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "ImageLocale"))
+                return dbus.String(self._pgetter(ATSPI_IMAGE, "ImageLocale"))
         _imageLocaleDoc = \
                 """
                 A string corresponding to the POSIX LC_MESSAGES locale used by

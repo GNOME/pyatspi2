@@ -44,7 +44,7 @@ class Application(Accessible):
                 return func(local_type)
 
         def get_toolkitName(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "ToolkitName"))
+                return dbus.String(self._pgetter(ATSPI_APPLICATION, "ToolkitName"))
         _toolkitNameDoc = \
                 """
                 A string indicating the type of user interface toolkit which
@@ -53,7 +53,7 @@ class Application(Accessible):
         toolkitName = property(fget=get_toolkitName, doc=_toolkitNameDoc)
 
         def get_version(self):
-                return dbus.String(self._pgetter(self._dbus_interface, "Version"))
+                return dbus.String(self._pgetter(ATSPI_APPLICATION, "Version"))
         _versionDoc = \
                 """
                 A string indicating the version number of the application's accessibility
