@@ -75,7 +75,7 @@ class Table(Accessible):
                 (name, path) = func(row, column)
                 if (name == ""):
                         name = self._app_name
-                return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
+                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
 
         def getColumnAtIndex(self, index):
                 """
@@ -127,7 +127,7 @@ class Table(Accessible):
                 if available.
                 """
                 func = self.get_dbus_method("GetColumnHeader", dbus_interface=ATSPI_TABLE)
-                return self.acc_factory (self._app_name, func(index), ATSPI_ACCESSIBLE)
+                return self._acc_factory (self._app_name, func(index), ATSPI_ACCESSIBLE)
 
         def getIndexAt(self, row, column):
                 """
@@ -234,7 +234,7 @@ class Table(Accessible):
 		(name, path) = func (row)
 		if (name == ""):
 			name = self._app_name
-                return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
+                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
 
         def getSelectedColumns(self):
                 """
@@ -315,7 +315,7 @@ class Table(Accessible):
                 (name, path) = self._pgetter(ATSPI_TABLE, "Caption")
                 if (name == ""):
                         name = self._app_name
-                return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
+                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
         _captionDoc = \
                 """
                 An Accessible which represents of a caption for a Table.
@@ -365,7 +365,7 @@ class Table(Accessible):
                 (name, path) = self._pgetter(ATSPI_TABLE, "Summary")
                 if (name == ""):
                         name = self._app_name
-                return self.acc_factory (name, path, ATSPI_ACCESSIBLE)
+                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
         _summaryDoc = \
                 """
                 An accessible object which summarizes the contents of a Table.

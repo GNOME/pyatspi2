@@ -39,7 +39,7 @@ class Hypertext(Accessible):
                 @return the Hyperlink in this Hypertext object.
                 """
                 func = self.get_dbus_method("getLink", dbus_interface=ATSPI_HYPERTEXT)
-                return self.acc_factory (self._app_name, func(index), interfaces.ATSPI_HYPERLINK)
+                return self._acc_factory (self._app_name, func(index), interfaces.ATSPI_HYPERLINK)
 
         def getLinkIndex(self, character_index):
                 """

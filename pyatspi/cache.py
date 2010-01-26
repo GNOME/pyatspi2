@@ -22,86 +22,18 @@ from interfaces import *
 from busutils import AccessibilityBus
 
 __all__ = [
-           "ApplicationCache",
            "AccessibleCache"
           ]
 
-#------------------------------------------------------------------------------
-
-class ApplicationCache(object):
-        """
-        Keeps a store of the caches for all accessible applications.
-        Updates as new applications are added or removed.
-
-        @connection: D-Bus connection used to access applications.
-        """
- 
-        ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
-
-        def __init__(self):
-                self._connection = AccessibilityBus ()
-
-                self._application_list = []
-                self._application_cache = {}
-
-                obj = self._connection.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH)
-                self._desktop = dbus.Interface(obj, ATSPI_ACCESSIBLE)
-                apps = self._desktop.GetChildren()
-
-                self._connection.add_signal_receiver(self._children_changed_handler,
-						     bus_name=ATSPI_REGISTRY_NAME,
-						     path=ATSPI_ROOT_PATH,
-                                                     dbus_interface=self.ATSPI_EVENT_OBJECT_INTERFACE,
-                                                     signal_name="children_changed",
-						     member_keyword="member",
-						     sender_keyword="sender",
-						     path_keyword="path")
-
-
-
-		self._application_list.extend(apps)
-                        
-                for bus_name, object_path in self._application_list:
-                                self._application_cache[bus_name] = AccessibleCache(bus_name, object_path)
-
-        def __call__ (self, app_name, acc_path): 
-                """
-                Returns the cache tuple for the given application and accessible
-                object path. Throws an IndexError if the cache data is not found.
-                """
-                return self._application_cache[app_name][acc_path]
-
-	def __getitem__ (self, key):
-		try:
-			name, path = key
-			return self._application_cache[name][key]
-		except Exception:
-			raise KeyError ()
-
-        def __contains__ (self, key):
-                try:
-                        name, path = key
-                        return key in self._application_cache[app_name]
-                except Exception:
-                        return False
-
-	def _children_changed_handler (self, app, minor, detail1, detail2, any_data,
-				             sender=None, member=None, path=None):
-		if minor == "add":
-			bus_name, object_path = any_data
-                        self._application_list.append(bus_name)
-                        self._application_cache[bus_name] = AccessibleCache(bus_name)
-		elif minor == "remove":
-			bus_name, object_path = any_data
-                        self._application_list.remove(bus_name)
-                        del(self._application_cache[bus_name])
-
+_ATSPI_CACHE_PATH = '/org/at_spi/cache'
+_ATSPI_CACHE_INTERFACE = 'org.freedesktop.atspi.Cache'
+_ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
 
 #------------------------------------------------------------------------------
 
 class _CacheData(object):
         __slots__ = [
-                        'path',
+                        'reference',
                         'application',
                         'parent',
                         'interfaces',
@@ -116,7 +48,7 @@ class _CacheData(object):
                 self._update(data)
 
         def __str__(self):
-                return (str(self.path) + '\n' +
+                return (str(self.reference) + '\n' +
                         str(self.application) + '\n' +
                         str(self.parent) + '\n' +
                         str(self.children) + '\n' +
@@ -127,7 +59,7 @@ class _CacheData(object):
                         str(self.state))
 
         def _update(self, data):
-                (self.path,
+                (self.reference,
                  self.application,
                  self.parent,
                  self.children,
@@ -139,106 +71,121 @@ class _CacheData(object):
 
 #------------------------------------------------------------------------------
 
-def _list_items_added_removed (l1, l2):
+class DesktopCacheManager (object):
         """
-        Returns a tuple (boolean, boolean).
-        The first value indicates if, when
-        moving from l1 to l2, any items have been added.
-        The second value indicates whether any items have
-        been removed.
+        Responsible for keeping track of applications as they are added or removed
+        from the desktop object.
         """
-        l1notl2 = [item for item in l1 if item not in l2]
-        l2notl1 = [item for item in l2 if item not in l1]
-        return ((len(l1notl2) > 0), (len(l2notl1) > 0))
+ 
+        def __init__(self, cache):
+                bus = AccessibilityBus ()
+
+                self._cache = cache
+                self._application_list = {}
+
+                bus.add_signal_receiver(self._children_changed_handler,
+                                        bus_name=ATSPI_REGISTRY_NAME,
+                                        path=ATSPI_ROOT_PATH,
+                                        dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
+                                        signal_name="ChildrenChanged",
+                                        member_keyword="member",
+                                        sender_keyword="sender",
+                                        path_keyword="path")
+
+                obj     = bus.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH)
+                desktop = dbus.Interface(obj, ATSPI_ACCESSIBLE)
+                apps    = desktop.GetChildren()
+
+                for bus_name, object_path in apps:
+                                self._application_list[bus_name] = ApplicationCacheManager (cache, bus_name)
+
+	def _children_changed_handler (self, 
+                                       app, minor, detail1, detail2, any_data,
+				       sender=None, member=None, path=None):
+		if minor == "add":
+                        bus_name, object_path = any_data
+                        self._application_list[bus_name] = ApplicationCacheManager(cache, bus_name)
+		elif minor == "remove":
+                        bus_name, object_path = any_data
+                        self._application_list[bus_name].remove_all()
+                        del(self._application_list[bus_name])
 
 #------------------------------------------------------------------------------
 
-class AccessibleCache(object):
+class ApplicationCacheManager (object):
         """
-        There is one accessible cache per application.
-        For each application the accessible cache stores
-        data on every accessible object within the app.
-
-        connection - DBus connection.
-        busName    - Name of DBus connection where cache interface resides.
+        The application cache manager is responsible for keeping the cache up to date
+        with cache items from the given application.
         """
 
-        _PATH = '/org/at_spi/cache'
-        _INTERFACE = 'org.freedesktop.atspi.Cache'
-        _GET_METHOD = 'GetItems'
 
-        _ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
-
-        _CACHE_PATH = '/org/at_spi/cache'
-        _CACHE_INTERFACE = 'org.freedesktop.atspi.Cache'
-
-        def __init__(self, bus_name, object_path):
+        def __init__(self, cache, bus_name):
                 """
                 Creates a cache.
 
                 connection - DBus connection.
                 busName    - Name of DBus connection where cache interface resides.
                 """
-                self._connection = AccessibilityBus()
-                self._bus_name = bus_name
-		self._object_path = object_path
+                bus = AccessibilityBus()
 
-                self._objects = {}
+                self._cache = cache
+		self._bus_name = bus_name
 
-                obj = self._connection.get_object (bus_name, self._CACHE_PATH)
-                cache = dbus.Interface (obj, self._CACHE_INTERFACE)
-                self._update_objects(cache.GetItems())
+                cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH)
+                cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
+                self._add_objects(cache_itf.GetItems())
 
-                self._connection.add_signal_receiver(self._property_change_handler,
-                                                     dbus_interface=self._ATSPI_EVENT_OBJECT_INTERFACE,
-                                                     signal_name="property_change",
-						     member_keyword="member",
-						     sender_keyword="sender",
-						     path_keyword="path")
-                self._connection.add_signal_receiver(self._children_changed_handler,
-                                                     dbus_interface=self._ATSPI_EVENT_OBJECT_INTERFACE,
-                                                     signal_name="children_changed",
-						     member_keyword="member",
-						     sender_keyword="sender",
-						     path_keyword="path")
+                self._property_change =  \
+                        bus.add_signal_receiver(self._property_change_handler,
+				                bus_name=self._bus_name,
+                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
+                                                signal_name="PropertyChange",
+                                                member_keyword="member",
+                                                sender_keyword="sender",
+                                                path_keyword="path")
 
-        def __getitem__(self, key):
-                try:
-                        name, path = key
-                        if name != self_bus_name:
-                                raise KeyError ()
-                        return self._objects[path]
-                except Exception:
-                        raise KeyError ()
+                self._children_changed = \
+                        bus.add_signal_receiver(self._children_changed_handler,
+                                                bus_name=self._bus_name,
+                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
+                                                signal_name="ChildrenChanged",
+                                                member_keyword="member",
+                                                sender_keyword="sender",
+                                                path_keyword="path")
 
-        def __contains__(self, key):
-                try:
-                        name, path = key
-                        if name != self_bus_name:
-                                return False
-                        return path in self._objects
-                except Exception:
-                        return False
+		self._cache_add = \
+                        bus.add_signal_receiver(self._add_object,
+                                                bus_name=self._bus_name,
+                                                path=_ATSPI_CACHE_PATH,
+                                                dbus_interface=_ATSPI_CACHE_INTERFACE,
+                                                signal_name="AddAccessible")
 
-        def _update_object (self, data):
-                #First element is the object path.
-                path = data[0]
-                self._objects[path] = _CacheData (data)
+		self._cache_remove = \
+                        bus.add_signal_receiver(self._remove_object,
+                                                bus_name=self._bus_name,
+                                                path=_ATSPI_CACHE_PATH,
+                                                dbus_interface=_ATSPI_CACHE_INTERFACE,
+                                                signal_name="RemoveAccessible")
 
-        def _update_objects (self, objects):
+
+        def _add_object (self, data):
+                #First element is the object reference
+                bus_name, object_path = data[0]
+                self._cache[(bus_name, object_path)] = _CacheData (data)
+
+        def _remove_object(self, reference):
+		bus_name, object_path = reference
+                del(self._cache[(bus_name, object_path)])
+
+        def _add_objects (self, objects):
                 for data in objects:
-                        self._update_object (data)
+                        self._add_object (data)
 
-        def _remove_object(self, path):
-                try:
-                        del(self._objects[path])
-                except KeyError:
-                        pass
-
-	def _property_change_handler (self, app, minor, detail1, detail2, any_data,
-				            sender=None, member=None, path=None):
-                if (sender, path) in self:
-			item = self[(sender, path)]
+	def _property_change_handler (self,
+                                      app, minor, detail1, detail2, any_data,
+				      sender=None, member=None, path=None):
+                if (sender, path) in self._cache:
+			item = self._cache[(sender, path)]
 			if minor == "accessible-name":
 				item.name = any_data
 			elif minor == "accessible-description":
@@ -246,13 +193,34 @@ class AccessibleCache(object):
 			elif minor == "accessible-parent":
 				item.parent = any_data
 
-	def _children_changed_handler (self, app, minor, detail1, detail2, any_data,
-				             sender=None, member=None, path=None):
-		if (sender, path) in self:
-			item = self[(sender, path)]
+	def _children_changed_handler (self,
+                                       app, minor, detail1, detail2, any_data,
+				       sender=None, member=None, path=None):
+		if (sender, path) in self._cache:
+			item = self._cache[(sender, path)]
 			if minor == "add":
 				item.children.insert (detail1, any_data)
 			elif minor == "remove":
-				item.remove (detail1 + 1)
+				del (item.children[detail1])
+
+        def remove_all (self):
+                for bus_name, object_path in self._cache.keys():
+                        if bus_name == self._bus_name:
+                                del(self._cache[(self._bus_name, object_path)])
+
+#------------------------------------------------------------------------------
+
+class AccessibleCache (dict):
+
+	def __init__ (self, bus_name=None):
+		dict.__init__ (self)
+
+                if bus_name:
+                        self._manager = ApplicationCacheManager (self, bus_name) 
+                else:
+                        self._manager = DesktopCacheManager (self)
+
+        def __call__ (self, bus_name, object_path):
+                return self[(bus_name, object_path)]
 
 #END----------------------------------------------------------------------------

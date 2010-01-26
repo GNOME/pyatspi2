@@ -28,7 +28,7 @@ from factory import AccessibleFactory
 from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
 from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
 from busutils import AccessibilityBus
-from cache import *
+from cache import AccessibleCache
 
 from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
 from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
@@ -115,38 +115,32 @@ class Registry(object):
                 @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
                 """
 
-                _connection = AccessibilityBus ()
-                _bus_object = _connection.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
 
                 # Set up the cache
 		cache = None
-
                 if main_loop_type == MAIN_LOOP_GLIB:
-                        if app_name:
-                                cache = AccessibleCache(app_name, _ATSPI_ROOT_PATH)
-                        else:
-                                cache = ApplicationCache()
+                                cache = AccessibleCache (app_name)
 
 		factory = AccessibleFactory(cache)
 
                 # Set up the device event controllers
+                _connection = AccessibilityBus ()
+                _bus_object = _connection.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
+
                 if app_name:
-                        devreg = _NullDeviceEventRegister()
-                        appreg = _NullApplicationEventRegister()
+                        self.device_event_register = _NullDeviceEventRegister()
+                        seld.app_event_register    = _NullApplicationEventRegister()
+
 			name = _bus_object.GetNameOwner (app_name)
-                        desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
+                        self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
                 else:
-                        devreg = _DeviceEventRegister()
-                        appreg = _ApplicationEventRegister(factory)
+                        self.device_event_register = _DeviceEventRegister()
+                        self.app_event_register    = _ApplicationEventRegister(factory)
+
 			name = _bus_object.GetNameOwner (_ATSPI_REGISTRY_NAME)
-                        desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
+                        self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
 
-                # Create the registry object
                 self.has_implementations = True
-
-                self.device_event_register = devreg
-                self.app_event_register = appreg
-                self.desktop = desktop
 
         def _set_default_registry (self):
                 self._set_registry (MAIN_LOOP_GLIB)
