@@ -18,7 +18,7 @@ import dbus as _dbus
 import dbus.service as _service
 
 from enum import Enum as _Enum
-from busutils import AccessibilityBus
+from busutils import *
 
 import traceback
 
@@ -534,7 +534,7 @@ class KeyboardDeviceEventListener(_service.Object):
 class _DeviceEventRegister (object):
         
         def __init__ (self):
-                self._bus = AccessibilityBus ()
+                self._bus = SyncAccessibilityBus ()
                 self.dev = DeviceEventController (self._bus)
                 self.deviceClients = {}
 

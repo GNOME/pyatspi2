@@ -87,7 +87,36 @@ class _AccessibilityBus (_bus.BusConnection):
 		#return AccessibilityProxy (self, name, path, introspect=False)
 
 
-class AccessibilityBus (_AccessibilityBus):
+class AsyncAccessibilityBus (_AccessibilityBus):
+	"""
+	Shared instance of the D-Bus bus used for accessibility.
+
+        Events are queued and later delivered from main loop.
+        D-Bus calls are made asyncronously.
+	"""
+
+	_shared_instance = None
+	
+	def __new__ (cls):
+		if AsyncAccessibilityBus._shared_instance:
+			return AsyncAccessibilityBus._shared_instance
+		else:
+			try:
+				AsyncAccessibilityBus._shared_instance = \
+                                        _AccessibilityBus.__new__ (cls, _get_accessibility_bus_address(), None)
+			except Exception:
+				AsyncAccessibilityBus._shared_instance = \
+                                        _AccessibilityBus.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
+			
+			return AsyncAccessibilityBus._shared_instance
+
+	def __init__ (self):
+		try:
+			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
+		except Exception:
+			_AccessibilityBus.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)
+
+class SyncAccessibilityBus (_bus.BusConnection):
 	"""
 	Shared instance of the D-Bus bus used for accessibility.
 	"""
@@ -95,18 +124,20 @@ class AccessibilityBus (_AccessibilityBus):
 	_shared_instance = None
 	
 	def __new__ (cls):
-		if AccessibilityBus._shared_instance:
-			return AccessibilityBus._shared_instance
+		if SyncAccessibilityBus._shared_instance:
+			return SyncAccessibilityBus._shared_instance
 		else:
 			try:
-				AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls, _get_accessibility_bus_address(), None)
+				SyncAccessibilityBus._shared_instance = \
+                                        _bus.BusConnection.__new__ (cls, _get_accessibility_bus_address(), None)
 			except Exception:
-				AccessibilityBus._shared_instance = _AccessibilityBus.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
+				SyncAccessibilityBus._shared_instance = \
+                                        _bus.BusConnection.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
 			
-			return AccessibilityBus._shared_instance
+			return SyncAccessibilityBus._shared_instance
 
 	def __init__ (self):
 		try:
-			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
+			_bus.BusConnection.__init__ (self, _get_accessibility_bus_address(), None)
 		except Exception:
-			_AccessibilityBus.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)
+			_bus.BusConnection.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)

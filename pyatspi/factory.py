@@ -32,7 +32,7 @@ from value import *
 
 import dbus
 
-from busutils import AccessibilityBus
+from busutils import *
 
 __all__ = [
            "AccessibleFactory"
@@ -47,7 +47,7 @@ class AccessibleFactory (object):
 
         def __init__ (self, cache):
 
-                self._connection = AccessibilityBus() 
+                self._connection = AsyncAccessibilityBus() 
 
                 self._interfaces = { 
                         interfaces.ATSPI_ACCESSIBLE:Accessible,

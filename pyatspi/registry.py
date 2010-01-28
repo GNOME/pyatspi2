@@ -24,10 +24,11 @@
 import dbus
 import os as _os
 
+from busutils import *
+
 from factory import AccessibleFactory
 from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
 from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
-from busutils import AccessibilityBus
 from cache import AccessibleCache
 
 from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
@@ -124,7 +125,7 @@ class Registry(object):
 		factory = AccessibleFactory(cache)
 
                 # Set up the device event controllers
-                _connection = AccessibilityBus ()
+                _connection = SyncAccessibilityBus ()
                 _bus_object = _connection.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
 
                 if app_name:

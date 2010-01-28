@@ -17,8 +17,8 @@ import interfaces
 from accessible import BoundingBox
 from exceptions import *
 
-from busutils import AccessibilityBus
 from factory import AccessibleFactory
+from busutils import *
 
 __all__ = [
                 "Event",
@@ -300,7 +300,7 @@ class Event(object):
 class _ApplicationEventRegister (object):
 
         def __init__ (self, factory):
-                self._bus = AccessibilityBus ()
+                self._bus = AsyncAccessibilityBus ()
                 self._factory = factory
 
                 self._event_listeners = {}
