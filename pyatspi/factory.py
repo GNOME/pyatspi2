@@ -74,7 +74,7 @@ class AccessibleFactory (object):
 			return None
 
                 if dbus_object == None:
-                        dbus_object = self._connection.get_object (name, path)
+                        dbus_object = self._connection.get_object (name, path, introspect=False)
         
                 return self._interfaces[itf] (self._cache, self, name, path, dbus_object)
 

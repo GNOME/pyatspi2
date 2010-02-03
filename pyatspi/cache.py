@@ -95,13 +95,13 @@ class DesktopCacheManager (object):
                                         sender_keyword="sender",
                                         path_keyword="path")
 
-                obj     = bus.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH)
+                obj     = bus.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH, introspect=False)
                 desktop = dbus.Interface(obj, ATSPI_ACCESSIBLE)
                 apps    = desktop.GetChildren()
 
                 #TODO This is ugly. Perhaps the desktop object should implement the
                 #     cache interface also?
-                bus_object = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
+                bus_object = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus", introspect=False)
                 self._unique_name = bus_object.GetNameOwner (ATSPI_REGISTRY_NAME)
                 self._cache[(self._unique_name, ATSPI_ROOT_PATH)] = \
                         _CacheData ( 
@@ -113,7 +113,7 @@ class DesktopCacheManager (object):
                                        "main",                                  #Name
                                        ROLE_INVALID,                            #Role
                                        "",                                      #Description
-                                       []                                       #State
+                                       [0,0]                                    #State
                                      )
                                    )
 
@@ -154,12 +154,14 @@ class ApplicationCacheManager (object):
                 connection - DBus connection.
                 busName    - Name of DBus connection where cache interface resides.
                 """
-                bus = SyncAccessibilityBus()
+                # It is important that this bus is async as registered signals may
+                # come from orca itself.
+                bus = AsyncAccessibilityBus()
 
                 self._cache = cache
 		self._bus_name = bus_name
 
-                cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH)
+                cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH, introspect=False)
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
                 self._add_objects(cache_itf.GetItems())
 
