@@ -180,11 +180,11 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
         if event_type.minor:
                 kwargs['arg0'] = event_type.minor
 
-        def handler_wrapper(source_application,
-                            minor,
+        def handler_wrapper(minor,
                             detail1,
                             detail2,
                             any_data,
+                            source_application,
                             sender=None,
                             interface=None,
                             member=None,
