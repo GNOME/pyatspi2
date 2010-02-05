@@ -12,23 +12,29 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-try:
-    gconf = None
-    gconfClient = None
-    import gconf
-    gconfClient = gconf.client_get_default()
-    useCorba = gconfClient.get_bool("/desktop/gnome/interface/at-spi-corba")
-except:
+# Do not replace yourself if you've been imported explicitly by name
+# already.
+#
+import sys
+if not sys.modules.has_key('pyatspi_dbus'):
+    try:
+        gconf = None
+        gconfClient = None
+        import gconf
+        gconfClient = gconf.client_get_default()
+        useCorba = \
+            gconfClient.get_bool("/desktop/gnome/interface/at-spi-corba")
+    except:
+        useCorba = False
+    finally:
+        del gconfClient
+        del gconf
+else:
     useCorba = False
-finally:
-    del gconfClient
-    del gconf
 
 if useCorba:
-    import sys
     import pyatspi_corba
     sys.modules['pyatspi'] = pyatspi_corba
-    del sys
 else:
     __version__ = (1, 9, 0)
 
@@ -41,11 +47,10 @@ else:
 
     #This is a re-creation of the namespace pollution implemented
     #by PyORBit.
-    import sys
     import Accessibility
     sys.modules['Accessibility'] = Accessibility
-    del sys
 
     import appevent as event
 
+del sys
 del useCorba
