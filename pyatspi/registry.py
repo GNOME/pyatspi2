@@ -130,7 +130,7 @@ class Registry(object):
 
                 if app_name:
                         self.device_event_register = _NullDeviceEventRegister()
-                        seld.app_event_register    = _NullApplicationEventRegister()
+                        self.app_event_register    = _NullApplicationEventRegister()
 
 			name = _bus_object.GetNameOwner (app_name)
                         self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
