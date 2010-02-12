@@ -248,7 +248,7 @@ class Accessible(BaseProxy):
                 or raises a NotImplemented error if the given interface
                 is not supported.
                 """
-                if interface in self.interfaces or interface == "org.freedesktop.atspi.Collection":
+                if interface in self.interfaces or interface == "org.a11y.atspi.Collection":
                         return self._acc_factory (self.app_name, self.acc_path, interface,
                                                                   dbus_object=self._dbus_object)
                 else:

@@ -433,7 +433,7 @@ class KeyboardDeviceEventListener(_service.Object):
 
         def _get_unique_path (self):
                 KeyboardDeviceEventListener._next_listener_id += 1
-                return "/org/freedesktop/atspi/keyeventlistener/%d" % (KeyboardDeviceEventListener._next_listener_id,)
+                return "/org/a11y/atspi/keyeventlistener/%d" % (KeyboardDeviceEventListener._next_listener_id,)
 
         def __init__(self, registry, synchronous, preemptive, global_):
                 """

@@ -26,8 +26,8 @@ __all__ = [
           ]
 
 _ATSPI_CACHE_PATH = '/org/at_spi/cache'
-_ATSPI_CACHE_INTERFACE = 'org.freedesktop.atspi.Cache'
-_ATSPI_EVENT_OBJECT_INTERFACE = "org.freedesktop.atspi.Event.Object"
+_ATSPI_CACHE_INTERFACE = 'org.a11y.atspi.Cache'
+_ATSPI_EVENT_OBJECT_INTERFACE = "org.a11y.atspi.Event.Object"
 
 #------------------------------------------------------------------------------
 

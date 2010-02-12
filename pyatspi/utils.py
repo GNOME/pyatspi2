@@ -83,7 +83,7 @@ def getInterfaceName(obj):
         @rtype: string
         @raise AttributeError: When the parameter does not provide typecode info
         """
-        return obj._dbus_interface.lstrip("org.freedesktop.atspi.")
+        return obj._dbus_interface.lstrip("org.a11y.atspi.")
 
 def listInterfaces(obj):
         """
@@ -99,7 +99,7 @@ def listInterfaces(obj):
         @raise AttributeError: If the object provide does not implement
         queryInterface
         """
-        return [itf.lstrip("org.freedesktop.atspi.") for itf in obj.interfaces]
+        return [itf.lstrip("org.a11y.atspi.") for itf in obj.interfaces]
 
 def stringToConst(prefix, suffix):
         """

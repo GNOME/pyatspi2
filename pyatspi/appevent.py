@@ -103,23 +103,23 @@ class EventType(str):
 #------------------------------------------------------------------------------
 
 _interface_to_klass = {
-                "org.freedesktop.atspi.Event.Object":"object",
-                "org.freedesktop.atspi.Event.Window":"window",
-                "org.freedesktop.atspi.Event.Mouse":"mouse",
-                "org.freedesktop.atspi.Event.Keyboard":"keyboard",
-                "org.freedesktop.atspi.Event.Terminal":"terminal",
-                "org.freedesktop.atspi.Event.Document":"document",
-                "org.freedesktop.atspi.Event.Focus":"focus",
+                "org.a11y.atspi.Event.Object":"object",
+                "org.a11y.atspi.Event.Window":"window",
+                "org.a11y.atspi.Event.Mouse":"mouse",
+                "org.a11y.atspi.Event.Keyboard":"keyboard",
+                "org.a11y.atspi.Event.Terminal":"terminal",
+                "org.a11y.atspi.Event.Document":"document",
+                "org.a11y.atspi.Event.Focus":"focus",
                 }
 
 _klass_to_interface = {
-                "object":"org.freedesktop.atspi.Event.Object",
-                "window":"org.freedesktop.atspi.Event.Window",
-                "mouse":"org.freedesktop.atspi.Event.Mouse",
-                "keyboard":"org.freedesktop.atspi.Event.Keyboard",
-                "terminal":"org.freedesktop.atspi.Event.Terminal",
-                "document":"org.freedesktop.atspi.Event.Document",
-                "focus":"org.freedesktop.atspi.Event.Focus",
+                "object":"org.a11y.atspi.Event.Object",
+                "window":"org.a11y.atspi.Event.Window",
+                "mouse":"org.a11y.atspi.Event.Mouse",
+                "keyboard":"org.a11y.atspi.Event.Keyboard",
+                "terminal":"org.a11y.atspi.Event.Terminal",
+                "document":"org.a11y.atspi.Event.Document",
+                "focus":"org.a11y.atspi.Event.Focus",
                 }
 
 #------------------------------------------------------------------------------
