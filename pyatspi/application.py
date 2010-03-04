@@ -43,6 +43,14 @@ class Application(Accessible):
                 func = self.get_dbus_method("GetLocale", dbus_interface=ATSPI_APPLICATION)
                 return func(local_type)
 
+        def get_id(self):
+                return dbus.Int32(self._pgetter(ATSPI_APPLICATION, "Id"))
+        _idDoc = \
+                """
+                The application instance's unique ID as assigned by the registry.
+                """
+        id = property(fget=get_id, doc=_idDoc)
+
         def get_toolkitName(self):
                 return dbus.String(self._pgetter(ATSPI_APPLICATION, "ToolkitName"))
         _toolkitNameDoc = \
