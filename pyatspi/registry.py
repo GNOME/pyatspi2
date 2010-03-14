@@ -122,7 +122,9 @@ class Registry(object):
                 if main_loop_type == MAIN_LOOP_GLIB:
                                 cache = AccessibleCache (app_name)
 
-		factory = AccessibleFactory(cache)
+                factory = AccessibleFactory(cache)
+
+                _os.environ["AT_SPI_CLIENT"] = "1"
 
                 # Set up the device event controllers
                 _connection = SyncAccessibilityBus ()
