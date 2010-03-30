@@ -16,7 +16,7 @@ import os
 import dbus
 
 from interfaces import *
-from role import ROLE_INVALID
+from role import ROLE_UNKNOWN
 
 from busutils import *
 
@@ -111,7 +111,7 @@ class DesktopCacheManager (object):
                                        apps,                                    #Children 
                                        [ATSPI_ACCESSIBLE, ATSPI_COMPONENT],     #Interfaces
                                        "main",                                  #Name
-                                       ROLE_INVALID,                            #Role
+                                       ROLE_UNKNOWN,                            #Role
                                        "",                                      #Description
                                        [0,0]                                    #State
                                      )
