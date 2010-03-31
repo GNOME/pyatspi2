@@ -532,7 +532,7 @@ class Text(Accessible):
                 @return True if the selection corresponding to selectionNum is
                 successfully modified, False otherwise.
                 """
-                func = self.get_dbus_method("setSelection", dbus_interface=ATSPI_TEXT)
+                func = self.get_dbus_method("SetSelection", dbus_interface=ATSPI_TEXT)
                 return func(selectionNum, startOffset, endOffset)
 
         def get_caretOffset(self):

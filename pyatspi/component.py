@@ -99,7 +99,7 @@ class Component(Accessible):
                 @return the Accessible child whose bounding box contains the
                 specified point.
                 """
-                func = self.get_dbus_method("getAccessibleAtPoint", dbus_interface=ATSPI_COMPONENT)
+                func = self.get_dbus_method("GetAccessibleAtPoint", dbus_interface=ATSPI_COMPONENT)
                 (name, path) = func(x, y, UInt32(coord_type))
                 if (name == ""):
                         name = self._app_name

@@ -49,7 +49,7 @@ class Hyperlink(Accessible):
                 ith anchor, or through which the content associated with the
                 ith anchor can be accessed.
                 """
-                func = self.get_dbus_method("getObject", dbus_interface=ATSPI_HYPERLINK)
+                func = self.get_dbus_method("GetObject", dbus_interface=ATSPI_HYPERLINK)
                 return self._acc_factory (self._app_name, func(index), ATSPI_ACCESSIBLE)
 
         def getURI(self, index):

@@ -308,7 +308,7 @@ class Table(Accessible):
                 @return True if the specified row was successfully de-selected,
                 False if not.
                 """
-                func = self.get_dbus_method("removeRowSelection", dbus_interface=ATSPI_TABLE)
+                func = self.get_dbus_method("RemoveRowSelection", dbus_interface=ATSPI_TABLE)
                 return func(row)
 
         def get_caption(self):
