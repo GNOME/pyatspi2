@@ -121,7 +121,7 @@ class DesktopCacheManager (object):
                                 self._application_list[bus_name] = ApplicationCacheManager (cache, bus_name)
 
 	def _children_changed_handler (self, 
-                                       app, minor, detail1, detail2, any_data,
+                                       minor, detail1, detail2, any_data, app,
 				       interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE and sender == self._unique_name and path == ATSPI_ROOT_PATH:
 		        if minor == "add":
