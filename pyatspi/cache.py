@@ -14,6 +14,8 @@
 
 import os
 import dbus
+import registry
+import traceback	# tmp. for dbg.
 
 from interfaces import *
 from role import ROLE_UNKNOWN
@@ -42,6 +44,7 @@ class _CacheData(object):
                         'name',
                         'description',
                         'state',
+                        'toolkitName',	# TODO; do this differently
                     ]
 
         def __init__(self, data):
@@ -126,6 +129,7 @@ class DesktopCacheManager (object):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE and sender == self._unique_name and path == ATSPI_ROOT_PATH:
 		        if minor == "add":
                                 bus_name, object_path = any_data
+                                r = registry.Registry()
                                 self._application_list[bus_name] = ApplicationCacheManager(self._cache, bus_name)
 		        elif minor == "remove":
                                 bus_name, object_path = any_data
@@ -163,7 +167,10 @@ class ApplicationCacheManager (object):
 
                 cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH, introspect=False)
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
+                r = registry.Registry()
+                r.freezeEvents()
                 self._add_objects(cache_itf.GetItems())
+                r.thawEvents()
 
                 self._property_change =  \
                         bus.add_signal_receiver(self._property_change_handler,
@@ -207,7 +214,10 @@ class ApplicationCacheManager (object):
 
         def _remove_object(self, reference):
 		bus_name, object_path = reference
-                del(self._cache[(bus_name, object_path)])
+                try:
+                        del(self._cache[(bus_name, object_path)])
+                except KeyError:
+                        pass
 
         def _add_objects (self, objects):
                 for data in objects:

@@ -23,6 +23,8 @@
 
 import dbus
 import os as _os
+import Queue
+import traceback
 
 from busutils import *
 
@@ -80,6 +82,12 @@ class Registry(object):
         def __init__(self):
                 self.__dict__ = self.__shared_state
 
+                try:
+                        if (self.has_implementations):
+                                return
+                except (AttributeError):
+                        pass
+
                 self.has_implementations = False
 
                 self.device_event_register = None
@@ -116,6 +124,8 @@ class Registry(object):
                 @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
                 """
 
+		self.queue = Queue.Queue()
+                self.frozen = 0
 
                 # Set up the cache
 		cache = None
@@ -163,6 +173,7 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
+		self.async = True	# not fully supported yet
                 try:
                         self.main_loop.run()
                 except KeyboardInterrupt:
@@ -322,17 +333,46 @@ class Registry(object):
 
         # -------------------------------------------------------------------------------
 
+	def enqueueEvent (self, handler, event):
+		"""
+		Queue an event for later delivery.
+		"""
+		self.queue.put((handler, event))
+
         def pumpQueuedEvents (self):
                 """
-                No Longer needed all application events are asyncronous.
+                Dispatch events that have been queued.
                 """
-                pass
+		while (not(self.queue.empty())):
+			(handler, event) = self.queue.get()
+			handler(event)
 
         def flushEvents (self):
                 """
-                No Longer needed all application events are asyncronous.
+                Empty the event queue.
                 """
-                pass
+                self.queue = Queue.QUeue()
+
+        def asyncInternal (self):
+                """
+                Tests whether events should currently be delivered
+                asynchronously
+                """
+                return self.async and not(self.frozen)
+
+        def freezeEvents (self):
+                """
+                Temporarily stop delivering events, queueing them until thaw() is called
+                """
+                self.frozen = self.frozen + 1
+
+        def thawEvents (self):
+                """
+                Start delivering events again
+                """
+                self.frozen = self.frozen - 1
+                if (self.frozen == 0):
+                        self.pumpQueuedEvents ()
 
         # -------------------------------------------------------------------------------
 

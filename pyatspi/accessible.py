@@ -486,4 +486,20 @@ class Accessible(BaseProxy):
                 """
         interfaces = property(fget=_get_interfaces, doc=_interfacesDoc)
 
+        def _getConstantProperty(self, interface, name):
+                if self.cached:
+                        try:
+                                getattr(self, "extraData")
+                        except (attributeError):
+                                self.extraData = dit()
+                        try:
+                                return self.extraData[name]
+                        except (attributeError):
+                                r = registry.Registry()
+                                r.freezeEvents()
+                                self.extraData[name] = dbus.String(self._pgetter(interface, name))
+                                r.thawEvents()
+                                return self.extraData[name]
+                return dbus.String(self._pgetter(interface, name))
+
 #END----------------------------------------------------------------------------

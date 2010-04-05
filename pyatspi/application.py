@@ -52,7 +52,7 @@ class Application(Accessible):
         id = property(fget=get_id, doc=_idDoc)
 
         def get_toolkitName(self):
-                return dbus.String(self._pgetter(ATSPI_APPLICATION, "ToolkitName"))
+                return self.getConstantProperty(ATSPI_APPLICATION, "ToolkitName")
         _toolkitNameDoc = \
                 """
                 A string indicating the type of user interface toolkit which

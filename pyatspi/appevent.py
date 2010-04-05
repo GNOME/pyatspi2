@@ -13,12 +13,14 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 import string
+import gobject
 import interfaces
 from accessible import BoundingBox
 from exceptions import *
 
 from factory import AccessibleFactory
 from busutils import *
+import registry
 
 __all__ = [
                 "Event",
@@ -216,7 +218,12 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
                                any_data,
                                source_application,
                                source)
-                return event_handler(event)
+                depth = gobject.main_depth()
+                r = registry.Registry()
+                if (r.asyncInternal() or depth <= 1):
+                        return event_handler(event)
+                else:
+                    r.enqueueEvent(event_handler, event)
 
         return bus.add_signal_receiver(handler_wrapper, **kwargs)
 
