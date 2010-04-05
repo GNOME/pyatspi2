@@ -44,7 +44,7 @@ class _CacheData(object):
                         'name',
                         'description',
                         'state',
-                        'toolkitName',	# TODO; do this differently
+                        'extraData'
                     ]
 
         def __init__(self, data):
