@@ -159,9 +159,9 @@ def signal_spec_to_event_type (interface, name, minor):
         if klass == "focus":
                 return EventType ("focus:")
 
-        event_string = klass + ':' + major + ':'
+        event_string = klass + ':' + major
         if minor:
-                event_string += minor
+                event_string += ":" + minor
         return EventType (event_string)
 
 def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
@@ -210,7 +210,11 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
                 # Create the source
                 source_name = sender
                 source_path = path
-                source = factory (source_name, source_path, interfaces.ATSPI_ACCESSIBLE)
+                if (path == interfaces.ATSPI_ROOT_PATH):
+                        source_itf = interfaces.ATSPI_APPLICATION
+                else:
+                        source_itf = interfaces.ATSPI_ACCESSIBLE
+                source = factory (source_name, source_path, source_itf)
 
                 event = Event (type,
                                detail1,

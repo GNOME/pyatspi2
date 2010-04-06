@@ -25,6 +25,9 @@ from dbus import UnknownMethodException, DBusException
 
 from exceptions import *
 
+import registry
+import dbus
+
 __all__ = [
            "LOCALE_TYPE",
            "LOCALE_TYPE_COLLATE",
@@ -284,7 +287,7 @@ class Accessible(BaseProxy):
 		else:
                         func = self.get_dbus_method("GetApplication", dbus_interface=ATSPI_ACCESSIBLE)
 			name, path = func ()
-		return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
+		return self._acc_factory (name, path, ATSPI_APPLICATION)
 
         def getAttributes(self):
                 """
@@ -337,7 +340,11 @@ class Accessible(BaseProxy):
                         func = self.get_dbus_method("GetChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
                         (name, path) = func (index)
 
-                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
+                if (path == ATSPI_ROOT_PATH):
+                        itf = ATSPI_APPLICATION
+                else:
+                        itf = ATSPI_ACCESSIBLE
+                return self._acc_factory (name, path, itf)
 
         def getIndexInParent(self):
                 """
@@ -467,7 +474,12 @@ class Accessible(BaseProxy):
                         name, path = self._cached_data.parent
                 else:
 		        name, path = self._pgetter (ATSPI_ACCESSIBLE, "Parent")
-                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
+
+                if (path == ATSPI_ROOT_PATH):
+                        itf = ATSPI_APPLICATION
+                else:
+                        itf = ATSPI_ACCESSIBLE
+                return self._acc_factory (name, path, itf)
         _parentDoc = \
                 """
                 an Accessible object which is this object's containing object.
@@ -490,11 +502,11 @@ class Accessible(BaseProxy):
                 if self.cached:
                         try:
                                 getattr(self, "extraData")
-                        except (attributeError):
-                                self.extraData = dit()
+                        except (AttributeError):
+                                self.extraData = dict()
                         try:
                                 return self.extraData[name]
-                        except (attributeError):
+                        except (KeyError):
                                 r = registry.Registry()
                                 r.freezeEvents()
                                 self.extraData[name] = dbus.String(self._pgetter(interface, name))
