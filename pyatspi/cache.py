@@ -15,10 +15,11 @@
 import os
 import dbus
 import registry
-import traceback	# tmp. for dbg.
+import string
 
 from interfaces import *
 from role import ROLE_UNKNOWN
+import state
 
 from busutils import *
 
@@ -192,6 +193,16 @@ class ApplicationCacheManager (object):
                                                 sender_keyword="sender",
                                                 path_keyword="path")
 
+                self._state_changed = \
+                        bus.add_signal_receiver(self._state_changed_handler,
+                                                bus_name=self._bus_name,
+                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
+                                                signal_name="StateChanged",
+                                                interface_keyword="interface",
+                                                member_keyword="member",
+                                                sender_keyword="sender",
+                                                path_keyword="path")
+
 		self._cache_add = \
                         bus.add_signal_receiver(self._add_object,
                                                 bus_name=self._bus_name,
@@ -224,7 +235,7 @@ class ApplicationCacheManager (object):
                         self._add_object (data)
 
 	def _property_change_handler (self,
-                                      app, minor, detail1, detail2, any_data,
+                                      minor, detail1, detail2, any_data, app,
 				      interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
                         if (sender, path) in self._cache:
@@ -237,7 +248,7 @@ class ApplicationCacheManager (object):
 				        item.parent = any_data
 
 	def _children_changed_handler (self,
-                                       app, minor, detail1, detail2, any_data,
+                                       minor, detail1, detail2, any_data, app,
 				       interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
 		        if (sender, path) in self._cache:
@@ -246,6 +257,20 @@ class ApplicationCacheManager (object):
 				        item.children.insert (detail1, any_data)
 			        elif minor == "remove":
 				        del (item.children[detail1])
+
+	def _state_changed_handler (self,
+                                       minor, detail1, detail2, any_data, app,
+				       interface=None, sender=None, member=None, path=None):
+                if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
+		        if (sender, path) in self._cache:
+			        item = self._cache[(sender, path)]
+                                val = eval("int(state.STATE_" + string.upper(minor) + ")")
+                                high = int(val / 32)
+                                low = val % 32
+                                if (detail1 == 1):
+                                        item.state[high] |= (1 << low)
+                                else:
+                                        item.state[high] &= ~(1 << low)
 
         def remove_all (self):
                 for bus_name, object_path in self._cache.keys():
