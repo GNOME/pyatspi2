@@ -331,7 +331,7 @@ class Accessible(BaseProxy):
                 an in parameter indicating which child is requested (zero-indexed).
                 @return : the 'nth' Accessible child of this object.
                 """
-                if self.cached:
+                if self.cached and not(self._cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
                         (name, path) = self._cached_data.children[index]
                 else:
                         count = Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
@@ -435,7 +435,7 @@ class Accessible(BaseProxy):
                 return self.__eq__(other)
 
         def _get_childCount(self):
-                if self.cached:
+                if self.cached and not(self._cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
                         return len(self._cached_data.children)
                 else:
                         return Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
