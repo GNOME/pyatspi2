@@ -224,10 +224,10 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
                                source)
                 depth = gobject.main_depth()
                 r = registry.Registry()
-                if (r.asyncInternal() or depth <= 1):
-                        return event_handler(event)
-                else:
+                if (r.asyncInternal() and depth > 1):
                     r.enqueueEvent(event_handler, event)
+                else:
+                        return event_handler(event)
 
         return bus.add_signal_receiver(handler_wrapper, **kwargs)
 

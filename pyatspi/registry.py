@@ -153,6 +153,7 @@ class Registry(object):
 			name = _bus_object.GetNameOwner (_ATSPI_REGISTRY_NAME)
                         self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
 
+		self.async = False	# not fully supported yet
                 self.has_implementations = True
 
         def _set_default_registry (self):
@@ -173,7 +174,6 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-		self.async = True	# not fully supported yet
                 try:
                         self.main_loop.run()
                 except KeyboardInterrupt:
@@ -358,7 +358,7 @@ class Registry(object):
                 Tests whether events should currently be delivered
                 asynchronously
                 """
-                return self.async and not(self.frozen)
+                return self.async or self.frozen
 
         def freezeEvents (self):
                 """
