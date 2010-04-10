@@ -46,9 +46,7 @@ class AccessibleTest(_PasyTest):
                 self._registry = pyatspi.Registry()
                 print self._path
                 self._desktop = self._registry.getDesktop(0)
-                print "dbg: getting root"
                 self.root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "main" and x.getRole() == pyatspi.ROLE_WINDOW)
-                print "root: ", self.root
 
         def assertObjects(self,test,obj,vars,msg):
                 test.assertEqual(len(obj), len(vars) / 2, msg + " length")
@@ -100,6 +98,10 @@ class AccessibleTest(_PasyTest):
                         "gnome-settings-daemon", 79,
                         "gnome-panel", 79,
                 ), " getMatchesTo ")
+                ret = collection.getMatchesTo (obj, rule, collection.SORT_ORDER_REVERSE_CANONICAL, collection.TREE_INORDER, True, 1, True)
+                self.assertObjects(test,ret,(
+                        "gnome-panel", 79,
+                ), " getMatchesTo w/count=1")
                 ret = collection.getMatchesFrom (obj, rule, collection.SORT_ORDER_REVERSE_CANONICAL, collection.TREE_INORDER, 5, True)
                 self.assertObjects(test,ret,(
                         "tracker-applet", 79,
