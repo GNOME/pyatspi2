@@ -253,6 +253,8 @@ class ApplicationCacheManager (object):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
 		        if (sender, path) in self._cache:
 			        item = self._cache[(sender, path)]
+                                if item.state[0] & (1 << state.STATE_MANAGES_DESCENDANTS):
+                                        return
 			        if minor == "add":
 				        item.children.insert (detail1, any_data)
 			        elif minor == "remove":
