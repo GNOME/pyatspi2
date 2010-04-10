@@ -18,7 +18,7 @@ import registry
 import string
 
 from interfaces import *
-from role import ROLE_UNKNOWN
+from role import ROLE_DESKTOP_FRAME
 import state
 
 from busutils import *
@@ -115,7 +115,7 @@ class DesktopCacheManager (object):
                                        apps,                                    #Children 
                                        [ATSPI_ACCESSIBLE, ATSPI_COMPONENT],     #Interfaces
                                        "main",                                  #Name
-                                       ROLE_UNKNOWN,                            #Role
+                                       ROLE_DESKTOP_FRAME,                            #Role
                                        "",                                      #Description
                                        [0,0]                                    #State
                                      )
