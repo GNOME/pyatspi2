@@ -1,8 +1,8 @@
 SUBDIRS=busutils
 if RELOCATE
-pyatspidir = $(pythondir)/pyatspi_dbus
+pyatspidir = $(pyexecdir)/pyatspi_dbus
 else
-pyatspidir = $(pythondir)/pyatspi
+pyatspidir = $(pyexecdir)/pyatspi
 endif
 
 pyatspi_PYTHON = \
