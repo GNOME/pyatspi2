@@ -199,7 +199,8 @@ def event_type_to_signal_reciever(bus, factory, event_handler, event_type):
                 if   type.is_subtype (EventType ("object:bounds-changed")):
                         any_data = BoundingBox(*any_data)
                 elif (type.is_subtype (EventType ("object:children-changed")) or
-                      type.is_subtype (EventType ("object:property-change:accessible-parent"))):
+                      type.is_subtype (EventType ("object:property-change:accessible-parent")) or
+                      type.is_subtype (EventType ("object:active-descendant-changed"))):
                         data_name, data_path = any_data;
                         any_data = factory (data_name, data_path, interfaces.ATSPI_ACCESSIBLE)
 
