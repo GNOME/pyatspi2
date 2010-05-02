@@ -507,12 +507,7 @@ class Accessible(BaseProxy):
                         try:
                                 return self.extraData[name]
                         except (KeyError):
-                                r = registry.Registry()
-                                r.freezeEvents()
-                                try:
-                                        self.extraData[name] = dbus.String(self._pgetter(interface, name))
-                                finally:
-                                        r.thawEvents()
+                                self.extraData[name] = dbus.String(self._pgetter(interface, name))
                                 return self.extraData[name]
                 return dbus.String(self._pgetter(interface, name))
 

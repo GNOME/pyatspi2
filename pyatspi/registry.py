@@ -125,7 +125,6 @@ class Registry(object):
                 """
 
 		self.queue = Queue.Queue()
-                self.frozen = 0
 
                 # Set up the cache
 		cache = None
@@ -352,27 +351,6 @@ class Registry(object):
                 Empty the event queue.
                 """
                 self.queue = Queue.QUeue()
-
-        def asyncInternal (self):
-                """
-                Tests whether events should currently be delivered
-                asynchronously
-                """
-                return self.async or self.frozen
-
-        def freezeEvents (self):
-                """
-                Temporarily stop delivering events, queueing them until thaw() is called
-                """
-                self.frozen = self.frozen + 1
-
-        def thawEvents (self):
-                """
-                Start delivering events again
-                """
-                self.frozen = self.frozen - 1
-                if (self.frozen == 0):
-                        self.pumpQueuedEvents ()
 
         # -------------------------------------------------------------------------------
 
