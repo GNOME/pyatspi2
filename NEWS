@@ -1,0 +1,15 @@
+What's new in pyatspi2 0.3.1:
+
+* Fixed GetLink, GetColumnHeader, getAccessibleAtPoint, and possibly others.
+
+* Fix children-changed, property-change::accessible-parent, and
+active-descendant-changed events.
+
+* Update an accessible's StateSet when a StateChanged signal is received.
+
+* Properly fetch children of MANAGES_DESCENDANTS objects (ie, do not use cache)
+
+* The desktop's role is now set to ROLE_DESKTOP_FRAME.
+
+* Use pyexecdir as a base rather than pythondir.
+
