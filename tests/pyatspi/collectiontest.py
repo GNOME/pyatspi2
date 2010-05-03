@@ -32,6 +32,7 @@ class AccessibleTest(_PasyTest):
 
         __tests__ = ["setup",
                      "test_basic",
+                     "test_match_any",
                      "test_role",
                      "teardown",
                      ]
@@ -115,6 +116,28 @@ class AccessibleTest(_PasyTest):
                 self.assertObjects(test,ret,(
                         "Top Expanded Edge Panel", 25,
                 ), " Restrict Children ")
+
+        def test_match_any(self, test):
+                collection = self.root.queryCollection()
+                stateSet = pyatspi.StateSet()
+                rule = collection.createMatchRule (stateSet.raw(),
+                        collection.MATCH_ANY,
+                [],     # attributes
+                        collection.MATCH_ANY,
+                [],     # role
+                        collection.MATCH_ANY,
+                "",     # interfaces
+                        collection.MATCH_NONE,
+                        False)
+
+                ret = collection.getMatches (rule, collection.SORT_ORDER_CANONICAL, 5, True)
+                self.assertObjects(test,ret,(
+                        "gnome-settings-daemon", 79 ,
+                        "gnome-panel", 79 ,
+                        "Bottom Expanded Edge Panel", 25 ,
+                        "Top Expanded Edge Panel", 25 ,
+                        "nautilus", 79 ,
+                ), " 1 ")
 
         def test_role(self, test):
                 collection = self.root.queryCollection()

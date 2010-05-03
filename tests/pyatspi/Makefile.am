@@ -1,5 +1,9 @@
 if SET_GTK_MODULE
+if RELOCATE
+gtk_module_dir = $(libdir)/$(GTK_MODULE_DIR)/at-spi-dbus/modules
+else
 gtk_module_dir = $(libdir)/$(GTK_MODULE_DIR)
+endif
 else
 gtk_module_dir = $(GTK_MODULE_DIR)
 endif

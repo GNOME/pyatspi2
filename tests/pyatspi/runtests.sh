@@ -5,9 +5,20 @@ export TEST_ATSPI_LIBRARY=$gtk_module_dir/libatk-bridge.so
 export TEST_MODULES_DIRECTORY=$top_builddir/tests/apps/.libs
 export TEST_APPLICATION=$top_builddir/tests/apps/test-application
 
-$PYTHON $top_srcdir/tests/pyatspi/testrunner -l libaccessibleapp.so -m accessibletest -n AccessibleTest
-$PYTHON $top_srcdir/tests/pyatspi/testrunner -l libactionapp.so -m actiontest -n ActionTest
-$PYTHON $top_srcdir/tests/pyatspi/testrunner -l libaccessibleapp.so -m collectiontest -n AccessibleTest
-$PYTHON $top_srcdir/tests/pyatspi/testrunner -l libcomponentapp.so -m componenttest -n ComponentTest
-$PYTHON $top_srcdir/tests/pyatspi/testrunner -l librelationapp.so -m relationtest -n RelationTest
-$PYTHON $top_srcdir/tests/pyatspi/testrunner -l libaccessibleapp.so -m statetest -n StateTest
+run()
+{
+  $PYTHON $top_srcdir/tests/pyatspi/testrunner -l $1 -m $2 -n $3
+  result=$?
+  if [ $result -ne 0 ]; then
+    ret=$result
+    fi
+}
+
+ret=0
+run libaccessibleapp.so accessibletest AccessibleTest
+run libactionapp.so actiontest ActionTest
+run libaccessibleapp.so collectiontest AccessibleTest
+run libcomponentapp.so componenttest ComponentTest
+run librelationapp.so relationtest RelationTest
+run libaccessibleapp.so statetest StateTest
+exit $ret
