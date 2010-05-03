@@ -242,6 +242,7 @@ class ApplicationCacheManager (object):
 				        item.name = any_data
 			        elif minor == "accessible-description":
 				        item.description = any_data
+					print "new description: ", any_data
 			        elif minor == "accessible-parent":
 				        item.parent = any_data
 

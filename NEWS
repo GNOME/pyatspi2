@@ -13,3 +13,4 @@ active-descendant-changed events.
 
 * Use pyexecdir as a base rather than pythondir.
 
+* Disable relocation by default.
