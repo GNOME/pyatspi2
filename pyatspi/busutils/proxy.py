@@ -86,8 +86,10 @@ class AccessibilityProxy (_connection.ProxyObject):
                                 *iargs,
                                 **ikwargs)
 
+			self._bus.freezeEvents()
 			data.loop.run ()
 			AccessibilityProxy._main_loop_pool.put_nowait (data.loop)
+			self._bus.thawEvents()
 
 			#depth = gobject.main_depth()
 			#print ("\t" * depth) + "Post-recurse"

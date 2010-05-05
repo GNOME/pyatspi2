@@ -67,8 +67,22 @@ class _AccessibilityBus (_bus.BusConnection):
 	def __init__ (self, address, mainloop):
 		_bus.BusConnection.__init__(self, address, mainloop)
 		self._signal_queue = _queue.Queue ()
+                self.eventsFrozen = False
+                self.needEventDispatch = False
+
+        def freezeEvents(self):
+                self.eventsFrozen = True
+
+        def thawEvents(self):
+                self.eventsFrozen = False
+                if self.needEventDispatch:
+                	gobject.idle_add(self._event_dispatch)
+                        self.needEventDispatch = False
 
 	def _event_dispatch (self):
+                if self.eventsFrozen:
+                        self.needEventDispatch = True
+                        return
 		while not self._signal_queue.empty():
 			(func, args, kwargs) = self._signal_queue.get (False)
 			func (*args, **kwargs)
@@ -78,7 +92,10 @@ class _AccessibilityBus (_bus.BusConnection):
 		
 		def wrapper (*iargs, **ikwargs):
 			self._signal_queue.put ((func, iargs, ikwargs))
-                	gobject.idle_add(self._event_dispatch)
+                        if self.eventsFrozen:
+                	        self.needEventDispatch = True
+                        else:
+                	        gobject.idle_add(self._event_dispatch)
 
 		return _bus.BusConnection.add_signal_receiver (self, wrapper, *args, **kwargs)
 
