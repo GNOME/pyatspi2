@@ -28,7 +28,7 @@ __all__ = [
            "AccessibleCache"
           ]
 
-_ATSPI_CACHE_PATH = '/org/at_spi/cache'
+_ATSPI_CACHE_PATH = '/org/a11y/atspi/cache'
 _ATSPI_CACHE_INTERFACE = 'org.a11y.atspi.Cache'
 _ATSPI_EVENT_OBJECT_INTERFACE = "org.a11y.atspi.Event.Object"
 
@@ -124,24 +124,26 @@ class DesktopCacheManager (object):
                 for bus_name, object_path in apps:
                                 self._application_list[bus_name] = ApplicationCacheManager (cache, bus_name)
 
-	def _children_changed_handler (self, 
+        def _children_changed_handler (self, 
                                        minor, detail1, detail2, any_data, app,
-				       interface=None, sender=None, member=None, path=None):
+                                       interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE and sender == self._unique_name and path == ATSPI_ROOT_PATH:
-		        if minor == "add":
+                        if minor == "add":
                                 bus_name, object_path = any_data
                                 r = registry.Registry()
                                 self._application_list[bus_name] = ApplicationCacheManager(self._cache, bus_name)
-		        elif minor == "remove":
+                                self._cache[(self._unique_name, ATSPI_ROOT_PATH)].children.append (any_data)
+                        elif minor == "remove":
                                 bus_name, object_path = any_data
                                 self._application_list[bus_name].remove_all()
                                 del(self._application_list[bus_name])
+                                self._cache[(self._unique_name, ATSPI_ROOT_PATH)].children.remove (any_data)
 
-			item = self._cache[(sender, path)]
-			if minor == "add":
-				item.children.insert (detail1, any_data)
-			elif minor == "remove":
-				del (item.children[detail1])
+                        item = self._cache[(sender, path)]
+                        if minor == "add":
+                                item.children.insert (detail1, any_data)
+                        elif minor == "remove":
+                                del (item.children[detail1])
 
 #------------------------------------------------------------------------------
 
@@ -164,7 +166,7 @@ class ApplicationCacheManager (object):
                 bus = AsyncAccessibilityBus()
 
                 self._cache = cache
-		self._bus_name = bus_name
+                self._bus_name = bus_name
 
                 cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH, introspect=False)
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
@@ -201,14 +203,14 @@ class ApplicationCacheManager (object):
                                                 sender_keyword="sender",
                                                 path_keyword="path")
 
-		self._cache_add = \
+                self._cache_add = \
                         bus.add_signal_receiver(self._add_object,
                                                 bus_name=self._bus_name,
                                                 path=_ATSPI_CACHE_PATH,
                                                 dbus_interface=_ATSPI_CACHE_INTERFACE,
                                                 signal_name="AddAccessible")
 
-		self._cache_remove = \
+                self._cache_remove = \
                         bus.add_signal_receiver(self._remove_object,
                                                 bus_name=self._bus_name,
                                                 path=_ATSPI_CACHE_PATH,
@@ -222,7 +224,7 @@ class ApplicationCacheManager (object):
                 self._cache[(bus_name, object_path)] = _CacheData (data)
 
         def _remove_object(self, reference):
-		bus_name, object_path = reference
+                bus_name, object_path = reference
                 try:
                         del(self._cache[(bus_name, object_path)])
                 except KeyError:
@@ -232,39 +234,38 @@ class ApplicationCacheManager (object):
                 for data in objects:
                         self._add_object (data)
 
-	def _property_change_handler (self,
-                                      minor, detail1, detail2, any_data, app,
-				      interface=None, sender=None, member=None, path=None):
+        def _property_change_handler (self,
+                                      app, minor, detail1, detail2, any_data,
+                                      interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
                         if (sender, path) in self._cache:
-			        item = self._cache[(sender, path)]
-			        if minor == "accessible-name":
-				        item.name = any_data
-			        elif minor == "accessible-description":
-				        item.description = any_data
-					print "new description: ", any_data
-			        elif minor == "accessible-parent":
-				        item.parent = any_data
+                                item = self._cache[(sender, path)]
+                                if minor == "accessible-name":
+                                        item.name = any_data
+                                elif minor == "accessible-description":
+                                        item.description = any_data
+                                elif minor == "accessible-parent":
+                                        item.parent = any_data
 
-	def _children_changed_handler (self,
+        def _children_changed_handler (self,
                                        minor, detail1, detail2, any_data, app,
-				       interface=None, sender=None, member=None, path=None):
+                                       interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
-		        if (sender, path) in self._cache:
-			        item = self._cache[(sender, path)]
+                        if (sender, path) in self._cache:
+                                item = self._cache[(sender, path)]
                                 if item.state[0] & (1 << state.STATE_MANAGES_DESCENDANTS):
                                         return
-			        if minor == "add":
-				        item.children.insert (detail1, any_data)
-			        elif minor == "remove":
-				        del (item.children[detail1])
+                                if minor == "add":
+                                        item.children.insert (detail1, any_data)
+                                elif minor == "remove":
+                                        del (item.children[detail1])
 
-	def _state_changed_handler (self,
+        def _state_changed_handler (self,
                                        minor, detail1, detail2, any_data, app,
-				       interface=None, sender=None, member=None, path=None):
+                                       interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
-		        if (sender, path) in self._cache:
-			        item = self._cache[(sender, path)]
+                        if (sender, path) in self._cache:
+                                item = self._cache[(sender, path)]
                                 val = eval("int(state.STATE_" + string.upper(minor) + ")")
                                 high = int(val / 32)
                                 low = val % 32
@@ -282,8 +283,8 @@ class ApplicationCacheManager (object):
 
 class AccessibleCache (dict):
 
-	def __init__ (self, bus_name=None):
-		dict.__init__ (self)
+        def __init__ (self, bus_name=None):
+                dict.__init__ (self)
 
                 if bus_name:
                         self._manager = ApplicationCacheManager (self, bus_name) 

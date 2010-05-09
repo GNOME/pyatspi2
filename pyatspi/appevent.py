@@ -127,24 +127,18 @@ _klass_to_interface = {
 #------------------------------------------------------------------------------
 
 def _major_to_signal_name (name):
-        ret = string.upper(name[0])
-        for i in range(1,len(name)):
-                if (name[i] == '-'):
-                        pass
-                elif (name[i-1] == '-'):
-                        ret += string.upper(name[i])
-                else:
-                        ret += name[i]
-        return ret
-
+        def capitalize (s):
+                return s[0].upper() + s[1:]
+                
+        return ''.join ([capitalize (p) for p in name.split('-')])
+        
 def _signal_name_to_major (name):
-        ret = string.lower(name[0])
-        for i in range(1,len(name)):
-                if (name[i] == str.lower(name[i])):
-                        ret += name[i]
-                else:
-                        ret += "-" + string.lower(name[++i])
-        return ret
+        def dashize (s):
+                if s.isupper():
+                        return '-' + s.lower()
+                return s
+
+        return ''.join ([name[0].lower(),] + [dashize (c) for c in name[1:]])
 
 #------------------------------------------------------------------------------
 
