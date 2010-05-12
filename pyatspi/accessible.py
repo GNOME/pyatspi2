@@ -418,7 +418,10 @@ class Accessible(BaseProxy):
                         return _marshal_state_set(self._cached_data.state)
                 else:
                         func = self.get_dbus_method("GetState", dbus_interface=ATSPI_ACCESSIBLE)
-                        return _marshal_state_set(func())
+                        try:
+                                return _marshal_state_set(func())
+                        except LookupError:
+                                return [STATE_DEFUNCT]
 
         def isEqual(self, other):
                 """
