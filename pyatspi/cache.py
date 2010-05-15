@@ -139,11 +139,11 @@ class DesktopCacheManager (object):
                                 del(self._application_list[bus_name])
                                 self._cache[(self._unique_name, ATSPI_ROOT_PATH)].children.remove (any_data)
 
-                        item = self._cache[(sender, path)]
-                        if minor == "add":
-                                item.children.insert (detail1, any_data)
-                        elif minor == "remove":
-                                del (item.children[detail1])
+                        #item = self._cache[(sender, path)]
+                        #if minor == "add":
+                        #        item.children.insert (detail1, any_data)
+                        #elif minor == "remove":
+                        #        del (item.children[detail1])
 
 #------------------------------------------------------------------------------
 
