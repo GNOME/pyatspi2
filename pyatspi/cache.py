@@ -170,7 +170,6 @@ class ApplicationCacheManager (object):
 
                 cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH, introspect=False)
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
-                r = registry.Registry()
                 self._add_objects(cache_itf.GetItems())
 
                 self._property_change =  \
@@ -242,6 +241,8 @@ class ApplicationCacheManager (object):
                                 item = self._cache[(sender, path)]
                                 if minor == "accessible-name":
                                         item.name = any_data
+                                if minor == "accessible-role":
+                                        item.role = any_data
                                 elif minor == "accessible-description":
                                         item.description = any_data
                                 elif minor == "accessible-parent":
