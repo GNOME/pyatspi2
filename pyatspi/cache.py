@@ -170,7 +170,10 @@ class ApplicationCacheManager (object):
 
                 cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH, introspect=False)
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
-                self._add_objects(cache_itf.GetItems())
+                try:
+                        self._add_objects(cache_itf.GetItems())
+                except dbus.exceptions.DBusException:
+                        pass
 
                 self._property_change =  \
                         bus.add_signal_receiver(self._property_change_handler,

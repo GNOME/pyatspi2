@@ -154,6 +154,7 @@ class Registry(object):
 
 		self.async = False	# not fully supported yet
                 self.has_implementations = True
+                self.started = False
 
         def _set_default_registry (self):
                 self._set_registry (MAIN_LOOP_GLIB)
@@ -173,6 +174,7 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
+                self.started = True
                 try:
                         self.main_loop.run()
                 except KeyboardInterrupt:

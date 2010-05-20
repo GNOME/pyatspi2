@@ -263,6 +263,8 @@ class Accessible(BaseProxy):
 
         @property
 	def cached (self):
+                if not(registry.Registry().started):
+                        return False
                 if self._cache is not None:
 		        return (self.app_name, self.acc_path) in self._cache
                 else:
