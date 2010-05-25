@@ -1,3 +1,21 @@
+What's new in pyatspi2 0.3.2:
+
+* Remove double deletion of application from the desktop cache handler.
+Was causing a mostly harmless exception when an application shut down.
+
+* Role changes now update the cache.
+
+* Avoid throwing an exception in getState() if an object no longer exists.
+This avoids potentially throwing an eception where at-spi-corba may not.
+
+* Do not use the cache if registry.start() has not been called; allows
+simple scripts without a main loop to work better.
+
+What's new in pyatspi2 0.3.1.1:
+
+Install to $PYTHONDIR again, since we have no arch-specific dependencies.
+
+* Do not dispatch events while waiting for a reply from a method call.
 What's new in pyatspi2 0.3.1:
 
 * Fixed GetLink, GetColumnHeader, getAccessibleAtPoint, and possibly others.
