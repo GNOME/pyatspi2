@@ -237,7 +237,7 @@ class ApplicationCacheManager (object):
                         self._add_object (data)
 
         def _property_change_handler (self,
-                                      app, minor, detail1, detail2, any_data,
+                                      minor, detail1, detail2, any_data, app,
                                       interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
                         if (sender, path) in self._cache:
