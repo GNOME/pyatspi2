@@ -50,7 +50,10 @@ class Hyperlink(Accessible):
                 ith anchor can be accessed.
                 """
                 func = self.get_dbus_method("GetObject", dbus_interface=ATSPI_HYPERLINK)
-                return self._acc_factory (self._app_name, func(index), ATSPI_ACCESSIBLE)
+                (name, path) = func(index)
+                if (name == ""):
+                        name = self._app_name
+                return self._acc_factory (name, path, ATSPI_ACCESSIBLE)
 
         def getURI(self, index):
                 """
