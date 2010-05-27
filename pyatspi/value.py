@@ -34,7 +34,7 @@ class Value(Accessible):
         def get_currentValue(self):
                 return dbus.Double(self._pgetter(ATSPI_VALUE, "CurrentValue"))
         def set_currentValue(self, value):
-                self._psetter(self._dbus_interface, "currentValue", dbus.Double(value, variant_level=1))
+                self._psetter(ATSPI_VALUE, "CurrentValue", dbus.Double(value, variant_level=1))
         _currentValueDoc = \
                 """
                 The current value of the valuator.
