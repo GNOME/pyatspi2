@@ -262,7 +262,11 @@ class ApplicationCacheManager (object):
                                 if minor == "add":
                                         item.children.insert (detail1, any_data)
                                 elif minor == "remove":
-                                        del (item.children[detail1])
+                                        item.children.remove (any_data)
+                                        if any_data in self._cache:
+                                                child = self._cache[any_data]
+                                                if child.parent == (sender, path):
+                                                        child.parent = (sender, ATSPI_NULL_PATH)
 
         def _state_changed_handler (self,
                                        minor, detail1, detail2, any_data, app,
