@@ -90,14 +90,30 @@ class DesktopCacheManager (object):
                 self._application_list = {}
 
                 bus.add_signal_receiver(self._children_changed_handler,
-                                        #bus_name=ATSPI_REGISTRY_NAME,
-                                        #path=ATSPI_ROOT_PATH,
                                         dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
                                         signal_name="ChildrenChanged",
                                         interface_keyword="interface",
                                         member_keyword="member",
                                         sender_keyword="sender",
                                         path_keyword="path")
+
+                self._property_change =  \
+                        bus.add_signal_receiver(self._property_change_handler,
+                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
+                                                signal_name="PropertyChange",
+                                                interface_keyword="interface",
+                                                member_keyword="member",
+                                                sender_keyword="sender",
+                                                path_keyword="path")
+
+                self._state_changed = \
+                        bus.add_signal_receiver(self._state_changed_handler,
+                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
+                                                signal_name="StateChanged",
+                                                interface_keyword="interface",
+                                                member_keyword="member",
+                                                sender_keyword="sender",
+                                                path_keyword="path")
 
                 obj     = bus.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH, introspect=False)
                 desktop = dbus.Interface(obj, ATSPI_ACCESSIBLE)
@@ -145,7 +161,25 @@ class DesktopCacheManager (object):
                         #elif minor == "remove":
                         #        del (item.children[detail1])
 
+                if sender in self._application_list:
+                        app = self._application_list[sender]
+                        app._children_changed_handler(minor, detail1, detail2, any_data, app, interface, sender, member, path)
+
 #------------------------------------------------------------------------------
+
+        def _property_change_handler (self,
+                                       minor, detail1, detail2, any_data, app,
+                                       interface=None, sender=None, member=None, path=None):
+                if sender in self._application_list:
+                        app = self._application_list[sender]
+                        app._property_change_handler(minor, detail1, detail2, any_data, app, interface, sender, member, path)
+
+        def _state_changed_handler (self,
+                                       minor, detail1, detail2, any_data, app,
+                                       interface=None, sender=None, member=None, path=None):
+                if sender in self._application_list:
+                        app = self._application_list[sender]
+                        app._state_changed_handler(minor, detail1, detail2, any_data, app, interface, sender, member, path)
 
 class ApplicationCacheManager (object):
         """
@@ -174,36 +208,6 @@ class ApplicationCacheManager (object):
                         self._add_objects(cache_itf.GetItems())
                 except dbus.exceptions.DBusException:
                         pass
-
-                self._property_change =  \
-                        bus.add_signal_receiver(self._property_change_handler,
-                                                bus_name=self._bus_name,
-                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
-                                                signal_name="PropertyChange",
-                                                interface_keyword="interface",
-                                                member_keyword="member",
-                                                sender_keyword="sender",
-                                                path_keyword="path")
-
-                self._children_changed = \
-                        bus.add_signal_receiver(self._children_changed_handler,
-                                                bus_name=self._bus_name,
-                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
-                                                signal_name="ChildrenChanged",
-                                                interface_keyword="interface",
-                                                member_keyword="member",
-                                                sender_keyword="sender",
-                                                path_keyword="path")
-
-                self._state_changed = \
-                        bus.add_signal_receiver(self._state_changed_handler,
-                                                bus_name=self._bus_name,
-                                                dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
-                                                signal_name="StateChanged",
-                                                interface_keyword="interface",
-                                                member_keyword="member",
-                                                sender_keyword="sender",
-                                                path_keyword="path")
 
                 self._cache_add = \
                         bus.add_signal_receiver(self._add_object,
