@@ -241,8 +241,23 @@ class Accessible(BaseProxy):
                 return self.getChildCount()
 
         def __getitem__(self, index):
+                """
+                Thin wrapper around getChildAtIndex.
+                
+                @param index: Index of desired child
+                @type index: integer
+                @return: Accessible child
+                @rtype: Accessibility.Accessible
+                """
+                n = self.childCount
+                if index >= n:
+                        raise IndexError
+                elif index < -n:
+                        raise IndexError
+                elif index < 0:
+                        index += n
                 return self.getChildAtIndex(index)
-
+            
         # Bonobo interface --------------------------------------------------------------
 
         def queryInterface(self, interface):
@@ -336,9 +351,6 @@ class Accessible(BaseProxy):
                 if self.cached and not(self._cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
                         (name, path) = self._cached_data.children[index]
                 else:
-                        count = Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
-                        if index >= count:
-                                raise IndexError
                         func = self.get_dbus_method("GetChildAtIndex", dbus_interface=ATSPI_ACCESSIBLE)
                         (name, path) = func (index)
 
