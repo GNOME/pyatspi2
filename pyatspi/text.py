@@ -249,7 +249,7 @@ class Text(Accessible):
                 func = self.get_dbus_method("GetCharacterAtOffset", dbus_interface=ATSPI_TEXT)
                 return func(offset)
 
-        def getCharacterExtents(self, offset, x, y, width, height, coordType):
+        def getCharacterExtents(self, offset, coordType):
                 """
                 Obtain a the bounding box, as x, y, width, and height, of the
                 character or glyph at a particular character offset in this object's
@@ -260,18 +260,6 @@ class Text(Accessible):
                 and therefore may apply to more than one character offset. 
                 @param : offset
                 the character offset of the character or glyph being queried.
-                @param : x
-                the minimum horizontal coordinate of the bounding box of the
-                glyph representing the character at offset. 
-                @param : y
-                the minimum vertical coordinate of the bounding box of the glyph
-                representing the character at offset. 
-                @param : width
-                the horizontal extent of the bounding box of the glyph representing
-                the character at offset. 
-                @param : height
-                the vertical extent of the bounding box of the glyph representing
-                the character at offset. 
                 @param : coordType
                 If 0, the results will be reported in screen coordinates, i.e.
                 in pixels relative to the upper-left corner of the screen, with
@@ -281,7 +269,7 @@ class Text(Accessible):
                 down.
                 """
                 func = self.get_dbus_method("GetCharacterExtents", dbus_interface=ATSPI_TEXT)
-                return func(offset, x, y, width, height, UInt32(coordType))
+                return func(offset, UInt32(coordType))
 
         def getDefaultAttributeSet(self):
                 """
