@@ -55,7 +55,7 @@ class Document(Accessible):
                 as name-value pairs.
                 """
                 func = self.get_dbus_method("GetAttributes", dbus_interface=ATSPI_DOCUMENT)
-                return [key + ':' + value for key, value in func().values()]
+                return [key + ':' + value for key, value in func().iteritems()]
 
         def getLocale(self):
                 """
