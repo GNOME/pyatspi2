@@ -283,11 +283,11 @@ class Event(object):
 
         @property
         def source_name(self):
-                return source.name
+                return self.source.name
 
         @property
         def source_role(self):
-                return source.getRole()
+                return self.source.getRole()
 
         def __str__(self):
                 """
