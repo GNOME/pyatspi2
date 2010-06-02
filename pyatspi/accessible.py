@@ -435,7 +435,7 @@ class Accessible(BaseProxy):
                         try:
                                 return _marshal_state_set(func())
                         except LookupError:
-                                return [STATE_DEFUNCT]
+                                return _marshal_state_set ([1 << STATE_DEFUNCT, 0])
 
         def isEqual(self, other):
                 """
