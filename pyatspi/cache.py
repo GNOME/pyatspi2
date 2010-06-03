@@ -146,7 +146,6 @@ class DesktopCacheManager (object):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE and sender == self._unique_name and path == ATSPI_ROOT_PATH:
                         if minor == "add":
                                 bus_name, object_path = any_data
-                                r = registry.Registry()
                                 self._application_list[bus_name] = ApplicationCacheManager(self._cache, bus_name)
                                 self._cache[(self._unique_name, ATSPI_ROOT_PATH)].children.append (any_data)
                         elif minor == "remove":
@@ -263,9 +262,9 @@ class ApplicationCacheManager (object):
                                 item = self._cache[(sender, path)]
                                 if item.state[0] & (1 << state.STATE_MANAGES_DESCENDANTS):
                                         return
-                                if minor == "add":
+                                if minor.startswith("add"):
                                         item.children.insert (detail1, any_data)
-                                elif minor == "remove":
+                                elif minor.startswith("remove"):
                                         item.children.remove (any_data)
                                         if any_data in self._cache:
                                                 child = self._cache[any_data]
