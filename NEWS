@@ -1,3 +1,26 @@
+What's new in pyatspi2 0.3.3:
+
+* Hyperlink fixes.
+
+* When an object's parent is set to null, remove it from the parent in
+the cache.
+
+* Fix an issue where a state-changed handler can be called before the
+cache received the signal and updated the state.
+
+* Only range check for __getitem__, not getChildAtIndex.  This is
+pyatspi-corba's behavior and should improve performance in some cases.
+
+* Fix tracebacks when checking some event properties.
+
+* Fix a traceback when simulating a defunct state for an object that has
+gone away.
+
+* Fix traceback when calling queryDocument.getAttributes(),
+queryText().getCharacterExtents(), and queryValue().setCurrentValue().
+
+* Fix handling of some ChildrenChanged signals sent by Firefox.
+
 What's new in pyatspi2 0.3.2:
 
 * Remove double deletion of application from the desktop cache handler.
