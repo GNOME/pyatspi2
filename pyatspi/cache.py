@@ -115,6 +115,18 @@ class DesktopCacheManager (object):
                                                 sender_keyword="sender",
                                                 path_keyword="path")
 
+                self._cache_add = \
+                        bus.add_signal_receiver(self._add_object,
+                                                path=_ATSPI_CACHE_PATH,
+                                                dbus_interface=_ATSPI_CACHE_INTERFACE,
+                                                signal_name="AddAccessible")
+
+                self._cache_remove = \
+                        bus.add_signal_receiver(self._remove_object,
+                                                path=_ATSPI_CACHE_PATH,
+                                                dbus_interface=_ATSPI_CACHE_INTERFACE,
+                                                signal_name="RemoveAccessible")
+
                 obj     = bus.get_object(ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH, introspect=False)
                 desktop = dbus.Interface(obj, ATSPI_ACCESSIBLE)
                 apps    = desktop.GetChildren()
@@ -180,12 +192,19 @@ class DesktopCacheManager (object):
                         app = self._application_list[sender]
                         app._state_changed_handler(minor, detail1, detail2, any_data, app, interface, sender, member, path)
 
+        def _add_object(self, data):
+                        app = self._application_list[data[0][0]]
+                        app._add_object(data)
+
+        def _remove_object(self, data):
+                        app = self._application_list[data[0]]
+                        app._remove_object(data)
+
 class ApplicationCacheManager (object):
         """
         The application cache manager is responsible for keeping the cache up to date
         with cache items from the given application.
         """
-
 
         def __init__(self, cache, bus_name):
                 """
@@ -207,20 +226,6 @@ class ApplicationCacheManager (object):
                         self._add_objects(cache_itf.GetItems())
                 except dbus.exceptions.DBusException:
                         pass
-
-                self._cache_add = \
-                        bus.add_signal_receiver(self._add_object,
-                                                bus_name=self._bus_name,
-                                                path=_ATSPI_CACHE_PATH,
-                                                dbus_interface=_ATSPI_CACHE_INTERFACE,
-                                                signal_name="AddAccessible")
-
-                self._cache_remove = \
-                        bus.add_signal_receiver(self._remove_object,
-                                                bus_name=self._bus_name,
-                                                path=_ATSPI_CACHE_PATH,
-                                                dbus_interface=_ATSPI_CACHE_INTERFACE,
-                                                signal_name="RemoveAccessible")
 
 
         def _add_object (self, data):
