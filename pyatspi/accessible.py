@@ -428,6 +428,9 @@ class Accessible(BaseProxy):
                 @return : a StateSet encapsulating the currently true states
                 of the object.
                 """
+                if self.getRole() == 78:
+                        print "embedded"
+                        return self[0].getState()
                 if self.cached:
                         return _marshal_state_set(self._cached_data.state)
                 else:

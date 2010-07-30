@@ -84,7 +84,7 @@ class DesktopCacheManager (object):
         """
  
         def __init__(self, cache):
-                bus = SyncAccessibilityBus ()
+                bus = SyncAccessibilityBus (registry.Registry())
 
                 self._cache = cache
                 self._application_list = {}
@@ -215,7 +215,7 @@ class ApplicationCacheManager (object):
                 """
                 # It is important that this bus is async as registered signals may
                 # come from orca itself.
-                bus = AsyncAccessibilityBus()
+                bus = AsyncAccessibilityBus(registry.Registry())
 
                 self._cache = cache
                 self._bus_name = bus_name

@@ -14,6 +14,7 @@
 
 import dbus.connection as _connection
 import gobject
+import threading
 
 import Queue
 
@@ -39,10 +40,15 @@ class AccessibilityProxy (_connection.ProxyObject):
 	_main_loop_pool = _MainLoopPool ()
 
         class DBusMethodCallbackData (object):
-                def __init__ (self):
+                def __init__ (self, proxy):
 			# Will raise the Empty exception if we have hit
 			# The re-entrancy limit
-			self.loop  = AccessibilityProxy._main_loop_pool.get_nowait ()
+                        if proxy._bus.registry.has_implementations == False or proxy._bus.registry.started == False or threading.currentThread() == proxy._bus.registry.thread:
+			        self.event = None
+			        self.loop  = AccessibilityProxy._main_loop_pool.get_nowait ()
+                        else:
+			        self.event = threading.Event()
+			        self.loop  = None
                         self.error = None
                         self.args  = None
         
@@ -58,14 +64,18 @@ class AccessibilityProxy (_connection.ProxyObject):
 			#print ("\t" * depth) + "Depth=" + str(gobject.main_depth())
 			#print
 
-                        data = AccessibilityProxy.DBusMethodCallbackData()
+                        self._bus.registry.acquireLock()
+                        data = AccessibilityProxy.DBusMethodCallbackData(self)
 
                         def method_error_callback (e):
                                 data.error = e
 				def main_quit ():
 					data.loop.quit()
 					return False
-				gobject.idle_add (main_quit)
+                                if data.event is not None:
+                                        data.event.set()
+                                else:
+				        gobject.idle_add (main_quit)
 
                         def method_reply_callback (*jargs):
 
@@ -79,7 +89,11 @@ class AccessibilityProxy (_connection.ProxyObject):
 				def main_quit ():
 					data.loop.quit()
 					return False
-				gobject.idle_add (main_quit)
+
+                                if data.event is not None:
+                                        data.event.set()
+                                else:
+				        gobject.idle_add (main_quit)
 
                         method (reply_handler=method_reply_callback,
                                 error_handler=method_error_callback,
@@ -87,9 +101,13 @@ class AccessibilityProxy (_connection.ProxyObject):
                                 **ikwargs)
 
 			self._bus.freezeEvents()
-			data.loop.run ()
+                        if data.event is not None:
+                                data.event.wait()
+                        else:
+			        data.loop.run ()
 			AccessibilityProxy._main_loop_pool.put_nowait (data.loop)
 			self._bus.thawEvents()
+                        self._bus.registry.releaseLock()
 
 			#depth = gobject.main_depth()
 			#print ("\t" * depth) + "Post-recurse"

@@ -306,7 +306,7 @@ class Event(object):
 class _ApplicationEventRegister (object):
 
         def __init__ (self, factory):
-                self._bus = AsyncAccessibilityBus ()
+                self._bus = AsyncAccessibilityBus (registry.Registry())
                 self._factory = factory
 
                 self._event_listeners = {}

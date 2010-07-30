@@ -24,7 +24,6 @@ import gobject
 from proxy import AccessibilityProxy
 
 import sys
-import traceback
 
 def _get_accessibility_bus_address ():
 
@@ -114,7 +113,7 @@ class AsyncAccessibilityBus (_AccessibilityBus):
 
 	_shared_instance = None
 	
-	def __new__ (cls):
+	def __new__ (cls, registry):
 		if AsyncAccessibilityBus._shared_instance:
 			return AsyncAccessibilityBus._shared_instance
 		else:
@@ -127,11 +126,12 @@ class AsyncAccessibilityBus (_AccessibilityBus):
 			
 			return AsyncAccessibilityBus._shared_instance
 
-	def __init__ (self):
+	def __init__ (self, registry):
 		try:
 			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
 		except Exception:
 			_AccessibilityBus.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)
+                self.registry = registry
 
 class SyncAccessibilityBus (_bus.BusConnection):
 	"""
@@ -140,7 +140,7 @@ class SyncAccessibilityBus (_bus.BusConnection):
 
 	_shared_instance = None
 	
-	def __new__ (cls):
+	def __new__ (cls, registry):
 		if SyncAccessibilityBus._shared_instance:
 			return SyncAccessibilityBus._shared_instance
 		else:
@@ -153,8 +153,9 @@ class SyncAccessibilityBus (_bus.BusConnection):
 			
 			return SyncAccessibilityBus._shared_instance
 
-	def __init__ (self):
+	def __init__ (self, registry):
 		try:
 			_bus.BusConnection.__init__ (self, _get_accessibility_bus_address(), None)
 		except Exception:
 			_bus.BusConnection.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)
+                self.registry = registry

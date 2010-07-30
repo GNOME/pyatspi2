@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from interfaces import *
+import registry
 
 import dbus as _dbus
 import dbus.service as _service
@@ -534,7 +535,7 @@ class KeyboardDeviceEventListener(_service.Object):
 class _DeviceEventRegister (object):
         
         def __init__ (self):
-                self._bus = SyncAccessibilityBus ()
+                self._bus = SyncAccessibilityBus (registry.Registry())
                 self.dev = DeviceEventController (self._bus)
                 self.deviceClients = {}
 

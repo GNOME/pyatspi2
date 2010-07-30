@@ -24,6 +24,8 @@
 import dbus
 import os as _os
 import Queue
+import threading
+import time
 import traceback
 
 from busutils import *
@@ -136,7 +138,7 @@ class Registry(object):
                 _os.environ["AT_SPI_CLIENT"] = "1"
 
                 # Set up the device event controllers
-                _connection = SyncAccessibilityBus ()
+                _connection = SyncAccessibilityBus (self)
                 _bus_object = _connection.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
 
                 if app_name:
@@ -174,8 +176,16 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
+                self.acquireLock()
+                self.thread = threading.currentThread()
                 self.started = True
+
+                def idleReleaseLock():
+                        self.releaseLock()
+                        return False
+
                 try:
+                        gobject.idle_add(idleReleaseLock)
                         self.main_loop.run()
                 except KeyboardInterrupt:
                         pass
@@ -391,6 +401,22 @@ class Registry(object):
                 if not self.has_implementations:
                         self._set_default_registry ()
                 self.device_event_register.generateMouseEvent (x, y, name)
+
+        def acquireLock(self):
+                """
+                Acquire a lock, creating the registry irst if needed.
+                """
+                try:
+                        self.lock.acquire()
+                except AttributeError:
+                        self.lock = threading.Lock()
+                        self.lock.acquire()
+
+        def releaseLock(self):
+                """
+                Release the lock
+                """
+                self.lock.release()
 
 #------------------------------------------------------------------------------
 

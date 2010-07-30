@@ -119,8 +119,12 @@ class Selection(Accessible):
                 be selected.
                 @return True if the child was successfully selected, False otherwise.
                 """
+		print "calling selectChild"
                 func = self.get_dbus_method("SelectChild", dbus_interface=ATSPI_SELECTION)
-                return func(index)
+		print "calling"
+		val = func(index)
+		print "called"
+		return val
 
         def get_nSelectedChildren(self):
                 return dbus.Int32(self._pgetter(ATSPI_SELECTION, "NSelectedChildren"))

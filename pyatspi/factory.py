@@ -13,6 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 import interfaces
+import registry
 
 from accessible import *
 from action import *
@@ -47,7 +48,7 @@ class AccessibleFactory (object):
 
         def __init__ (self, cache):
 
-                self._connection = AsyncAccessibilityBus() 
+                self._connection = AsyncAccessibilityBus(registry.Registry())
 
                 self._interfaces = { 
                         interfaces.ATSPI_ACCESSIBLE:Accessible,
