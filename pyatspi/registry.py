@@ -135,6 +135,8 @@ class Registry(object):
 
                 factory = AccessibleFactory(cache)
 
+                self.has_implementations = True
+
                 _os.environ["AT_SPI_CLIENT"] = "1"
 
                 # Set up the device event controllers
@@ -155,7 +157,6 @@ class Registry(object):
                         self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
 
 		self.async = False	# not fully supported yet
-                self.has_implementations = True
                 self.started = False
 
         def _set_default_registry (self):
@@ -184,11 +185,31 @@ class Registry(object):
                         self.releaseLock()
                         return False
 
-                try:
-                        gobject.idle_add(idleReleaseLock)
+                gobject.idle_add(idleReleaseLock)
+
+                if gil:
+                        def releaseGIL():
+                                try:
+                                        time.sleep(1e-5)
+                                except KeyboardInterrupt, e:
+                                        # store the exception for later
+                                        releaseGIL.keyboard_exception = e
+                                        self.stop()
+                                return True
+                        # make room for an exception if one occurs during the 
+                        releaseGIL.keyboard_exception = None
+                        i = gobject.idle_add(releaseGIL)
+                        
                         self.main_loop.run()
-                except KeyboardInterrupt:
-                        pass
+                        gobject.source_remove(i)
+                        if releaseGIL.keyboard_exception is not None:
+                                # raise an keyboard exception we may have gotten earlier
+                                raise releaseGIL.keyboard_exception
+                else:
+                        try:
+                                self.main_loop.run()
+                        except KeyboardInterrupt:
+                                pass
 
         def stop(self, *args):
                 """
@@ -409,7 +430,7 @@ class Registry(object):
                 try:
                         self.lock.acquire()
                 except AttributeError:
-                        self.lock = threading.Lock()
+                        self.lock = threading.RLock()
                         self.lock.acquire()
 
         def releaseLock(self):
