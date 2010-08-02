@@ -201,6 +201,7 @@ class Registry(object):
                         i = gobject.idle_add(releaseGIL)
                         
                         self.main_loop.run()
+                        self.started = False
                         gobject.source_remove(i)
                         if releaseGIL.keyboard_exception is not None:
                                 # raise an keyboard exception we may have gotten earlier
