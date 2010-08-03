@@ -1,3 +1,8 @@
+What's new in pyatspi2 0.3.6:
+
+* Some thread safety fixes; should no longer deadlock when listening for
+events using Strongwind.
+
 What's new in pyatspi2 0.3.4:
 
 * Listen for AddAccessible and RemoveAccessible at the DesktopCache level.
