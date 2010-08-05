@@ -79,7 +79,7 @@ class EventType(str):
                 self.minor = self._separated[2]
                 self.detail = self._separated[3]
 
-        def is_subtype(self, event_type):
+        def is_subtype(self, event_type, excludeSelf = False):
                 """
                 Determines if the passed event type is a subtype
                 of this event.
@@ -92,6 +92,9 @@ class EventType(str):
                         else:
                                 if event_type.minor and event_type.minor != self.minor:
                                         return False
+                if (excludeSelf and event_type.klass == self.klass
+                    and event_type.major == self.major and event_type.minor == self.minor):
+                        return False
                 return True
 
         @property
@@ -319,11 +322,24 @@ class _ApplicationEventRegister (object):
                         self._event_listeners[client] = registered
 
                 for name in names:
+                        duplicate = False
                         new_type = EventType(name)
-                        registered.append((new_type.name,
-                                           event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
+                        copy = registered[:]
+                        for i in range (0, len(copy)):
+                                type_name, signal_match = copy[i]
+                                registered_type = EventType(type_name)
+
+                                if new_type.is_subtype(registered_type):
+                                        duplicate = True
+                        if duplicate == False:
+                                registered.append((new_type.name,
+                                                   event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
+                                self.removeEvents (client, True, name)
 
         def deregisterEventListener(self, client, *names):
+                return self.removeEvents (client, False, *names)
+
+        def removeEvents (self, client, excludeSelf, *names):
                 try:
                         registered = self._event_listeners[client]
                 except KeyError:
@@ -340,7 +356,7 @@ class _ApplicationEventRegister (object):
                                 type_name, signal_match = copy[i]
                                 registered_type = EventType(type_name)
 
-                                if remove_type.is_subtype(registered_type):
+                                if remove_type.is_subtype(registered_type, excludeSelf):
                                         signal_match.remove()
                                         del(registered[i])
                                 else:

@@ -47,9 +47,12 @@ CACHE_EVENTS = ['object:property-change:accessible-name',
 
 CACHE_PROPERTIES = ''
 
-# Dictionary used to correct the bug of not being able to register for all the
-# subevents given only an AT-SPI event class (i.e. first part of the event
-# name) keys are event names having subevents and values are the subevents
+# This was placed into at-spi-corba because it apparently had a bug where
+# one could not register for all the subevents of an event given only an
+# AT-SPI event class (ie, first part of the event name).  Pyatspi2 does not
+# have this issue, but will leave the tree as-is for now, and some programs
+# pass it to registerEventListener, so the constant needs to stay.
+# Keys are event names having subevents and values are the subevents
 # under the key event; handlers *can* be registered for events not in this tree
 EVENT_TREE = {
   'terminal':
