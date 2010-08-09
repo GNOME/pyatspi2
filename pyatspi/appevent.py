@@ -15,8 +15,10 @@
 import string
 import gobject
 import interfaces
+from interfaces import ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH
 from accessible import BoundingBox
 from exceptions import *
+import dbus as _dbus
 
 from factory import AccessibleFactory
 from busutils import *
@@ -334,6 +336,12 @@ class _ApplicationEventRegister (object):
                         if duplicate == False:
                                 registered.append((new_type.name,
                                                    event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
+                                self._bus.call_async(ATSPI_REGISTRY_NAME,
+                                                     ATSPI_ROOT_PATH,
+                                                     interfaces.ATSPI_APPLICATION,
+                                                     'RegisterEventListener',
+                                                     's', (name,), None, None)
+
                                 self.removeEvents (client, True, name)
 
         def deregisterEventListener(self, client, *names):
@@ -358,6 +366,12 @@ class _ApplicationEventRegister (object):
 
                                 if remove_type.is_subtype(registered_type, excludeSelf):
                                         signal_match.remove()
+                                        self._bus.call_async(ATSPI_REGISTRY_NAME,
+                                                             ATSPI_ROOT_PATH,
+                                                             interfaces.ATSPI_APPLICATION,
+                                                             'DeregisterEventListener',
+                                                             's', (type_name,),
+                                                             None, None)
                                         del(registered[i])
                                 else:
                                         missing = True

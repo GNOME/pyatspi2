@@ -111,22 +111,36 @@ class AsyncAccessibilityBus (_AccessibilityBus):
         D-Bus calls are made asyncronously.
 	"""
 
-	_shared_instance = None
+	_shared_instances = dict()
 	
-	def __new__ (cls, registry):
-		if AsyncAccessibilityBus._shared_instance:
-			return AsyncAccessibilityBus._shared_instance
-		else:
-			try:
-				AsyncAccessibilityBus._shared_instance = \
-                                        _AccessibilityBus.__new__ (cls, _get_accessibility_bus_address(), None)
-			except Exception:
-				AsyncAccessibilityBus._shared_instance = \
-                                        _AccessibilityBus.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
-			
-			return AsyncAccessibilityBus._shared_instance
+	def __new__ (cls, registry, address = None):
+		try:
+			return AsyncAccessibilityBus._shared_instances[address]
+		except:
+                        pass
 
-	def __init__ (self, registry):
+                realAddress = address
+                if realAddress is None:
+                        try:
+                                realAddress = _get_accessibility_bus_address()
+                        except:
+                                realAddress = _bus.BusConnection.TYPE_SESSION
+
+                try:
+                        AsyncAccessibilityBus._shared_instances[address] = \
+                                _AccessibilityBus.__new__ (cls, realAddress, None)
+                except:
+                        AsyncAccessibilityBus._shared_instances[address] = \
+                                _AccessibilityBus.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
+			
+                return AsyncAccessibilityBus._shared_instances[address]
+
+	def __init__ (self, registry, address = None):
+                if address is None:
+                        try:
+                                address = _get_accessibility_bus_address()
+                        except:
+                                address = _bus.BusConnection.TYPE_SESSION
 		try:
 			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
 		except Exception:
