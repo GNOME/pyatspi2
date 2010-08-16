@@ -16,6 +16,7 @@ import string
 import gobject
 import interfaces
 from interfaces import ATSPI_REGISTRY_NAME, ATSPI_ROOT_PATH
+from interfaces import ATSPI_REGISTRY_PATH, ATSPI_REGISTRY_INTERFACE
 from accessible import BoundingBox
 from exceptions import *
 import dbus as _dbus
@@ -337,9 +338,9 @@ class _ApplicationEventRegister (object):
                                 registered.append((new_type.name,
                                                    event_type_to_signal_reciever(self._bus, self._factory, client, new_type)))
                                 self._bus.call_async(ATSPI_REGISTRY_NAME,
-                                                     ATSPI_ROOT_PATH,
-                                                     interfaces.ATSPI_APPLICATION,
-                                                     'RegisterEventListener',
+                                                     ATSPI_REGISTRY_PATH,
+                                                     ATSPI_REGISTRY_INTERFACE,
+                                                     'RegisterEvent',
                                                      's', (name,), None, None)
 
                                 self.removeEvents (client, True, name)
@@ -367,9 +368,9 @@ class _ApplicationEventRegister (object):
                                 if remove_type.is_subtype(registered_type, excludeSelf):
                                         signal_match.remove()
                                         self._bus.call_async(ATSPI_REGISTRY_NAME,
-                                                             ATSPI_ROOT_PATH,
-                                                             interfaces.ATSPI_APPLICATION,
-                                                             'DeregisterEventListener',
+                                                             ATSPI_REGISTRY_PATH,
+                                                             ATSPI_REGISTRY_INTERFACE,
+                                                             'DeregisterEvent',
                                                              's', (type_name,),
                                                              None, None)
                                         del(registered[i])

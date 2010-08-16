@@ -97,6 +97,12 @@ class DesktopCacheManager (object):
                                         sender_keyword="sender",
                                         path_keyword="path")
 
+                bus.call_async(ATSPI_REGISTRY_NAME,
+                               ATSPI_REGISTRY_PATH,
+                               ATSPI_REGISTRY_INTERFACE,
+                               'RegisterEvent',
+                               's', ('object:children-changed',), None, None)
+
                 self._property_change =  \
                         bus.add_signal_receiver(self._property_change_handler,
                                                 dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
@@ -106,6 +112,12 @@ class DesktopCacheManager (object):
                                                 sender_keyword="sender",
                                                 path_keyword="path")
 
+                bus.call_async(ATSPI_REGISTRY_NAME,
+                               ATSPI_REGISTRY_PATH,
+                               ATSPI_REGISTRY_INTERFACE,
+                               'RegisterEvent',
+                               's', ('object:property-change',), None, None)
+
                 self._state_changed = \
                         bus.add_signal_receiver(self._state_changed_handler,
                                                 dbus_interface=_ATSPI_EVENT_OBJECT_INTERFACE,
@@ -114,6 +126,12 @@ class DesktopCacheManager (object):
                                                 member_keyword="member",
                                                 sender_keyword="sender",
                                                 path_keyword="path")
+
+                bus.call_async(ATSPI_REGISTRY_NAME,
+                               ATSPI_REGISTRY_PATH,
+                               ATSPI_REGISTRY_INTERFACE,
+                               'RegisterEvent',
+                               's', ('object:state-changed',), None, None)
 
                 self._cache_add = \
                         bus.add_signal_receiver(self._add_object,
