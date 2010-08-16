@@ -1,3 +1,11 @@
+What's new in pyatspi2 0.3.90:
+
+* Have registerEventListener an deregisterEventListener notify the registry,
+as is now needed.
+
+* Avoid raising an event multiple times if EVENT_TREE is used to register for
+all events.
+
 What's new in pyatspi2 0.3.6:
 
 * Some thread safety fixes; should no longer deadlock when listening for
