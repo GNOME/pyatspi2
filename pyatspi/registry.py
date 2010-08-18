@@ -218,7 +218,10 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.main_loop.quit()
+                def main_quit():
+                        self.main_loop.quit()
+                        return False
+                gobject.idle_add(main_quit)
 
         def getDesktopCount(self):
                 """
