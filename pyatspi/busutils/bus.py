@@ -123,7 +123,7 @@ class AsyncAccessibilityBus (_AccessibilityBus):
                 if realAddress is None:
                         try:
                                 realAddress = _get_accessibility_bus_address()
-                        except:
+                        except AttributeError:
                                 realAddress = _bus.BusConnection.TYPE_SESSION
 
                 try:
@@ -139,11 +139,11 @@ class AsyncAccessibilityBus (_AccessibilityBus):
                 if address is None:
                         try:
                                 address = _get_accessibility_bus_address()
-                        except:
+                        except AttributeError:
                                 address = _bus.BusConnection.TYPE_SESSION
 		try:
 			_AccessibilityBus.__init__ (self, _get_accessibility_bus_address(), None)
-		except Exception:
+		except AttributeError:
 			_AccessibilityBus.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)
                 self.registry = registry
 
@@ -161,7 +161,7 @@ class SyncAccessibilityBus (_bus.BusConnection):
 			try:
 				SyncAccessibilityBus._shared_instance = \
                                         _bus.BusConnection.__new__ (cls, _get_accessibility_bus_address(), None)
-			except Exception:
+			except AttributeError:
 				SyncAccessibilityBus._shared_instance = \
                                         _bus.BusConnection.__new__ (cls, _bus.BusConnection.TYPE_SESSION, None)
 			
@@ -170,6 +170,6 @@ class SyncAccessibilityBus (_bus.BusConnection):
 	def __init__ (self, registry):
 		try:
 			_bus.BusConnection.__init__ (self, _get_accessibility_bus_address(), None)
-		except Exception:
+		except AttributeError:
 			_bus.BusConnection.__init__ (self, _bus.BusConnection.TYPE_SESSION, None)
                 self.registry = registry
