@@ -74,7 +74,7 @@ fi
 
 AC_PATH_XTRA
 
-AC_ARG_ENABLE(relocate, [--enable-relocate  Relocate to coexist with CORBA [default=no]], enable_relocate="$enableval", enable_relocate=no)
+AC_ARG_ENABLE(relocate, [--enable-relocate  Relocate to coexist with CORBA [default=yes]], enable_relocate="$enableval", enable_relocate=yes)
 if test x$enable_relocate = xyes ; then
 	AC_DEFINE(RELOCATE, , [Relocate to coexist with CORBA])
 fi
