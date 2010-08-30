@@ -1,3 +1,13 @@
+What's new in pyatspi2 0.3.91:
+
+* Enable relocate by default for now.
+
+* Ensure that queued events are delivered when calling registry.stop().
+
+* If an unexpected exception is thrown when checking for the accessibility bus
+(ie, python-xlib is missing), throw the exception rather than silently
+reverting to the session bus.
+
 What's new in pyatspi2 0.3.90:
 
 * Have registerEventListener an deregisterEventListener notify the registry,
