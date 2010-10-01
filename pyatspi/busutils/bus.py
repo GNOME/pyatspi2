@@ -136,6 +136,11 @@ class AsyncAccessibilityBus (_AccessibilityBus):
                 return AsyncAccessibilityBus._shared_instances[address]
 
 	def __init__ (self, registry, address = None):
+		try:
+			if self.inited:
+				return
+		except:
+			self.inited = True
                 if address is None:
                         try:
                                 address = _get_accessibility_bus_address()
@@ -168,6 +173,11 @@ class SyncAccessibilityBus (_bus.BusConnection):
 			return SyncAccessibilityBus._shared_instance
 
 	def __init__ (self, registry):
+		try:
+			if self.inited:
+				return
+		except:
+			self.inited = True
 		try:
 			_bus.BusConnection.__init__ (self, _get_accessibility_bus_address(), None)
 		except AttributeError:
