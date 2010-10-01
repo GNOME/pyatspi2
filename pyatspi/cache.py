@@ -248,6 +248,8 @@ class ApplicationCacheManager (object):
                         app_obj = bus.get_object (bus_name, ATSPI_ROOT_PATH, introspect=False)
                         app_itf = dbus.Interface (app_obj, ATSPI_APPLICATION)
                         self.busAddress = app_itf.GetApplicationBusAddress()
+                        if self.busAddress == "":
+                                self.busAddress = None
                 except:
                         self.busAddress = None
 

@@ -128,6 +128,8 @@ class Registry(object):
 
 		self.queue = Queue.Queue()
 
+                _os.environ["AT_SPI_CLIENT"] = "1"
+
                 # Set up the cache
 		cache = None
                 if main_loop_type == MAIN_LOOP_GLIB:
@@ -136,8 +138,6 @@ class Registry(object):
                 factory = AccessibleFactory(cache)
 
                 self.has_implementations = True
-
-                _os.environ["AT_SPI_CLIENT"] = "1"
 
                 # Set up the device event controllers
                 _connection = SyncAccessibilityBus (self)
