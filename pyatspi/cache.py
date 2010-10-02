@@ -16,6 +16,7 @@ import os
 import dbus
 import registry
 import string
+import weakref
 
 from interfaces import *
 from role import ROLE_DESKTOP_FRAME
@@ -277,6 +278,17 @@ class ApplicationCacheManager (object):
                                 elif minor == "accessible-parent":
                                         item.parent = any_data
 
+                        if (sender, path) in self._cache.soft:
+                                item = self._cache.soft[(sender, path)]
+                                if minor == "accessible-name":
+                                        item["name"] = any_data
+                                elif minor == "accessible-role":
+                                        item["role"] = any_data
+                                elif minor == "accessible-description":
+                                        item["description"] = any_data
+                                elif minor == "accessible-parent":
+                                        item[(ATSPI_ACCESSIBLE, "parent")] = any_data
+
         def _children_changed_handler (self,
                                        minor, detail1, detail2, any_data, app,
                                        interface=None, sender=None, member=None, path=None):
@@ -289,24 +301,37 @@ class ApplicationCacheManager (object):
                                         item.children.insert (detail1, any_data)
                                 elif minor.startswith("remove"):
                                         item.children.remove (any_data)
+
                                         if any_data in self._cache:
                                                 child = self._cache[any_data]
                                                 if child.parent == (sender, path):
                                                         child.parent = (sender, ATSPI_NULL_PATH)
+                                        if any_data in self._cache.soft:
+                                                child = self._cache.soft[any_data]
+                                                if (ATSPI_ACCESSIBLE, "Parent") in child and child[(ATSPI_ACCESSIBLE, "Parent")] == (sender, path):
+                                                        child[(ATSPI_ACCESSIBLE, "Parent")] = (sender, ATSPI_NULL_PATH)
 
         def _state_changed_handler (self,
                                        minor, detail1, detail2, any_data, app,
                                        interface=None, sender=None, member=None, path=None):
                 if interface==_ATSPI_EVENT_OBJECT_INTERFACE:
+                        val = eval("int(state.STATE_" + string.upper(minor) + ")")
+                        high = int(val / 32)
+                        low = val % 32
                         if (sender, path) in self._cache:
                                 item = self._cache[(sender, path)]
-                                val = eval("int(state.STATE_" + string.upper(minor) + ")")
-                                high = int(val / 32)
-                                low = val % 32
                                 if (detail1 == 1):
                                         item.state[high] |= (1 << low)
                                 else:
                                         item.state[high] &= ~(1 << low)
+
+                        if (sender, path) in self._cache.soft:
+                                item = self._cache.soft[(sender, path)]
+                                if "state" in item:
+                                        if (detail1 == 1):
+                                                item["state"][high] |= (1 << low)
+                                        else:
+                                                item["state"][high] &= ~(1 << low)
 
         def remove_all (self):
                 for bus_name, object_path in self._cache.keys():
@@ -324,6 +349,8 @@ class AccessibleCache (dict):
                         self._manager = ApplicationCacheManager (self, bus_name) 
                 else:
                         self._manager = DesktopCacheManager (self)
+
+                self.soft = weakref.WeakValueDictionary()
 
         def __call__ (self, bus_name, object_path):
                 return self[(bus_name, object_path)]
