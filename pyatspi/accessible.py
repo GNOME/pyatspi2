@@ -95,6 +95,12 @@ class BoundingBox(list):
 
 #------------------------------------------------------------------------------
 
+class _PropertyCache(dict):
+  def wipe(self):
+      self.__dict__ = {}
+
+#------------------------------------------------------------------------------
+
 class AccessibleMeta(type):
         def __new__(meta, *args, **kwargs):
                 cls = type.__new__(meta, *args, **kwargs)
@@ -207,6 +213,11 @@ class Accessible(BaseProxy):
 		self._cache = cache
 
                 self._relation_set = None
+                try:
+                        self._soft_cache_data = self._cache.soft[(self._app_name, self._acc_path)]
+                except KeyError:
+                        self._soft_cache_data = _PropertyCache()
+                        self._cache.soft[(self._app_name, self._acc_path)] = self._soft_cache_data
 
         # Python object protocol --------------------------------------------------------
 
@@ -412,7 +423,7 @@ class Accessible(BaseProxy):
                         return Role(self._cached_data.role)
                 else:
                         func = self.get_dbus_method("GetRole", dbus_interface=ATSPI_ACCESSIBLE)
-                        return Role(func())
+                        return Role(self.getSoftCacheItem ("role", func))
 
         def getRoleName(self):
                 """
@@ -436,7 +447,7 @@ class Accessible(BaseProxy):
                 else:
                         func = self.get_dbus_method("GetState", dbus_interface=ATSPI_ACCESSIBLE)
                         try:
-                                return _marshal_state_set(func())
+                                return _marshal_state_set(self.getSoftCacheItem("state", func))
                         except LookupError:
                                 return _marshal_state_set ([1 << STATE_DEFUNCT, 0])
 
@@ -493,7 +504,7 @@ class Accessible(BaseProxy):
                 if self.cached:
                         name, path = self._cached_data.parent
                 else:
-		        name, path = self._pgetter (ATSPI_ACCESSIBLE, "Parent")
+		        name, path = self.getSoftCacheProperty (ATSPI_ACCESSIBLE, "Parent")
 
                 if (path == ATSPI_ROOT_PATH):
                         itf = ATSPI_APPLICATION
@@ -511,13 +522,14 @@ class Accessible(BaseProxy):
                         return self._cached_data.interfaces
                 else:
                         func = self.get_dbus_method("GetInterfaces", dbus_interface=ATSPI_ACCESSIBLE)
-                        return func()
+                        return self.getSoftCacheItem("interfaces", func)
         _interfacesDoc = \
                 """
                 D-Bus interfaces supported by this accessible object.
                 """
         interfaces = property(fget=_get_interfaces, doc=_interfacesDoc)
 
+        # TODO: Possibly merge this with getSoftCacheItem
         def _getConstantProperty(self, interface, name):
                 if self.cached:
                         try:
@@ -530,5 +542,15 @@ class Accessible(BaseProxy):
                                 self.extraData[name] = dbus.String(self._pgetter(interface, name))
                                 return self.extraData[name]
                 return dbus.String(self._pgetter(interface, name))
+
+        def getSoftCacheItem(self, name, func):
+                if not(name in self._soft_cache_data):
+                        self._soft_cache_data[name] = func()
+                return self._soft_cache_data[name]
+
+        def getSoftCacheProperty(self, interface, name):
+                if not((interface, name) in self._soft_cache_data):
+                        self._soft_cache_data[(interface, name)] = self._pgetter(interface, name)
+                return self._soft_cache_data[(interface, name)]
 
 #END----------------------------------------------------------------------------
