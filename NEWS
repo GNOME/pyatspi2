@@ -1,3 +1,9 @@
+What's new in pyatspi2 1.91.0:
+* --disable-relocate is the default again.
+
+* Added a "soft cache" to try to avoid repeatedly querying for information
+in cases where we never received an AccessibleAdded signal for an object.
+
 What's new in pyatspi2 0.3.91:
 
 * Enable relocate by default for now.
