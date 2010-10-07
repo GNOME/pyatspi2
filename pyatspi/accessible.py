@@ -207,6 +207,8 @@ class Accessible(BaseProxy):
         The interface which is implemented by all accessible objects.
         """
 
+        softLRU = []
+
         def __init__(self, cache, *args):
                 BaseProxy.__init__(self, *args);
 
@@ -469,7 +471,10 @@ class Accessible(BaseProxy):
                 if self.cached and not(self._cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
                         return len(self._cached_data.children)
                 else:
-                        return Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
+                        try:
+                                return Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
+                        except LookupError:
+                                return 0
         _childCountDoc = \
                 """
                 childCount: the number of children contained by this object.
@@ -546,7 +551,15 @@ class Accessible(BaseProxy):
         def getSoftCacheItem(self, name, func):
                 if not(name in self._soft_cache_data):
                         self._soft_cache_data[name] = func()
+                self.addLRU()
                 return self._soft_cache_data[name]
+
+        def addLRU(self):
+                if self in Accessible.softLRU:
+                        Accessible.softLRU.remove(self)
+                if len(Accessible.softLRU) == 20:
+                        Accessible.softLRU.remove (Accessible.softLRU[0])
+                Accessible.softLRU.append(self)
 
         def getSoftCacheProperty(self, interface, name):
                 if not((interface, name) in self._soft_cache_data):

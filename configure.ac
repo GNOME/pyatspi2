@@ -1,4 +1,4 @@
-AC_INIT([pyatspi], [0.5.1], [accessibility-atspi@lists.linux-foundation.org])
+AC_INIT([pyatspi], [1.91.0], [accessibility-atspi@lists.linux-foundation.org])
 AC_CONFIG_AUX_DIR(config)
 
 LT_RELEASE=$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION
@@ -32,6 +32,7 @@ AM_CONDITIONAL(ENABLE_TESTING, test x$enable_tests == xyes)
 
 if test "$enable_tests" = "yes"; then
         AM_CHECK_PYMOD(dbus, , , [AC_MSG_ERROR(Could not find python module: dbus)])
+AM_CHECK_PYMOD(xlib,,,[AC_MSG_ERROR(Could not find python module: xlib)])
 
         PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.0])
         AC_SUBST(DBUS_LIBS)

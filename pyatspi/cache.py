@@ -258,7 +258,7 @@ class ApplicationCacheManager (object):
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
                 try:
                         self._add_objects(cache_itf.GetItems())
-                except dbus.exceptions.DBusException:
+                except LookupError, dbus.exceptions.DBusException:
                         pass
 
 

@@ -100,11 +100,17 @@ class AccessibilityProxy (_connection.ProxyObject):
                                 *iargs,
                                 **ikwargs)
 
+                        def endCall(data):
+                                data.loop.quit()
+                                return False
+
 			self._bus.freezeEvents()
                         if data.event is not None:
                                 data.event.wait()
                         else:
+                                data.timeout_tag = gobject.timeout_add(2000, endCall, data)
 			        data.loop.run ()
+                                gobject.source_remove(data.timeout_tag)
 			AccessibilityProxy._main_loop_pool.put_nowait (data.loop)
 			self._bus.thawEvents()
                         self._bus.registry.releaseLock()
@@ -119,7 +125,7 @@ class AccessibilityProxy (_connection.ProxyObject):
                                 raise data.error
 
 			if data.args == None:
-				raise Exception ("Return arguments not set")
+				raise LookupError
 
                         if len (data.args) == 0:
                                 return None
