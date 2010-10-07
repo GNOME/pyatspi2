@@ -469,7 +469,10 @@ class Accessible(BaseProxy):
                 if self.cached and not(self._cached_data.state[0] & (1 << STATE_MANAGES_DESCENDANTS)):
                         return len(self._cached_data.children)
                 else:
-                        return Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
+                        try:
+                                return Int32(self._pgetter(ATSPI_ACCESSIBLE, "ChildCount"))
+                        except LookupError:
+                                return 0
         _childCountDoc = \
                 """
                 childCount: the number of children contained by this object.
