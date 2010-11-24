@@ -1,3 +1,4 @@
+#Copyright (C) 2010 Novell, Inc.
 #Copyright (C) 2008 Codethink Ltd
 #copyright: Copyright (c) 2005, 2007 IBM Corporation
 
@@ -21,33 +22,16 @@
 
 #------------------------------------------------------------------------------
 
-import dbus
-import os as _os
-import Queue
-import threading
-import time
-import traceback
-
-from busutils import *
-
-from factory import AccessibleFactory
-from appevent import _ApplicationEventRegister, _NullApplicationEventRegister
-from deviceevent import _DeviceEventRegister, _NullDeviceEventRegister
-from cache import AccessibleCache
-
-from deviceevent import KEY_PRESSED_EVENT as _KEY_PRESSED_EVENT
-from deviceevent import KEY_RELEASED_EVENT as _KEY_RELEASED_EVENT
-
-from interfaces import ATSPI_REGISTRY_NAME as _ATSPI_REGISTRY_NAME
-from interfaces import ATSPI_ROOT_PATH as _ATSPI_ROOT_PATH
-from interfaces import ATSPI_DESKTOP as _ATSPI_DESKTOP
-
 __all__ = ["Registry",
 	   "MAIN_LOOP_GLIB",
 	   "MAIN_LOOP_NONE",
 	   "set_default_registry"]
 
+import os as _os
 import gobject
+from gi.repository import Atspi
+from gi.repository import GObject
+import time
 
 #------------------------------------------------------------------------------
 
@@ -67,17 +51,17 @@ class Registry(object):
         reference to the Accessibility.Registry singleton. Doing so is harmless and
         has no point.
 
-        @ivar async: Should event dispatch to local listeners be decoupled from event
+        @@ivar async: Should event dispatch to local listeners be decoupled from event
                 receiving from the registry?
-        @type async: boolean
-        @ivar reg: Reference to the real, wrapped registry object
-        @type reg: Accessibility.Registry
-        @ivar dev: Reference to the device controller
-        @type dev: Accessibility.DeviceEventController
-        @ivar clients: Map of event names to client listeners
-        @type clients: dictionary
-        @ivar observers: Map of event names to AT-SPI L{_Observer} objects
-        @type observers: dictionary
+        @@type async: boolean
+        @@ivar reg: Reference to the real, wrapped registry object
+        @@type reg: Accessibility.Registry
+        @@ivar dev: Reference to the device controller
+        @@type dev: Accessibility.DeviceEventController
+        @@ivar clients: Map of event names to client listeners
+        @@type clients: dictionary
+        @@ivar observers: Map of event names to AT-SPI L{_Observer} objects
+        @@type observers: dictionary
         """
         __shared_state = {}
 
@@ -100,8 +84,8 @@ class Registry(object):
 
         def __call__(self):
                 """
-                @return: This instance of the registry
-                @rtype: L{Registry}
+                @@return: This instance of the registry
+                @@rtype: L{Registry}
                 """
                 return self
 
@@ -116,48 +100,24 @@ class Registry(object):
                 This function should be called before pyatspi is used if you
                 wish to change these defaults.
 
-                @param main_loop_type: 'GLib', 'None' or 'Qt'. If 'None' is selected then caching
+                @@param main_loop_type: 'GLib', 'None' or 'Qt'. If 'None' is selected then caching
                                        is disabled.
 
-                @param use_registry: Whether to connect to a registry daemon for device events.
+                @@param use_registry: Whether to connect to a registry daemon for device events.
                                      Without this the application to connect to must be declared in the
                                      app_name parameter.
 
-                @param app_name: D-Bus name of the application to connect to when not using the registry daemon.
+                @@param app_name: D-Bus name of the application to connect to when not using the registry daemon.
                 """
-
-		self.queue = Queue.Queue()
-
-                _os.environ["AT_SPI_CLIENT"] = "1"
-
-                # Set up the cache
-		cache = None
-                if main_loop_type == MAIN_LOOP_GLIB:
-                                cache = AccessibleCache (app_name)
-
-                factory = AccessibleFactory(cache)
 
                 self.has_implementations = True
 
-                # Set up the device event controllers
-                _connection = SyncAccessibilityBus (self)
-                _bus_object = _connection.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
-
-                if app_name:
-                        self.device_event_register = _NullDeviceEventRegister()
-                        self.app_event_register    = _NullApplicationEventRegister()
-
-			name = _bus_object.GetNameOwner (app_name)
-                        self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
-                else:
-                        self.device_event_register = _DeviceEventRegister()
-                        self.app_event_register    = _ApplicationEventRegister(factory)
-
-			name = _bus_object.GetNameOwner (_ATSPI_REGISTRY_NAME)
-                        self.desktop = factory (name, _ATSPI_ROOT_PATH, _ATSPI_DESKTOP)
+		# TODO: Move to libatspi
+                _os.environ["AT_SPI_CLIENT"] = "1"
 
 		self.async = False	# not fully supported yet
                 self.started = False
+                self.event_listeners = dict()
 
         def _set_default_registry (self):
                 self._set_registry (MAIN_LOOP_GLIB)
@@ -166,31 +126,22 @@ class Registry(object):
                 """
                 Enter the main loop to start receiving and dispatching events.
 
-                @param async: Should event dispatch be asynchronous (decoupled) from 
+                @@param async: Should event dispatch be asynchronous (decoupled) from 
                         event receiving from the AT-SPI registry?
-                @type async: boolean
-                @param gil: Add an idle callback which releases the Python GIL for a few
+                @@type async: boolean
+                @@param gil: Add an idle callback which releases the Python GIL for a few
                         milliseconds to allow other threads to run? Necessary if other threads
                         will be used in this process.
-                        Note - No Longer used.
-                @type gil: boolean
+                @@type gil: boolean
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.acquireLock()
-                self.thread = threading.currentThread()
                 self.started = True
-
-                def idleReleaseLock():
-                        self.releaseLock()
-                        return False
-
-                gobject.idle_add(idleReleaseLock)
 
                 if gil:
                         def releaseGIL():
                                 try:
-                                        time.sleep(1e-5)
+                                        time.sleep(1e-2)
                                 except KeyboardInterrupt, e:
                                         # store the exception for later
                                         releaseGIL.keyboard_exception = e
@@ -198,19 +149,16 @@ class Registry(object):
                                 return True
                         # make room for an exception if one occurs during the 
                         releaseGIL.keyboard_exception = None
-                        i = gobject.idle_add(releaseGIL)
-                        
-                        self.main_loop.run()
-                        self.started = False
-                        gobject.source_remove(i)
+                        i = GObject.idle_add(releaseGIL)
+                        Atspi.event_main()
+                        GObject.source_remove(i)
                         if releaseGIL.keyboard_exception is not None:
                                 # raise an keyboard exception we may have gotten earlier
                                 raise releaseGIL.keyboard_exception
                 else:
-                        try:
-                                self.main_loop.run()
-                        except KeyboardInterrupt:
-                                pass
+                        atspi.event_main()
+
+                self.started = False
 
         def stop(self, *args):
                 """
@@ -218,17 +166,14 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                def main_quit():
-                        self.main_loop.quit()
-                        return False
-                gobject.idle_add(main_quit)
+                Atspi.event_quit()
 
         def getDesktopCount(self):
                 """
                 Gets the number of available desktops.
 
-                @return: Number of desktops
-                @rtype: integer
+                @@return: Number of desktops
+                @@rtype: integer
                 """
                 return 1
 
@@ -236,14 +181,14 @@ class Registry(object):
                 """
                 Gets a reference to the i-th desktop.
 
-                @param i: Which desktop to get
-                @type i: integer
-                @return: Desktop reference
-                @rtype: Accessibility.Desktop
+                @@param i: Which desktop to get
+                @@type i: integer
+                @@return: Desktop reference
+                @@rtype: Accessibility.Desktop
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                return self.desktop
+                return Atspi.get_desktop(i)
 
         def registerEventListener(self, client, *names):
                 """
@@ -260,14 +205,19 @@ class Registry(object):
                 To ensure the client is properly garbage collected, call 
                 L{deregisterEventListener}.
 
-                @param client: Callable to be invoked when the event occurs
-                @type client: callable
-                @param names: List of full or partial event names
-                @type names: list of string
+                @@param client: Callable to be invoked when the event occurs
+                @@type client: callable
+                @@param names: List of full or partial event names
+                @@type names: list of string
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.app_event_register.registerEventListener (client, *names)
+                try:
+                        listener = self.event_listeners[client]
+                except:
+                        listener = self.event_listeners[client] = Atspi.EventListener.new_simple(client)
+                for name in names:
+                        Atspi.EventListener.register (listener, name)
 
         def deregisterEventListener(self, client, *names):
                 """
@@ -278,19 +228,28 @@ class Registry(object):
                 This method must be called to ensure a client registered by
                 L{registerEventListener} is properly garbage collected.
 
-                @param client: Client callback to remove
-                @type client: callable
-                @param names: List of full or partial event names
-                @type names: list of string
-                @return: Were event names specified for which the given client was not
+                @@param client: Client callback to remove
+                @@type client: callable
+                @@param names: List of full or partial event names
+                @@type names: list of string
+                @@return: Were event names specified for which the given client was not
                         registered?
-                @rtype: boolean
+                @@rtype: boolean
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.app_event_register.deregisterEventListener (client, *names)
+                try:
+                        listener = self.event_listeners[client]
+                except:
+                        return
+                for name in names:
+                        Atspi.EventListener.deregister(listener, name)
 
         # -------------------------------------------------------------------------------
+
+        # TODO: Remove this hack
+        _KEY_PRESSED_EVENT=1
+        _KEY_RELEASED_EVENT=2
 
         def registerKeystrokeListener(self,
                                       client,
@@ -303,40 +262,40 @@ class Registry(object):
                 """
                 Registers a listener for key stroke events.
 
-                @param client: Callable to be invoked when the event occurs
-                @type client: callable
-                @param key_set: Set of hardware key codes to stop monitoring. Leave empty
+                @@param client: Callable to be invoked when the event occurs
+                @@type client: callable
+                @@param key_set: Set of hardware key codes to stop monitoring. Leave empty
                         to indicate all keys.
-                @type key_set: list of integer
-                @param mask: When the mask is None, the codes in the key_set will be 
+                @@type key_set: list of integer
+                @@param mask: When the mask is None, the codes in the key_set will be 
                         monitored only when no modifier is held. When the mask is an 
                         integer, keys in the key_set will be monitored only when the modifiers in
                         the mask are held. When the mask is an iterable over more than one 
                         integer, keys in the key_set will be monitored when any of the modifier
                         combinations in the set are held.
-                @type mask: integer, iterable, None
-                @param kind: Kind of events to watch, KEY_PRESSED_EVENT or 
+                @@type mask: integer, iterable, None
+                @@param kind: Kind of events to watch, KEY_PRESSED_EVENT or 
                         KEY_RELEASED_EVENT.
-                @type kind: list
-                @param synchronous: Should the callback notification be synchronous, giving
+                @@type kind: list
+                @@param synchronous: Should the callback notification be synchronous, giving
                         the client the chance to consume the event?
-                @type synchronous: boolean
-                @param preemptive: Should the callback be allowed to preempt / consume the
+                @@type synchronous: boolean
+                @@param preemptive: Should the callback be allowed to preempt / consume the
                         event?
-                @type preemptive: boolean
-                @param global_: Should callback occur even if an application not supporting
+                @@type preemptive: boolean
+                @@param global_: Should callback occur even if an application not supporting
                         AT-SPI is in the foreground? (requires xevie)
-                @type global_: boolean
+                @@type global_: boolean
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.device_event_register.registerKeystrokeListener (client,
-                                                                      key_set,
-                                                                      mask,
-                                                                      kind,
-                                                                      synchronous,
-                                                                      preemptive,
-                                                                      global_)
+                Atspi.register_keystroke_listener(client, 
+                                                  key_set,
+                                                    mask,
+                                                    kind,
+                                                    synchronous,
+                                                    preemptive,
+                                                    global_)
 
         def deregisterKeystrokeListener(self,
                                         client,
@@ -346,50 +305,28 @@ class Registry(object):
                 """
                 Deregisters a listener for key stroke events.
 
-                @param client: Callable to be invoked when the event occurs
-                @type client: callable
-                @param key_set: Set of hardware key codes to stop monitoring. Leave empty
+                @@param client: Callable to be invoked when the event occurs
+                @@type client: callable
+                @@param key_set: Set of hardware key codes to stop monitoring. Leave empty
                         to indicate all keys.
-                @type key_set: list of integer
-                @param mask: When the mask is None, the codes in the key_set will be 
+                @@type key_set: list of integer
+                @@param mask: When the mask is None, the codes in the key_set will be 
                         monitored only when no modifier is held. When the mask is an 
                         integer, keys in the key_set will be monitored only when the modifiers in
                         the mask are held. When the mask is an iterable over more than one 
                         integer, keys in the key_set will be monitored when any of the modifier
                         combinations in the set are held.
-                @type mask: integer, iterable, None
-                @param kind: Kind of events to stop watching, KEY_PRESSED_EVENT or 
+                @@type mask: integer, iterable, None
+                @@param kind: Kind of events to stop watching, KEY_PRESSED_EVENT or 
                         KEY_RELEASED_EVENT.
-                @type kind: list
-                @raise KeyError: When the client isn't already registered for events
+                @@type kind: list
+                @@raise KeyError: When the client isn't already registered for events
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.device_event_register.deregisterKeystrokeListener (client, key_set, mask, kind)
+                Atspi.deregister_keystroke_listener (client, key_set, mask, kind)
 
-        # -------------------------------------------------------------------------------
-
-	def enqueueEvent (self, handler, event):
-		"""
-		Queue an event for later delivery.
-		"""
-		self.queue.put((handler, event))
-
-        def pumpQueuedEvents (self):
-                """
-                Dispatch events that have been queued.
-                """
-		while (not(self.queue.empty())):
-			(handler, event) = self.queue.get()
-			handler(event)
-
-        def flushEvents (self):
-                """
-                Empty the event queue.
-                """
-                self.queue = Queue.QUeue()
-
-        # -------------------------------------------------------------------------------
+                # TODO: enqueueEvent, etc?
 
         def generateKeyboardEvent(self, keycode, keysym, kind):
                 """
@@ -398,16 +335,16 @@ class Registry(object):
                 required and should be one of the KEY_PRESS, KEY_RELEASE, KEY_PRESSRELEASE,
                 KEY_SYM, or KEY_STRING.
 
-                @param keycode: Hardware keycode or None
-                @type keycode: integer
-                @param keysym: Symbolic key string or None
-                @type keysym: string
-                @param kind: Kind of event to synthesize
-                @type kind: integer
+                @@param keycode: Hardware keycode or None
+                @@type keycode: integer
+                @@param keysym: Symbolic key string or None
+                @@type keysym: string
+                @@param kind: Kind of event to synthesize
+                @@type kind: integer
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.device_event_register.generateKeyboardEvent (keycode, keysym, kind)
+                Atspi.generate_keyboard_event (keycode, keysym, kind)
 
         def generateMouseEvent(self, x, y, name):
                 """
@@ -416,34 +353,16 @@ class Registry(object):
                 (button 1 press), MOUSE_REL (relative motion), MOUSE_B3D (butten 3 
                 double-click).
 
-                @param x: Horizontal coordinate, usually left-hand oriented
-                @type x: integer
-                @param y: Vertical coordinate, usually left-hand oriented
-                @type y: integer
-                @param name: Name of the event to generate
-                @type name: string
+                @@param x: Horizontal coordinate, usually left-hand oriented
+                @@type x: integer
+                @@param y: Vertical coordinate, usually left-hand oriented
+                @@type y: integer
+                @@param name: Name of the event to generate
+                @@type name: string
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                self.device_event_register.generateMouseEvent (x, y, name)
-
-        def acquireLock(self):
-                """
-                Acquire a lock, creating the registry irst if needed.
-                """
-                try:
-                        self.lock.acquire()
-                except AttributeError:
-                        self.lock = threading.RLock()
-                        self.lock.acquire()
-
-        def releaseLock(self):
-                """
-                Release the lock
-                """
-                self.lock.release()
-
-#------------------------------------------------------------------------------
+                Atspi.generate_mouse_event (x, y, name)
 
 def set_default_registry (main_loop, app_name=None):
         registry = Registry ()

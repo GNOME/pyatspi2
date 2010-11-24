@@ -219,12 +219,6 @@ class DesktopCacheManager (object):
                         app = self._application_list[data[0]]
                         app._remove_object(data)
 
-        def getBusAddress(self, bus_name):
-                try:
-                        return self._application_list[bus_name].busAddress
-                except KeyError:
-                        return None
-
 class ApplicationCacheManager (object):
         """
         The application cache manager is responsible for keeping the cache up to date
@@ -244,15 +238,6 @@ class ApplicationCacheManager (object):
 
                 self._cache = cache
                 self._bus_name = bus_name
-
-                try:
-                        app_obj = bus.get_object (bus_name, ATSPI_ROOT_PATH, introspect=False)
-                        app_itf = dbus.Interface (app_obj, ATSPI_APPLICATION)
-                        self.busAddress = app_itf.GetApplicationBusAddress()
-                        if self.busAddress == "":
-                                self.busAddress = None
-                except:
-                        self.busAddress = None
 
                 cache_obj = bus.get_object (bus_name, _ATSPI_CACHE_PATH, introspect=False)
                 cache_itf = dbus.Interface (cache_obj, _ATSPI_CACHE_INTERFACE)
@@ -370,6 +355,4 @@ class AccessibleCache (dict):
         def __call__ (self, bus_name, object_path):
                 return self[(bus_name, object_path)]
 
-        def getBusAddress(self, bus_name):
-                return self._manager.getBusAddress(bus_name)       
 #END----------------------------------------------------------------------------

@@ -75,13 +75,14 @@ class AccessibleFactory (object):
 			return None
 
                 if dbus_object == None:
-                        busAddress = self._cache.getBusAddress (name)
-                        if busAddress is not None:
-				busAddress = str(busAddress)
+                        try:
+                                app_obj = bus.get_object (name, ATSPI_ROOT_PATH, introspect=False)
+                                app_itf = dbus.Interface (cache_obj, _ATSPI_APPLICATIONCACHE_INTERFACE)
+                                busAddress = app_itf.GetApplicationBusAddress()
                                 bus = AsyncAccessibilityBus(registry.Registry(), busAddress)
-                        else:
-                                bus = self._connection
-                        dbus_object = bus.get_object (name, path, introspect=False)
+                                dbus_object = bus.get_object (name, path, introspect=False)
+                        except:
+                                dbus_object = self._connection.get_object (name, path, introspect=False)
         
                 return self._interfaces[itf] (self._cache, self, name, path, dbus_object)
 

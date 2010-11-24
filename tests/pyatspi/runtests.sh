@@ -7,7 +7,8 @@ export TEST_APPLICATION=$top_builddir/tests/apps/test-application
 
 run()
 {
-  $PYTHON $top_srcdir/tests/pyatspi/testrunner -l $1 -m $2 -n $3
+  chmod a+x $top_srcdir/tests/pyatspi/testrunner
+  $top_srcdir/tests/pyatspi/testrunner -l $1 -m $2 -n $3
   result=$?
   if [ $result -ne 0 ]; then
     ret=$result

@@ -32,7 +32,6 @@ AM_CONDITIONAL(ENABLE_TESTING, test x$enable_tests == xyes)
 
 if test "$enable_tests" = "yes"; then
         AM_CHECK_PYMOD(dbus, , , [AC_MSG_ERROR(Could not find python module: dbus)])
-AM_CHECK_PYMOD(xlib,,,[AC_MSG_ERROR(Could not find python module: xlib)])
 
         PKG_CHECK_MODULES(DBUS, [dbus-1 >= 1.0])
         AC_SUBST(DBUS_LIBS)
@@ -86,6 +85,7 @@ AC_CONFIG_FILES([Makefile
 		 tests/dummyatk/Makefile
 		 tests/data/Makefile
 		 tests/pyatspi/Makefile
+		 tests/pyatspi/testrunner
 		 tests/pyatspi/pasytest/Makefile
 		 tests/apps/Makefile
 		 pyatspi/Makefile
