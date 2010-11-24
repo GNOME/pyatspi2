@@ -8,7 +8,6 @@ endif
 pyatspi_PYTHON = \
 		Accessibility.py	\
 		accessible.py		\
-		action.py		\
                 appevent.py             \
 		application.py		\
                 cache.py                \

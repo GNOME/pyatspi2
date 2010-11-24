@@ -20,6 +20,7 @@
 #authors: Peter Parente, Mark Doffman
 
 from gi.repository import Atspi
+from gi.repository import GObject
 from enum import Enum as _Enum
 
 #------------------------------------------------------------------------------
@@ -157,6 +158,11 @@ def _marshal_state_set(bitfield):
 
 #------------------------------------------------------------------------------
 
+def stateset_init(self, *states):
+	GObject.GObject.__init__(self)
+	map(self.add, states)
+
 StateSet = Atspi.StateSet
+StateSet.getStates = StateSet.get_states
 StateSet.isEmpty = StateSet.is_empty
-StateSet.__new__ = StateSet.new
+StateSet.__init__ = stateset_init
