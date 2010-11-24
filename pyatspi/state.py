@@ -158,3 +158,5 @@ def _marshal_state_set(bitfield):
 #------------------------------------------------------------------------------
 
 StateSet = Atspi.StateSet
+StateSet.isEmpty = StateSet.is_empty
+StateSet.__new__ = StateSet.new
