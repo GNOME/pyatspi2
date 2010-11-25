@@ -57,13 +57,14 @@ class AccessibleTest(_PasyTest):
 	def setup(self, test):
 		self._registry = pyatspi.Registry()
 		self._desktop = self._registry.getDesktop(0)
+                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_WINDOW)
 
 	def test_name(self, test):
-		root = self._desktop
-		test.assertEqual(root.name, "main", "Expected name - \"main\". Recieved - \"%s\"" % (root.name,))
+		root = self._root
+		test.assertEqual(root.name, "atspi-test-main", "Expected name - \"main\". Recieved - \"%s\"" % (root.name,))
 
 	def test_getChildAtIndex(self, test):
-		root = self._desktop
+		root = self._root
 		a = root.getChildAtIndex(0)
 		test.assertEqual(a.name, "gnome-settings-daemon",
 					 "Expected name - \"gnome-settings-daemon\". Recieved - \"%s\"" % (a.name,))
@@ -75,7 +76,7 @@ class AccessibleTest(_PasyTest):
 					 "Expected name - \"nautilus\". Recieved - \"%s\"" % (c.name,))
 		
 	def test_isEqual(self, test):
-		root = self._desktop
+		root = self._root
 
 		a = root.getChildAtIndex(1)
 		if not a.isEqual(a):
@@ -94,7 +95,7 @@ class AccessibleTest(_PasyTest):
 			test.fail("Different accessibles found equal")
 
 	def test_getApplication(self, test):
-		root = self._desktop
+		root = self._root
 		print root._app_name
 		print root._acc_path
 		application = root.getApplication()
@@ -111,7 +112,7 @@ class AccessibleTest(_PasyTest):
 
 
 	def test_getAttributes(self, test):
-		root = self._desktop
+		root = self._root
 		attr = root.getAttributes()
 		res = ["foo:bar", "baz:qux", "quux:corge"]
                 attr.sort()
@@ -119,7 +120,7 @@ class AccessibleTest(_PasyTest):
 		test.assertEqual(attr, res, "Attributes expected %s, recieved %s" % (attr, res))
 
 	def test_parent(self, test):
-		root = self._desktop
+		root = self._root
 
 		a = root.getChildAtIndex(1)
 		pa = a.parent
@@ -127,14 +128,14 @@ class AccessibleTest(_PasyTest):
 			test.fail("Child does not correctly report its parent")
 
 	def test_getIndexInParent(self, test):
-		root = self._desktop
+		root = self._root
 
 		for i in range(0, root.childCount):
 			child = root.getChildAtIndex(i)
 			test.assertEqual(i, child.getIndexInParent(), "Childs index in parent reported incorrectly")
 
 	def test_getLocalizedRoleName(self, test):
-		root = self._desktop
+		root = self._root
 
 		ans = "window"
 		res = root.getLocalizedRoleName()
@@ -149,17 +150,17 @@ class AccessibleTest(_PasyTest):
 				 "Expected LocalizedRoleName - \"%s\". Recieved - \"%s\"" % (ans, res,))
 
 	def test_getRelationSet(self, test):
-		root = self._desktop
+		root = self._root
 		# Complete test of Relation interface is separate
 		rset = root.getRelationSet()
 
 	def test_getRole(self, test):
-		root = self._desktop
+		root = self._root
 		test.assertEqual(root.getRole(), 69,
 				 "Expected role - \"69\". Recieved - \"%d\"" % (int(root.getRole()),))
 
 	def test_getRoleName(self, test):
-		root = self._desktop
+		root = self._root
 
 		ans = "window"
 		res = root.getRoleName()
@@ -174,19 +175,19 @@ class AccessibleTest(_PasyTest):
 				 "Expected roleName - \"%s\". Recieved - \"%s\"" % (ans, res,))
 
 	def test_getState(self, test):
-		root = self._desktop
+		root = self._root
 		state = root.getState()
 		res = StateSet(*st)
 		if not res.equals(state):
 			test.fail("States not reported correctly")
 
 	def test_childCount(self, test):
-		root = self._desktop
+		root = self._root
 		test.assertEqual(root.childCount, 11,
 				 "Expected role - \"11\". Recieved - \"%d\"" % (root.childCount,))
 
 	def test_description(self, test):
-		root = self._desktop
+		root = self._root
 		description = "The main accessible object, root of the accessible tree"
 		test.assertEqual(root.description, description,
 				 "Expected description - \"%s\". Recieved - \"%s\"" % (description, root.description,))
@@ -206,11 +207,12 @@ class AccessibleTest(_PasyTest):
 		It checks a tree of these values is correctly
 		passed from Application to AT.
 		"""
-		root = self._desktop
+		root = self._root
 
 		doc = minidom.Document()
 		_createNode(root, doc)
 		answer = doc.toprettyxml()
+
 
 		correct = os.path.join(os.environ["TEST_DATA_DIRECTORY"],
 					"accessible-test-results.xml")

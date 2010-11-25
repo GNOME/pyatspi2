@@ -27,7 +27,7 @@ class RelationTest(_PasyTest):
 	def setup(self, test):
 		self._registry = pyatspi.Registry()
 		self._desktop = self._registry.getDesktop(0)
-		self._root = self._desktop
+                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_APPLICATION)
 		self._rset = self._root.getRelationSet()
 		test.assertEqual(len(self._rset), 4, "Num relations expected %d, recieved %d" % (6, len(self._rset)))
 

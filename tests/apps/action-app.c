@@ -8,6 +8,8 @@ G_MODULE_EXPORT void
 test_init (gchar *path)
 {
   root_accessible  = g_object_new(MY_TYPE_ATK_ACTION, NULL);
+  root_accessible->name = g_strdup ("atspi-test-main");
+  root_accessible->role = ATK_ROLE_APPLICATION;
 }
 
 G_MODULE_EXPORT void

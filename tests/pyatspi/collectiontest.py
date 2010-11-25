@@ -47,7 +47,7 @@ class AccessibleTest(_PasyTest):
                 self._registry = pyatspi.Registry()
                 print self._path
                 self._desktop = self._registry.getDesktop(0)
-                self.root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "main" and x.getRole() == pyatspi.ROLE_WINDOW)
+                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_WINDOW)
 
         def assertObjects(self,test,obj,vars,msg):
                 test.assertEqual(len(obj), len(vars) / 2, msg + " length")
@@ -63,7 +63,7 @@ class AccessibleTest(_PasyTest):
                 print "\t\t), \"", msg, "\")"
 
         def test_basic(self, test):
-                collection = self.root.queryCollection()
+                collection = self._root.queryCollection()
                 stateSet = pyatspi.StateSet()
                 rule = collection.createMatchRule (stateSet.raw(),
                         collection.MATCH_NONE,
@@ -111,14 +111,14 @@ class AccessibleTest(_PasyTest):
                         "nautilus", 79,
                         "Top Expanded Edge Panel", 25,
                 ), " getMatchesFrom ")
-                obj = self.root.getChildAtIndex(1)
+                obj = self._root.getChildAtIndex(1)
                 ret = collection.getMatchesFrom (obj, rule, collection.SORT_ORDER_CANONICAL, collection.TREE_RESTRICT_CHILDREN, 5, True)
                 self.assertObjects(test,ret,(
                         "Top Expanded Edge Panel", 25,
                 ), " Restrict Children ")
 
         def test_match_any(self, test):
-                collection = self.root.queryCollection()
+                collection = self._root.queryCollection()
                 stateSet = pyatspi.StateSet()
                 rule = collection.createMatchRule (stateSet.raw(),
                         collection.MATCH_ANY,
@@ -140,7 +140,7 @@ class AccessibleTest(_PasyTest):
                 ), " 1 ")
 
         def test_role(self, test):
-                collection = self.root.queryCollection()
+                collection = self._root.queryCollection()
                 stateSet = pyatspi.StateSet()
 
                 rule = collection.createMatchRule (stateSet.raw(),

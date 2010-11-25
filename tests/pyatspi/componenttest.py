@@ -46,6 +46,7 @@ class ComponentTest(_PasyTest):
 	def setup(self, test):
 		self._registry = pyatspi.Registry()
 		self._desktop = self._registry.getDesktop(0)
+                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_APPLICATION)
 
 	def test_contains(self, test):
 		pass
@@ -54,7 +55,7 @@ class ComponentTest(_PasyTest):
 		pass
 
 	def test_getExtents(self, test):
-		root = self._desktop
+		root = self._root
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -70,7 +71,7 @@ class ComponentTest(_PasyTest):
 						extents[0], extents[1], extents[2], extents[3]))
 
 	def test_getPosition(self, test):
-		root = self._desktop
+		root = self._root
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -85,7 +86,7 @@ class ComponentTest(_PasyTest):
 					 % (expected[0], expected[1], position[0], position[1]))
 
 	def test_getSize(self, test):
-		root = self._desktop
+		root = self._root
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -100,7 +101,7 @@ class ComponentTest(_PasyTest):
 					 % (expected[0], expected[1], size[0], size[1]))
 
 	def test_getLayer(self, test):
-		root = self._desktop
+		root = self._root
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
@@ -115,7 +116,7 @@ class ComponentTest(_PasyTest):
 					 % (int(layer), int(expected)))
 
 	def test_getMDIZOrder(self, test):
-		root = self._desktop
+		root = self._root
 		one = root.getChildAtIndex(0)
 		two = root.getChildAtIndex(1)
 
