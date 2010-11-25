@@ -14,6 +14,7 @@ G_MODULE_EXPORT void
 test_init (gchar *path)
 {
   int i;
+  AtkObject *atk;
 
   if (path == NULL)
      g_error("No test data path provided");
@@ -34,6 +35,10 @@ test_init (gchar *path)
     
   my_atk_object_add_child(MY_ATK_OBJECT(comps[2]), MY_ATK_OBJECT(comps[0]));
   my_atk_object_add_child(MY_ATK_OBJECT(comps[2]), MY_ATK_OBJECT(comps[1]));
+
+    atk = ATK_OBJECT (comps [2]);
+    atk->name = g_strdup ("atspi-test-main");
+    atk->role = ATK_ROLE_APPLICATION;
 }
 
 G_MODULE_EXPORT void

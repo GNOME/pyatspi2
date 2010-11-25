@@ -6,7 +6,7 @@
 #include "my-atk-action.h"
 
 static GObjectClass *parent_class = NULL;
-//implementaion of the interface
+//implementation of the interface
 static gboolean my_atk_action_do_action(AtkAction *action, gint i)
 {
     MyAtkAction *self = (MyAtkAction*)action;

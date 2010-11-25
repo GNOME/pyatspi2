@@ -14,6 +14,8 @@ test_init (gchar *path)
   AtkObject *rls[3];
 
   root_accessible  = g_object_new(MY_TYPE_ATK_OBJECT, NULL);
+  root_accessible->name = g_strdup ("atspi-test-main");
+  root_accessible->role = ATK_ROLE_APPLICATION;
   
   r1 = ATK_OBJECT(g_object_new(MY_TYPE_ATK_OBJECT,
 				  "accessible-name", "r1",

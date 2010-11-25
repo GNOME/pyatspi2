@@ -31,6 +31,7 @@ class PasyTestStep(object):
 	def __init__(self, name):
 		self.events = PasyEvents()
 		self._state = PASY_TEST_NOT_STARTED
+                self.failMsg = None
 
 		self._name = name
 

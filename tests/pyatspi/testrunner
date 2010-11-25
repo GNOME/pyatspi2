@@ -28,14 +28,12 @@ def run_test_app(module_name, dbus_name=None, wait_for_debug=False):
 	if (dbus_name):
 		print " ".join([test_application,
 			"--atspi-dbus-name", dbus_name,
-			"--atspi-no-register",
 			"--test-dbus-name", dbus_name,
 			"--test-atspi-library", test_atspi_library,
 			"--test-module", test_module,
 			"--test-data-directory", test_data_directory,])
 		pop = Popen([test_application,
 			"--atspi-dbus-name", dbus_name,
-			"--atspi-no-register",
 			"--test-dbus-name", dbus_name,
 			"--test-atspi-library", test_atspi_library,
 			"--test-module", test_module,
@@ -76,10 +74,6 @@ def main(argv):
 	to = bus.get_object(name, "/org/codethink/atspi/test")
 	test = dbus.Interface(to, "org.codethink.atspi.test")
 
-        # Set the main loop specifications for pyatspi.
-        import pyatspi
-        pyatspi.set_default_registry(pyatspi.MAIN_LOOP_GLIB, name)
-
 	# Run the test script here
 	os.environ["ATSPI_TEST_APP_NAME"] = name
 	module = __import__(options.test_module)
@@ -93,6 +87,8 @@ def main(argv):
 		loop.quit()
 		print "\n" + test_object.report() + "\n"
 		test.finish()
+                if test_object.failMsg:
+                        sys.exit (-1)
 
 	test_object.events.finished += finished_handler
 

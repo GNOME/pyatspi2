@@ -27,16 +27,25 @@ class ActionTest(_PasyTest):
 
 	def setup(self, test):
 		self._registry = pyatspi.Registry()
+		import time
 		self._desktop = self._registry.getDesktop(0)
+		print "--desktop len", len(self._desktop)
+		for i in self._desktop:
+			try:
+				print "-- object",i,i.getRole()
+			except:
+				pass
+                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_APPLICATION)
+		print "--root", self._root
 
 	def test_nActions(self, test):
-		root = self._desktop
+		root = self._root
 		root = root.queryAction()
 		nact = root.nActions
 		test.assertEqual(nact, 10, "nActions expected %d, recieved %d" % (10, nact))
 
 	def test_getName(self, test):
-		root = self._desktop
+		root = self._root
 		root = root.queryAction()
 		name = root.getName(0)
 		test.assertEqual(name, "First action", "Name expected %s, recieved %s" % ("First action", name))
@@ -44,7 +53,7 @@ class ActionTest(_PasyTest):
 		test.assertEqual(name, "Action", "Name expected %s, recieved %s" % ("Action", name))
 
 	def test_getDescription(self, test):
-		root = self._desktop
+		root = self._root
 		root = root.queryAction()
 		description = root.getDescription(0)
 		expected = "First action performed"
@@ -54,14 +63,14 @@ class ActionTest(_PasyTest):
 		test.assertEqual(description, expected, "Description expected %s, recieved %s" % (expected, description))
 
 	def test_doAction(self, test):
-		root = self._desktop
+		root = self._root
 		root = root.queryAction()
 		#TODO have event emitted to check action has been performed
 		for i in range(0, root.nActions):
 			root.doAction(i)
 
 	def test_getKeyBinding(self, test):
-		root = self._desktop
+		root = self._root
 		root = root.queryAction()
 		for i in range(0, root.nActions):
 			keybinding = root.getKeyBinding(i)
