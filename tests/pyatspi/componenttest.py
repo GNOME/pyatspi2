@@ -8,8 +8,8 @@ import os
 from pasytest import PasyTest as _PasyTest
 
 import pyatspi
-from pyatspi import Accessible
-from pyatspi import BoundingBox
+from Accessibility import Component
+from Accessibility import BoundingBox
 
 ATSPI_LAYER_WIDGET = 3
 ATSPI_LAYER_MDI = 4
