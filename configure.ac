@@ -86,6 +86,7 @@ AC_CONFIG_FILES([Makefile
 		 tests/dummyatk/Makefile
 		 tests/data/Makefile
 		 tests/pyatspi/Makefile
+                 tests/pyatspi/testrunner
 		 tests/pyatspi/pasytest/Makefile
 		 tests/apps/Makefile
 		 pyatspi/Makefile
