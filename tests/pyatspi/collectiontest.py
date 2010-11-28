@@ -95,6 +95,7 @@ class AccessibleTest(_PasyTest):
 
                 obj=ret[2]
                 ret = collection.getMatchesTo (obj, rule, collection.SORT_ORDER_REVERSE_CANONICAL, collection.TREE_INORDER, True, 5, True)
+		print "--ret:", len(ret)
                 self.assertObjects(test,ret,(
                         "gnome-settings-daemon", 79,
                         "gnome-panel", 79,

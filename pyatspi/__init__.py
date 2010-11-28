@@ -38,8 +38,11 @@ if useCorba:
 else:
     __version__ = (1, 9, 0)
 
-# TODO: Look at pyatspi2 __init__.py; recreate namespace pollution, etc.
+    from gi.repository import Atspi
 
-from gi.repository import Atspi
+    from Accessibility import *
 
-from Accessibility import *
+    #This is a re-creation of the namespace pollution implemented
+    #by PyORBit.
+    import Accessibility
+    sys.modules['Accessibility'] = Accessibility

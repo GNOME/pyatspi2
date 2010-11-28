@@ -4,6 +4,7 @@
 #include <my-atk-action.h>
 #include <my-atk-component.h>
 #include <my-atk.h>
+#include <my-atk-document.h>
 #include <my-atk-hyperlink.h>
 #include <my-atk-hypertext.h>
 #include <my-atk-object.h>

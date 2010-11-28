@@ -165,4 +165,5 @@ def stateset_init(self, *states):
 StateSet = Atspi.StateSet
 StateSet.getStates = StateSet.get_states
 StateSet.isEmpty = StateSet.is_empty
+StateSet.raw = lambda x: x
 StateSet.__init__ = stateset_init

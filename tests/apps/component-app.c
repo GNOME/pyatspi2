@@ -56,5 +56,5 @@ test_finished (int argc, char *argv[])
 G_MODULE_EXPORT AtkObject *
 test_get_root (void)
 {
-  return ATK_COMPONENT(comps[2]);
+  return ATK_OBJECT(comps[2]);
 }
