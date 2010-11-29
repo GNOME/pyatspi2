@@ -156,7 +156,7 @@ class Registry(object):
                                 # raise an keyboard exception we may have gotten earlier
                                 raise releaseGIL.keyboard_exception
                 else:
-                        atspi.event_main()
+                        Atspi.event_main()
 
                 self.started = False
 
@@ -251,6 +251,22 @@ class Registry(object):
         _KEY_PRESSED_EVENT=1
         _KEY_RELEASED_EVENT=2
 
+        def makeSyncType(self, synchronous, preemptive, global_):
+                result = 0
+                if synchronous:
+                        result |= Atspi.KeyListenerSyncType.SYNCHRONOUS
+                if preemptive:
+                        result |= Atspi.KeyListenerSyncType.CANCONSUME
+                if global_:
+                        result |= Atspi.KeyListenerSyncType.ALL_WINDOWS
+                return Atspi.KeyListenerSyncType(result)
+
+        def makeKind(self, kind):
+                result = 0
+                for i in kind:
+                        result |= (1 << i)
+                return result
+
         def registerKeystrokeListener(self,
                                       client,
                                       key_set=[],
@@ -289,13 +305,22 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                Atspi.register_keystroke_listener(client, 
-                                                  key_set,
-                                                    mask,
-                                                    kind,
-                                                    synchronous,
-                                                    preemptive,
-                                                    global_)
+                try:
+                        listener = self.event_listeners[client]
+                except:
+                        listener = self.event_listeners[client] = Atspi.DeviceListener.new_simple(client)
+                syncFlag = self.makeSyncType(synchronous, preemptive, global_)
+                try:
+                        iter(mask)
+                        masks = mask
+                except:
+                        masks = [mask]
+                for m in masks:
+                        Atspi.register_keystroke_listener(listener,
+                                                          key_set,
+                                                          m,
+                                                          self.makeKind (kind),
+                                                          syncFlag)
 
         def deregisterKeystrokeListener(self,
                                         client,
@@ -324,7 +349,11 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
-                Atspi.deregister_keystroke_listener (client, key_set, mask, kind)
+                try:
+                        listener = self.event_listeners[client]
+                except:
+                        return
+                Atspi.deregister_keystroke_listener (listener, key_set, mask, kind)
 
                 # TODO: enqueueEvent, etc?
 

@@ -20,7 +20,7 @@
 #authors: Peter Parente, Mark Doffman
 
 #import relation
-#import state
+import state
 import registry
 
 #from deviceevent import *

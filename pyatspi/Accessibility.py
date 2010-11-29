@@ -86,7 +86,7 @@ def attributeListToHash(list):
 Accessible = Atspi.Accessible
 Atspi.Accessible.getChildAtIndex = Atspi.Accessible.get_child_at_index
 Atspi.Accessible.getAttributes = Atspi.Accessible.get_attributes_as_array
-Atspi.Accessible.getApplication = Atspi.Accessible.get_host_application
+Atspi.Accessible.getApplication = Atspi.Accessible.get_application
 Atspi.Accessible.__getitem__ = Accessible_getitem
 Atspi.Accessible.__len__ = Atspi.Accessible.get_child_count
 Atspi.Accessible.__nonzero__ = lambda x: True
@@ -100,6 +100,9 @@ Atspi.Accessible.getState = Atspi.Accessible.get_state_set
 Atspi.Accessible.name = property(fget=Atspi.Accessible.get_name)
 Atspi.Accessible.isEqual = lambda a,b: a == b
 Atspi.Accessible.parent = property(fget=Atspi.Accessible.get_parent)
+
+Atspi.Accessible.toolkitName = property(fget=Atspi.Accessible.get_toolkit_name)
+Atspi.Accessible.toolkitVersion = property(fget=Atspi.Accessible.get_toolkit_version)
 
 ### action ###
 Action = Atspi.Action
@@ -249,26 +252,25 @@ Atspi.Text.getOffsetAtPoint = Atspi.Text.get_offset_at_point
 Atspi.Text.getRangeExtents = lambda x,c: rectToist(Atspi.Text.get_range_extents(x,c))
 Atspi.Text.getSelection = lambda x,n: rangeToList (Atspi.Text.get_selection (x,n))
 Atspi.Text.getText = Atspi.Text.get_text
-Atspi.Text.getTextAfterOfset = lambda x,o: textRangeToList(Atspi.Text.get_text_after_offset (x,o))
-Atspi.Text.getTextAtOfset = lambda x,o: textRangeToList(Atspi.Text.get_text_at_offset (x,o))
-Atspi.Text.getTextBeforeOfset = lambda x,o: textRangeToList(Atspi.Text.get_text_before_offset (x,o))
+Atspi.Text.getTextAfterOffset = lambda x,o: textRangeToList(Atspi.Text.get_text_after_offset (x,o))
+Atspi.Text.getTextAtOffset = lambda x,o: textRangeToList(Atspi.Text.get_text_at_offset (x,o))
+Atspi.Text.getTextBeforeOffset = lambda x,o: textRangeToList(Atspi.Text.get_text_before_offset (x,o))
 Atspi.Text.removeSelection = Atspi.Text.remove_selection
 Atspi.Text.setCaretOffset = Atspi.Text.set_caret_offset
 Atspi.Text.setSelection = Atspi.Text.set_selection
-Atspi.Text.get_caretOffset = Atspi.Text.get_caret_offset
-Atspi.Text.get_characterCount = Atspi.Text.get_character_count
+Atspi.Text.caretOffset = property(fget=Atspi.Text.get_caret_offset, fset=Atspi.Text.set_caret_offset)
+Atspi.Text.characterCount = property(fget=Atspi.Text.get_character_count)
 
 ### value ###
 Value = Atspi.Value
 Atspi.Accessible.queryValue = Atspi.Accessible.get_value
-Atspi.Value.get_currentValue = Atspi.Value.get_current_value
-Atspi.Value.set_currentValue = Atspi.Value.set_current_value
-Atspi.Value.get_maximumValue = Atspi.Value.get_maximum_value
-Atspi.Value.get_minimumIncrement = Atspi.Value.get_minimum_increment
-Atspi.Value.get_minimumValue = Atspi.Value.get_minimum_value
+Atspi.Value.currentValue = property(fget=Atspi.Value.get_current_value, fset=Atspi.Value.set_current_value)
+Atspi.Value.maximumValue = property(fget=Atspi.Value.get_maximum_value)
+Atspi.Value.minimumIncrement = property(fget=Atspi.Value.get_minimum_increment)
+Atspi.Value.minimumValue = property(fget=Atspi.Value.get_minimum_value)
 
 ### event ###
-Atspi.Event.host_application = lambda x: x.source.host_application
+Atspi.Event.host_application = property(fget=lambda x: x.source.get_application())
 
 ### RelationSet ###
 Atspi.Relation.getRelationType = Atspi.Relation.get_relation_type
@@ -293,3 +295,18 @@ RELATION_PARENT_WINDOW_OF = Atspi.RelationType.PARENT_WINDOW_OF
 RELATION_DESCRIPTION_FOR = Atspi.RelationType.DESCRIPTION_FOR
 RELATION_DESCRIBED_BY = Atspi.RelationType.DESCRIBED_BY
 
+### ModifierType ###
+MODIFIER_SHIFT = Atspi.ModifierType.SHIFT
+MODIFIER_SHIFTLOCK = Atspi.ModifierType.SHIFTLOCK
+MODIFIER_CONTROL = Atspi.ModifierType.CONTROL
+MODIFIER_ALT = Atspi.ModifierType.ALT
+MODIFIER_META = Atspi.ModifierType.META
+MODIFIER_META2 = Atspi.ModifierType.META2
+MODIFIER_META3 = Atspi.ModifierType.META3
+MODIFIER_NUMLOCK = Atspi.ModifierType.NUMLOCK
+
+### EventType ###
+KEY_PRESSED_EVENT = Atspi.EventType.KEY_PRESSED_EVENT
+KEY_RELEASED_EVENT = Atspi.EventType.KEY_RELEASED_EVENT
+BUTTON_PRESSED_EVENT = Atspi.EventType.BUTTON_PRESSED_EVENT
+BUTTON_RELEASED_EVENT = Atspi.EventType.BUTTON_RELEASED_EVENT
