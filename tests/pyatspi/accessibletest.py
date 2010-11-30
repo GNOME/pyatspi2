@@ -96,12 +96,7 @@ class AccessibleTest(_PasyTest):
 
 	def test_getApplication(self, test):
 		root = self._root
-		print root._app_name
-		print root._acc_path
 		application = root.getApplication()
-		print application._app_name
-		print application._acc_path
-		print application
 		if not root.isEqual(application):
 			test.fail("Root accessible does not provide itself as its Application")
 
@@ -117,7 +112,7 @@ class AccessibleTest(_PasyTest):
 		res = ["foo:bar", "baz:qux", "quux:corge"]
                 attr.sort()
                 res.sort()
-		test.assertEqual(attr, res, "Attributes expected %s, recieved %s" % (attr, res))
+		test.assertEqual(attr, res, "Attributes expected %s, recieved %s" % (res, attr))
 
 	def test_parent(self, test):
 		root = self._root

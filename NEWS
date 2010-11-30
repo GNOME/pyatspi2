@@ -1,3 +1,9 @@
+What's new in pyatspi2 1.91.3:
+
+* This is a major refactor using the C-based libatspi as a core.  This should
+  significantly improve performance.  However, this release is very buggy and
+  is more of a development snapshot than a usable release.
+
 What's new in pyatspi2 1.91.1:
 
     * Add configure check for python-xlib

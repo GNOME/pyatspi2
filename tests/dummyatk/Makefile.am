@@ -13,6 +13,8 @@ libdummyatk_la_SOURCES = my-atk-action.c		\
 			 my-atk-action.h		\
 			 my-atk-component.c		\
 			 my-atk-component.h		\
+	my-atk-document.c \
+	my-atk-document.h \
 			 my-atk-hyperlink.c		\
 			 my-atk-hyperlink.h		\
 			 my-atk-hypertext.c		\

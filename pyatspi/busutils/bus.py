@@ -66,21 +66,25 @@ class _AccessibilityBus (_bus.BusConnection):
 	def __init__ (self, address, mainloop):
 		_bus.BusConnection.__init__(self, address, mainloop)
 		self._signal_queue = _queue.Queue ()
-                self.eventsFrozen = False
-                self.needEventDispatch = False
+                try:
+                        test = _AccessibilityBus.eventsFrozen
+                except:
+                        _AccessibilityBus.eventsFrozen = False
+                        _AccessibilityBus.needEventDispatchBuses = []
 
         def freezeEvents(self):
-                self.eventsFrozen = True
+                _AccessibilityBus.eventsFrozen = True
 
         def thawEvents(self):
-                self.eventsFrozen = False
-                if self.needEventDispatch:
-                	gobject.idle_add(self._event_dispatch)
-                        self.needEventDispatch = False
+                _AccessibilityBus.eventsFrozen = False
+                for bus in _AccessibilityBus.needEventDispatchBuses:
+                	gobject.idle_add(bus._event_dispatch)
+                        _AccessibilityBus.needEventDispatchBuses = []
 
 	def _event_dispatch (self):
-                if self.eventsFrozen:
-                        self.needEventDispatch = True
+                if _AccessibilityBus.eventsFrozen:
+                        if not(self in _AccessibilityBus.needEventDispatchBuses):
+                                _AccessibilityBus.needEventDispatchBuses.append(self)
                         return
 		while not self._signal_queue.empty():
 			(func, args, kwargs) = self._signal_queue.get (False)
@@ -91,8 +95,9 @@ class _AccessibilityBus (_bus.BusConnection):
 		
 		def wrapper (*iargs, **ikwargs):
 			self._signal_queue.put ((func, iargs, ikwargs))
-                        if self.eventsFrozen:
-                	        self.needEventDispatch = True
+                        if _AccessibilityBus.eventsFrozen:
+                                if not(self in _AccessibilityBus.needEventDispatchBuses):
+                                        _AccessibilityBus.needEventDispatchBuses.append(self)
                         else:
                 	        gobject.idle_add(self._event_dispatch)
 
@@ -136,6 +141,11 @@ class AsyncAccessibilityBus (_AccessibilityBus):
                 return AsyncAccessibilityBus._shared_instances[address]
 
 	def __init__ (self, registry, address = None):
+		try:
+			if self.inited:
+				return
+		except:
+			self.inited = True
                 if address is None:
                         try:
                                 address = _get_accessibility_bus_address()
@@ -168,6 +178,11 @@ class SyncAccessibilityBus (_bus.BusConnection):
 			return SyncAccessibilityBus._shared_instance
 
 	def __init__ (self, registry):
+		try:
+			if self.inited:
+				return
+		except:
+			self.inited = True
 		try:
 			_bus.BusConnection.__init__ (self, _get_accessibility_bus_address(), None)
 		except AttributeError:

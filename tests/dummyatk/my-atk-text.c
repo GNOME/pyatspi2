@@ -934,7 +934,7 @@ gboolean my_atk_text_set_selection(AtkText *text,
 {
     MyAtkText *self = (MyAtkText*)text;
     GArray *selections = self->selections;
-    if(selection_num < 0 || selection_num >= selections->len) return NULL;
+    if(selection_num < 0 || selection_num >= selections->len) return FALSE;
     
     if((selection_num == 0 
         || g_array_index(selections, TextSelection, selection_num - 1).end_offset <= start_offset)

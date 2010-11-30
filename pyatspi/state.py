@@ -19,6 +19,8 @@
 
 #authors: Peter Parente, Mark Doffman
 
+from gi.repository import Atspi
+from gi.repository import GObject
 from enum import Enum as _Enum
 
 #------------------------------------------------------------------------------
@@ -156,120 +158,12 @@ def _marshal_state_set(bitfield):
 
 #------------------------------------------------------------------------------
 
-class StateSet(object):
-        """
-        The StateSet object implements a wrapper around a
-        bitmap of Accessible states.
+def stateset_init(self, *states):
+	GObject.GObject.__init__(self)
+	map(self.add, states)
 
-        The StateSet object is the instantaneous state of
-        the Accessible object and is not updated with its
-        container Accessible. This behaviour is different
-        to the CORBA version of AT-SPI
-        """
-        def __init__(self, *states):
-                """
-                Initializes the state set with the given states.
-
-                @param states: States to add immediately
-                @type states: list
-                """
-                self.states = set()
-                map(self.add, states)
-
-        def contains(self, state):
-                """
-                Checks if this StateSet contains the given state.
-
-                @param state: State to check
-                @type state: Accessibility.StateType
-                @return: True if the set contains the given state
-                @rtype: boolean
-                """
-                return state in self.states
-
-        def add(self, *states):
-                """
-                Adds states to this set.
-
-                @param states: State(s) to add
-                @type states: Accessibility.StateType
-                """
-                for state in states:
-                        self.states.add(state)
-
-        def remove(self, state):
-                """
-                Removes states from this set.
-
-                @param states: State(s) to remove
-                @type states: Accessibility.StateType
-                """
-                self.states.remove(state)
-
-        def equals(self, state_set):
-                """
-                Checks if this StateSet contains exactly the same members as the given
-                StateSet.
-
-                @param state_set: Another set
-                @type state_set: Accessibility.StateSet
-                @return: Are the sets equivalent in terms of their contents?
-                @rtype: boolean
-                """
-                return set(state_set.getStates()) == self.states
-
-        def compare(self, state_set):
-                """
-                Finds the symmetric difference between this state set andthe one provided,
-                and returns it as a new StateSet.
-
-                @note: This does not use L{_StateSetImpl.compare} which cannot be
-                implemented at this time
-                @param state_set: Set to compare against
-                @type state_set: Accessibility.StateSet
-                @return: Proxy for the new set
-                @rtype: L{StateSet}
-                """
-                a = set(self.getStates())
-                b = set(state_set.getStates())
-                diff = a.symmetric_difference(b)
-                return StateSet(*diff)
-
-        def isEmpty(self):
-                """
-                Checks if this StateSet is empty.
-
-                @return: Is it empty?
-                @rtype: boolean
-                """
-                return len(self.states) == 0
-
-        def getStates(self):
-                """
-                Gets the sequence of all states in this set.
-
-                @return: List of states
-                @rtype: list
-                """
-                return list(self.states)
-
-        def raw(self):
-                """
-                Gets the sequence of all states in this set as a pair of
-                32-bit flags, suitable for transmitting via dbus..
-
-                @return: List of two 32-bit flags representing the states
-                @rtype: list
-                """
-		lower = upper = 0
-                for i in range (0, 32):
-                        if (self.contains(i)):
-                                lower |= (1 << i)
-                for i in range (32, 64):
-                        if (self.contains(i)):
-                                upper |= (1 << (i - 32))
-                return [lower, upper]
-
-	def unref(self):
-		pass
-#END----------------------------------------------------------------------------
+StateSet = Atspi.StateSet
+StateSet.getStates = StateSet.get_states
+StateSet.isEmpty = StateSet.is_empty
+StateSet.raw = lambda x: x
+StateSet.__init__ = stateset_init

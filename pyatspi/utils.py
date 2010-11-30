@@ -19,11 +19,11 @@
 
 #authors: Peter Parente, Mark Doffman
 
-import relation
+#import relation
 import state
 import registry
 
-from deviceevent import *
+#from deviceevent import *
 
 __all__ = [
                 "setCacheLevel",
@@ -36,7 +36,7 @@ __all__ = [
                 "stringToConst",
                 "stateToString",
                 "relationToString",
-                "allModifiers",
+                #"allModifiers",
                 "findDescendant",
                 "findAllDescendants",
                 "findAncestor",

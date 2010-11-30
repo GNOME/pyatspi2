@@ -31,6 +31,7 @@
 #define NAME_ATTR ((const xmlChar *) "name")
 #define DESC_ATTR ((const xmlChar *) "description")
 #define ROLE_ATTR ((const xmlChar *) "role")
+#define TYPE_ATTR ((const xmlChar *) "type")
 
 static MyAtkObject *
 create_atk_object_from_element(xmlNode *element)
@@ -43,14 +44,20 @@ create_atk_object_from_element(xmlNode *element)
   xmlChar *name;
   xmlChar *description;
   xmlChar *role_text; 
+  xmlChar *type_text;
   gint role;
+  GType type = MY_TYPE_ATK_OBJECT;
 
   name = xmlGetProp(element, NAME_ATTR);
   description = xmlGetProp(element, DESC_ATTR);
   role_text = xmlGetProp(element, ROLE_ATTR);
   role = atoi(role_text);
+  type_text = xmlGetProp(element, TYPE_ATTR);
 
-  obj = MY_ATK_OBJECT(g_object_new(MY_TYPE_ATK_OBJECT,
+  if (type_text && !strcmp (type_text, "document"))
+    type = MY_TYPE_ATK_DOCUMENT;
+
+  obj = MY_ATK_OBJECT(g_object_new(type,
 				   "accessible-name", name,
 				   "accessible-description", description,
 				   "accessible-role", role,

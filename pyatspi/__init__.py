@@ -1,4 +1,4 @@
-#Copyright (C) 2008 Codethink Ltd
+#Copyright (C) 210 Novell, Inc.
 
 #This library is free software; you can redistribute it and/or
 #modify it under the terms of the GNU Lesser General Public
@@ -38,19 +38,11 @@ if useCorba:
 else:
     __version__ = (1, 9, 0)
 
-    import constants
-    from Accessibility import *
+    from gi.repository import Atspi
 
-    from dbus.mainloop.glib import DBusGMainLoop
-    DBusGMainLoop (set_as_default=True)
-    del DBusGMainLoop
+    from Accessibility import *
 
     #This is a re-creation of the namespace pollution implemented
     #by PyORBit.
     import Accessibility
     sys.modules['Accessibility'] = Accessibility
-
-    import appevent as event
-
-del sys
-del useCorba
