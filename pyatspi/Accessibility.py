@@ -82,6 +82,12 @@ def attributeListToHash(list):
 		ret[key] = val
 	return ret
 
+def getInterface(func, obj):
+	ret = func(obj)
+	if ret:
+		return ret
+	raise NotImplementedError
+
 ### Accessible ###
 Accessible = Atspi.Accessible
 Atspi.Accessible.getChildAtIndex = Atspi.Accessible.get_child_at_index
@@ -106,7 +112,7 @@ Atspi.Accessible.toolkitVersion = property(fget=Atspi.Accessible.get_toolkit_ver
 
 ### action ###
 Action = Atspi.Action
-Atspi.Accessible.queryAction = Atspi.Accessible.get_action
+Atspi.Accessible.queryAction = lambda x: getInterface(Atspi.Accessible.get_action, x)
 Atspi.Action.doAction = Atspi.Action.do_action
 Atspi.Action.getDescription = Atspi.Action.get_description
 Atspi.Action.getKeyBinding = Atspi.Action.get_key_binding
@@ -115,7 +121,7 @@ Atspi.Action.nActions = property(fget=Atspi.Action.get_n_actions)
 
 ### collection ###
 Collection = Atspi.Collection
-Atspi.Accessible.queryCollection = Atspi.Accessible.get_collection
+Atspi.Accessible.queryCollection = lambda x: getInterface(Atspi.Accessible.get_collection, x)
 Atspi.Collection.isAncesterOf = Atspi.Collection.is_ancestor_of
 Atspi.Collection.createMatchRule = lambda x, s, smt, a, amt, r, rmt, i, imt, inv: Atspi.MatchRule.new (s, smt, attributeListToHash(a), amt, r, rmt, i, imt, inv)
 Atspi.Collection.getMatches = Atspi.Collection.get_matches
@@ -143,7 +149,7 @@ Atspi.Collection.TREE_INORDER = Atspi.CollectionTreeTraversalType.INORDER
 
 ### component ###
 Component = Atspi.Component
-Atspi.Accessible.queryComponent = Atspi.Accessible.get_component
+Atspi.Accessible.queryComponent = lambda x: getInterface(Atspi.Accessible.get_component, x)
 Atspi.Component.getAccessibleAtPoint = Atspi.Component.get_accessible_at_point
 Atspi.Component.getAlpha = Atspi.Component.get_alpha
 Atspi.Component.getExtents = lambda x,c: getBoundingBox(Atspi.Component.get_extents(x,c))
@@ -155,14 +161,14 @@ Atspi.Component.grabFocus = Atspi.Component.grab_focus
 
 ### document ###
 Document = Atspi.Document
-Atspi.Accessible.queryDocument = Atspi.Accessible.get_document
+Atspi.Accessible.queryDocument = lambda x: getInterface(Atspi.Accessible.get_document, x)
 Atspi.Document.getAttributevalue = Atspi.Document.get_attribute_value
 Atspi.Document.getAttributes = lambda x: [key + ":" + value for key, value in Atspi.Document.get_attributes (x)]
 Atspi.Document.getLocale = Atspi.Document.get_locale
 
 ### editable text ###
 EditableText = Atspi.EditableText
-Atspi.Accessible.queryEditableText = Atspi.Accessible.get_editable_text
+Atspi.Accessible.queryEditableText = lambda x: getInterface(Atspi.Accessible.get_editable_text, x)
 Atspi.EditableText.copyText = Atspi.EditableText.copy_text
 Atspi.EditableText.cutText = Atspi.EditableText.cut_text
 Atspi.EditableText.deleteText = Atspi.EditableText.delete_text
@@ -181,14 +187,14 @@ Atspi.Hyperlink.get_startIndex = Atspi.Hyperlink.get_start_index
 
 ### hypertext ###
 Hypertext = Atspi.Hypertext
-Atspi.Accessible.queryHypertet = Atspi.Accessible.get_hypertext
+Atspi.Accessible.queryHypertext = lambda x: getInterface(Atspi.Accessible.get_hypertext, x)
 Atspi.Hypertext.getLink = Atspi.Hypertext.get_link
 Atspi.Hypertext.getLinkIndex = Atspi.Hypertext.get_link_index
 Atspi.Hypertext.getNLinks = Atspi.Hypertext.get_n_links
 
 ### image ###
 Image = Atspi.Image
-Atspi.Accessible.queryImage = Atspi.Accessible.get_image
+Atspi.Accessible.queryImage = lambda x: getInterface(Atspi.Accessible.get_image, x)
 Atspi.Image.getImageExtents = lambda x,c: getBoundingBox(Atspi.Image.get_image_extents(x,c))
 Atspi.Image.getImagePosition = lambda x,p: pointToList(Atspi.Image.get_image_position(x,p))
 Atspi.Image.getImageSize = lambda x: pointToList(Atspi.Image.get_image_size(x))
@@ -197,7 +203,7 @@ Atspi.Image.get_imageLocale = Atspi.Image.get_image_locale
 
 ### selection ###
 Selection = Atspi.Selection
-Atspi.Accessible.querySelection = Atspi.Accessible.get_selection
+Atspi.Accessible.querySelection = lambda x: getInterface(Atspi.Accessible.get_selection)
 Atspi.Selection.clearSelectio = Atspi.Selection.clear_selection
 Atspi.Selection.deselectChild = Atspi.Selection.deselect_child
 Atspi.Selection.deselectSelectedChild = Atspi.Selection.deselect_selected_child
@@ -209,7 +215,7 @@ Atspi.Selection.get_nSelectedChildren = Atspi.Selection.get_n_selected_children
 
 ### table ###
 Table = Atspi.Table
-Atspi.Accessible.queryTable = Atspi.Accessible.get_table
+Atspi.Accessible.queryTable = lambda x: getInterface(Atspi.Accessible.get_table, x)
 Atspi.Table.addColumnSelection = Atspi.Table.add_column_selection
 Atspi.Table.addRowSelection = Atspi.Table.add_row_selection
 Atspi.Table.getAccessibleAt = Atspi.Table.get_accessible_at
@@ -237,7 +243,7 @@ Atspi.Table.get_nSelectedRows = Atspi.Table.get_n_selected_rows
 
 ### text ###
 Text = Atspi.Text
-Atspi.Accessible.queryText = Atspi.Accessible.get_text
+Atspi.Accessible.queryText = lambda x: getInterface(Atspi.Accessible.get_text, x)
 Atspi.Text.addSelection = Atspi.Text.add_selection
 Atspi.Text.getAttributeRun = lambda x,o,i: textAttrToList (Atspi.Text.get_attribute_run (x,o,i))
 Atspi.Text.getAttributevalue = Atspi.Text.get_attribute_value
@@ -263,7 +269,7 @@ Atspi.Text.characterCount = property(fget=Atspi.Text.get_character_count)
 
 ### value ###
 Value = Atspi.Value
-Atspi.Accessible.queryValue = Atspi.Accessible.get_value
+Atspi.Accessible.queryValue = lambda x: getInterface(Atspi.Accessible.get_value, x)
 Atspi.Value.currentValue = property(fget=Atspi.Value.get_current_value, fset=Atspi.Value.set_current_value)
 Atspi.Value.maximumValue = property(fget=Atspi.Value.get_maximum_value)
 Atspi.Value.minimumIncrement = property(fget=Atspi.Value.get_minimum_increment)

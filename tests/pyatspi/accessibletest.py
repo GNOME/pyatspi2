@@ -46,6 +46,7 @@ class AccessibleTest(_PasyTest):
 		     "test_childCount",
 		     "test_description",
 		     "test_tree",
+		     "test_null_interface",
 		     "teardown",
 		     ]
 
@@ -215,6 +216,14 @@ class AccessibleTest(_PasyTest):
 		cstring = file.read()
 		
 		test.assertEqual(answer, cstring, "Object tree not passed correctly")
+
+	def test_null_interface(self, test):
+		root = self._root
+		try:
+			text = root.queryText()
+		except NotImplementedError:
+			return
+		test.fail ("Should throw NotImplementedError")
 
 	def teardown(self, test):
 		pass
