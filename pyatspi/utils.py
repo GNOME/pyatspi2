@@ -99,7 +99,7 @@ def listInterfaces(obj):
         @raise AttributeError: If the object provide does not implement
         queryInterface
         """
-        return [itf.lstrip("org.a11y.atspi.") for itf in obj.interfaces]
+        return obj.get_interfaces()
 
 def stringToConst(prefix, suffix):
         """

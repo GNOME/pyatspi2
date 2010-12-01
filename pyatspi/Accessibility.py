@@ -40,7 +40,7 @@ def rangeToList(r):
 	return (r.start_offset, r.end_offset, r.text)
 
 def textRangeToList(r):
-	return (r.start_offset, r.end_offset, r.text)
+	return (r.text, r.start_offset, r.end_offset)
 
 # TODO: Figure out how to override Atspi.Rect constructor and remove this class
 class BoundingBox(list):
@@ -250,22 +250,35 @@ Atspi.Text.getAttributevalue = Atspi.Text.get_attribute_value
 Atspi.Text.getAttributes = lambda x,o: textAttrToList (Atspi.Text.get_attributes (x, o))
 Atspi.Text.getBoundedRanges = Atspi.Text.get_bounded_ranges
 Atspi.Text.getcharacterAtOffset = Atspi.Text.get_character_at_offset
-Atspi.Text.getCharacterExtents = lambda x,c: rectToist(Atspi.Text.get_character_extents(x,c))
+Atspi.Text.getCharacterExtents = lambda x,c: rectToList(Atspi.Text.get_character_extents(x,c))
 Atspi.Text.getDefaultAttributeSet = lambda x: [key + ":" + value for key, value in Atspi.Text.get_default_attribute_set (x)]
 Atspi.Text.getDefaultAttributes = lambda x: [key + ":" + value for key, value in Atspi.Text.get_default_attributes (x)]
 Atspi.Text.getNSelections = Atspi.Text.get_n_selections
 Atspi.Text.getOffsetAtPoint = Atspi.Text.get_offset_at_point
-Atspi.Text.getRangeExtents = lambda x,c: rectToist(Atspi.Text.get_range_extents(x,c))
+Atspi.Text.getRangeExtents = lambda x,s,e,c: rectToList(Atspi.Text.get_range_extents(x,s,e,c))
 Atspi.Text.getSelection = lambda x,n: rangeToList (Atspi.Text.get_selection (x,n))
 Atspi.Text.getText = Atspi.Text.get_text
-Atspi.Text.getTextAfterOffset = lambda x,o: textRangeToList(Atspi.Text.get_text_after_offset (x,o))
-Atspi.Text.getTextAtOffset = lambda x,o: textRangeToList(Atspi.Text.get_text_at_offset (x,o))
-Atspi.Text.getTextBeforeOffset = lambda x,o: textRangeToList(Atspi.Text.get_text_before_offset (x,o))
+Atspi.Text.getTextAfterOffset = lambda x,o,b: textRangeToList(Atspi.Text.get_text_after_offset (x,o,b))
+Atspi.Text.getTextAtOffset = lambda x,o,b: textRangeToList(Atspi.Text.get_text_at_offset (x,o,b))
+Atspi.Text.getTextBeforeOffset = lambda x,o,b: textRangeToList(Atspi.Text.get_text_before_offset (x,o,b))
 Atspi.Text.removeSelection = Atspi.Text.remove_selection
 Atspi.Text.setCaretOffset = Atspi.Text.set_caret_offset
 Atspi.Text.setSelection = Atspi.Text.set_selection
 Atspi.Text.caretOffset = property(fget=Atspi.Text.get_caret_offset, fset=Atspi.Text.set_caret_offset)
 Atspi.Text.characterCount = property(fget=Atspi.Text.get_character_count)
+
+TEXT_BOUNDARY_CHAR = Atspi.TextBoundaryType.WORD_START
+TEXT_BOUNDARY_WORD_START = Atspi.TextBoundaryType.WORD_START
+TEXT_BOUNDARY_WORD_END = Atspi.TextBoundaryType.WORD_END
+TEXT_BOUNDARY_SENTENCE_START = Atspi.TextBoundaryType.SENTENCE_START
+TEXT_BOUNDARY_SENTENCE_END = Atspi.TextBoundaryType.SENTENCE_END
+TEXT_BOUNDARY_LINE_START = Atspi.TextBoundaryType.LINE_START
+TEXT_BOUNDARY_LINE_END = Atspi.TextBoundaryType.SENTENCE_END
+
+TEXT_CLIP_NONE = Atspi.TextClipType.NONE
+TEXT_CLIP_MIN = Atspi.TextClipType.MIN
+TEXT_CLIP_MAX= Atspi.TextClipType.MAX
+TEXT_CLIP_BOTH= Atspi.TextClipType.BOTH
 
 ### value ###
 Value = Atspi.Value
