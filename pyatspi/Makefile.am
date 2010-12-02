@@ -19,7 +19,6 @@ pyatspi_PYTHON = \
 		__init__.py		\
 		interfaces.py		\
 		registry.py		\
-		relation.py		\
 		role.py			\
 		state.py		\
 		utils.py

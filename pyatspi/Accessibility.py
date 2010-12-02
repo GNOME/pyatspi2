@@ -314,6 +314,13 @@ RELATION_PARENT_WINDOW_OF = Atspi.RelationType.PARENT_WINDOW_OF
 RELATION_DESCRIPTION_FOR = Atspi.RelationType.DESCRIPTION_FOR
 RELATION_DESCRIBED_BY = Atspi.RelationType.DESCRIBED_BY
 
+# Build a dictionary mapping relation values to names based on the prefix of the enum constants.
+
+RELATION_VALUE_TO_NAME = dict(((value, name[9:].lower().replace('_', ' ')) 
+                               for name, value 
+                               in globals().items()
+                               if name.startswith('RELATION_')))
+
 ### ModifierType ###
 MODIFIER_SHIFT = Atspi.ModifierType.SHIFT
 MODIFIER_SHIFTLOCK = Atspi.ModifierType.SHIFTLOCK

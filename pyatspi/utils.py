@@ -19,7 +19,7 @@
 
 #authors: Peter Parente, Mark Doffman
 
-#import relation
+import Accessibility
 import state
 import registry
 
@@ -153,7 +153,7 @@ def relationToString(value):
         @return: Human readable, untranslated name of the relation
         @rtype: string
         """
-        return relation.RELATION_VALUE_TO_NAME.get(value)
+        return Accessibility.RELATION_VALUE_TO_NAME.get(value)
 
 
 def findDescendant(acc, pred, breadth_first=False):
