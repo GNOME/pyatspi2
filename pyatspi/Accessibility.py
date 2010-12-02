@@ -267,13 +267,13 @@ Atspi.Text.setSelection = Atspi.Text.set_selection
 Atspi.Text.caretOffset = property(fget=Atspi.Text.get_caret_offset, fset=Atspi.Text.set_caret_offset)
 Atspi.Text.characterCount = property(fget=Atspi.Text.get_character_count)
 
-TEXT_BOUNDARY_CHAR = Atspi.TextBoundaryType.WORD_START
+TEXT_BOUNDARY_CHAR = Atspi.TextBoundaryType.CHAR
 TEXT_BOUNDARY_WORD_START = Atspi.TextBoundaryType.WORD_START
 TEXT_BOUNDARY_WORD_END = Atspi.TextBoundaryType.WORD_END
 TEXT_BOUNDARY_SENTENCE_START = Atspi.TextBoundaryType.SENTENCE_START
 TEXT_BOUNDARY_SENTENCE_END = Atspi.TextBoundaryType.SENTENCE_END
 TEXT_BOUNDARY_LINE_START = Atspi.TextBoundaryType.LINE_START
-TEXT_BOUNDARY_LINE_END = Atspi.TextBoundaryType.SENTENCE_END
+TEXT_BOUNDARY_LINE_END = Atspi.TextBoundaryType.LINE_END
 
 TEXT_CLIP_NONE = Atspi.TextClipType.NONE
 TEXT_CLIP_MIN = Atspi.TextClipType.MIN
