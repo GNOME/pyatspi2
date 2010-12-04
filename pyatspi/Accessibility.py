@@ -23,7 +23,10 @@ from state import *
 from utils import *
 
 def Accessible_getitem(self, i):
-	if i < 0 or i >= self.get_child_count():
+        len=self.get_child_count()
+        if i < 0:
+                i = len + i
+	if i < 0 or i >= len:
 		raise IndexError
 	return self.get_child_at_index(i)
 
