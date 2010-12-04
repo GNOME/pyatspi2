@@ -181,12 +181,13 @@ Hyperlink = Atspi.Hyperlink
 Atspi.Hyperlink.getObject = Atspi.Hyperlink.get_object
 Atspi.Hyperlink.getURI = Atspi.Hyperlink.get_uri
 Atspi.Hyperlink.isValid = Atspi.Hyperlink.is_valid
-Atspi.Hyperlink.get_endIndex = Atspi.Hyperlink.get_end_index
-Atspi.Hyperlink.get_nAnchors = Atspi.Hyperlink.get_n_anchors
-Atspi.Hyperlink.get_startIndex = Atspi.Hyperlink.get_start_index
+Atspi.Hyperlink.endIndex = property(fget=Atspi.Hyperlink.get_end_index)
+Atspi.Hyperlink.nAnchors = property(fget=Atspi.Hyperlink.get_n_anchors)
+Atspi.Hyperlink.startIndex = property(fget=Atspi.Hyperlink.get_start_index)
 
 ### hypertext ###
 Hypertext = Atspi.Hypertext
+Atspi.Accessible.queryHyperlink = lambda x: getInterface(Atspi.Accessible.get_hyperlink, x)
 Atspi.Accessible.queryHypertext = lambda x: getInterface(Atspi.Accessible.get_hypertext, x)
 Atspi.Hypertext.getLink = Atspi.Hypertext.get_link
 Atspi.Hypertext.getLinkIndex = Atspi.Hypertext.get_link_index
@@ -198,8 +199,8 @@ Atspi.Accessible.queryImage = lambda x: getInterface(Atspi.Accessible.get_image,
 Atspi.Image.getImageExtents = lambda x,c: getBoundingBox(Atspi.Image.get_image_extents(x,c))
 Atspi.Image.getImagePosition = lambda x,p: pointToList(Atspi.Image.get_image_position(x,p))
 Atspi.Image.getImageSize = lambda x: pointToList(Atspi.Image.get_image_size(x))
-Atspi.Image.get_imageDescription = Atspi.Image.get_image_description
-Atspi.Image.get_imageLocale = Atspi.Image.get_image_locale
+Atspi.Image.imageDescription = property(fget=Atspi.Image.get_image_description)
+Atspi.Image.imageLocale = property(fget=Atspi.Image.get_image_locale)
 
 ### selection ###
 Selection = Atspi.Selection
@@ -211,7 +212,7 @@ Atspi.Selection.getSelectedChild = Atspi.Selection.get_selected_child
 Atspi.Selection.isChildSelected = Atspi.Selection.is_child_selected
 Atspi.Selection.selectAll = Atspi.Selection.select_all
 Atspi.Selection.selectChild = Atspi.Selection.select_child
-Atspi.Selection.get_nSelectedChildren = Atspi.Selection.get_n_selected_children
+Atspi.Selection.nSelectedChildren = property(fget=Atspi.Selection.get_n_selected_children)
 
 ### table ###
 Table = Atspi.Table
@@ -236,8 +237,8 @@ Atspi.Table.isRowSelected = Atspi.Table.is_row_selected
 Atspi.Table.isSelected = Atspi.Table.is_selected
 Atspi.Table.removeColumnSelection = Atspi.Table.remove_column_selection
 Atspi.Table.removeRowSelection = Atspi.Table.remove_row_selection
-Atspi.Table.get_nColumns = Atspi.Table.get_n_columns
-Atspi.Table.get_nRows = Atspi.Table.get_n_rows
+Atspi.Table.nColumns = property(fget=Atspi.Table.get_n_columns)
+Atspi.Table.nRows = property(fget=Atspi.Table.get_n_rows)
 Atspi.Table.get_nSelectedColumns = Atspi.Table.get_n_selected_columns
 Atspi.Table.get_nSelectedRows = Atspi.Table.get_n_selected_rows
 
