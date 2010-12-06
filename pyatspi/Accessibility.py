@@ -91,6 +91,9 @@ def getInterface(func, obj):
 		return ret
 	raise NotImplementedError
 
+def hashToAttributeList(h):
+	return [x + ":" + h[x] for x in h.keys()]
+
 ### Accessible ###
 Accessible = Atspi.Accessible
 Atspi.Accessible.getChildAtIndex = Atspi.Accessible.get_child_at_index
@@ -255,8 +258,7 @@ Atspi.Text.getAttributes = lambda x,o: textAttrToList (Atspi.Text.get_attributes
 Atspi.Text.getBoundedRanges = Atspi.Text.get_bounded_ranges
 Atspi.Text.getcharacterAtOffset = Atspi.Text.get_character_at_offset
 Atspi.Text.getCharacterExtents = lambda x,c: rectToList(Atspi.Text.get_character_extents(x,c))
-Atspi.Text.getDefaultAttributeSet = lambda x: [key + ":" + value for key, value in Atspi.Text.get_default_attribute_set (x)]
-Atspi.Text.getDefaultAttributes = lambda x: [key + ":" + value for key, value in Atspi.Text.get_default_attributes (x)]
+Atspi.Text.getDefaultAttributes = lambda x: hashToAttributeList (Atspi.Text.get_default_attributes (x))
 Atspi.Text.getNSelections = Atspi.Text.get_n_selections
 Atspi.Text.getOffsetAtPoint = Atspi.Text.get_offset_at_point
 Atspi.Text.getRangeExtents = lambda x,s,e,c: rectToList(Atspi.Text.get_range_extents(x,s,e,c))
