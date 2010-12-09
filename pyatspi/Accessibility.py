@@ -20,6 +20,8 @@ Registry = Registry()
 from constants import *
 from role import *
 from state import *
+from text import *
+from document import *
 from utils import *
 
 def Accessible_getitem(self, i):
@@ -35,15 +37,6 @@ def pointToList(point):
 
 def rectToList(rect):
 	return (rect.x, rect.y, rect.width, rect.height)
-
-def textAttrToList(ta):
-	return (ta.start_offset, ta.end_offset, ta.text)
-
-def rangeToList(r):
-	return (r.start_offset, r.end_offset, r.text)
-
-def textRangeToList(r):
-	return (r.text, r.start_offset, r.end_offset)
 
 # TODO: Figure out how to override Atspi.Rect constructor and remove this class
 class BoundingBox(list):
@@ -166,11 +159,7 @@ Atspi.Component.getSize = lambda x: pointToList(Atspi.Component.get_size(x))
 Atspi.Component.grabFocus = Atspi.Component.grab_focus
 
 ### document ###
-Document = Atspi.Document
-Atspi.Accessible.queryDocument = lambda x: getInterface(Atspi.Accessible.get_document, x)
-Atspi.Document.getAttributevalue = Atspi.Document.get_attribute_value
-Atspi.Document.getAttributes = lambda x: [key + ":" + value for key, value in Atspi.Document.get_attributes (x)]
-Atspi.Document.getLocale = Atspi.Document.get_locale
+Atspi.Accessible.queryDocument = lambda x: Document(getInterface(Atspi.Accessible.get_document, x))
 
 ### editable text ###
 EditableText = Atspi.EditableText
@@ -249,29 +238,7 @@ Atspi.Table.get_nSelectedColumns = Atspi.Table.get_n_selected_columns
 Atspi.Table.get_nSelectedRows = Atspi.Table.get_n_selected_rows
 
 ### text ###
-Text = Atspi.Text
-Atspi.Accessible.queryText = lambda x: getInterface(Atspi.Accessible.get_text, x)
-Atspi.Text.addSelection = Atspi.Text.add_selection
-Atspi.Text.getAttributeRun = lambda x,o,i: textAttrToList (Atspi.Text.get_attribute_run (x,o,i))
-Atspi.Text.getAttributevalue = Atspi.Text.get_attribute_value
-Atspi.Text.getAttributes = lambda x,o: textAttrToList (Atspi.Text.get_attributes (x, o))
-Atspi.Text.getBoundedRanges = Atspi.Text.get_bounded_ranges
-Atspi.Text.getcharacterAtOffset = Atspi.Text.get_character_at_offset
-Atspi.Text.getCharacterExtents = lambda x,c: rectToList(Atspi.Text.get_character_extents(x,c))
-Atspi.Text.getDefaultAttributes = lambda x: hashToAttributeList (Atspi.Text.get_default_attributes (x))
-Atspi.Text.getNSelections = Atspi.Text.get_n_selections
-Atspi.Text.getOffsetAtPoint = Atspi.Text.get_offset_at_point
-Atspi.Text.getRangeExtents = lambda x,s,e,c: rectToList(Atspi.Text.get_range_extents(x,s,e,c))
-Atspi.Text.getSelection = lambda x,n: rangeToList (Atspi.Text.get_selection (x,n))
-Atspi.Text.getText = Atspi.Text.get_text
-Atspi.Text.getTextAfterOffset = lambda x,o,b: textRangeToList(Atspi.Text.get_text_after_offset (x,o,b))
-Atspi.Text.getTextAtOffset = lambda x,o,b: textRangeToList(Atspi.Text.get_text_at_offset (x,o,b))
-Atspi.Text.getTextBeforeOffset = lambda x,o,b: textRangeToList(Atspi.Text.get_text_before_offset (x,o,b))
-Atspi.Text.removeSelection = Atspi.Text.remove_selection
-Atspi.Text.setCaretOffset = Atspi.Text.set_caret_offset
-Atspi.Text.setSelection = Atspi.Text.set_selection
-Atspi.Text.caretOffset = property(fget=Atspi.Text.get_caret_offset, fset=Atspi.Text.set_caret_offset)
-Atspi.Text.characterCount = property(fget=Atspi.Text.get_character_count)
+Atspi.Accessible.queryText = lambda x: Text(getInterface(Atspi.Accessible.get_text, x))
 
 TEXT_BOUNDARY_CHAR = Atspi.TextBoundaryType.CHAR
 TEXT_BOUNDARY_WORD_START = Atspi.TextBoundaryType.WORD_START

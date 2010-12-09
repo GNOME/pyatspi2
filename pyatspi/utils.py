@@ -322,3 +322,9 @@ def getPath(acc):
                 except Exception:
                         raise LookupError
                 acc = acc.parent
+
+def pointToList(point):
+	return (point.x, point.y)
+
+def rectToList(rect):
+	return (rect.x, rect.y, rect.width, rect.height)

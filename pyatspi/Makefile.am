@@ -17,10 +17,12 @@ pyatspi_PYTHON = \
                 exceptions.py           \
 		factory.py		\
 		__init__.py		\
+	document.py \
 		interfaces.py		\
 		registry.py		\
 		role.py			\
 		state.py		\
+	text.py \
 		utils.py
 
 CLEANFILES = *.pyc
