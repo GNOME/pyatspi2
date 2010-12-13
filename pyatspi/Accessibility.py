@@ -123,6 +123,7 @@ Collection = Atspi.Collection
 Atspi.Accessible.queryCollection = lambda x: getInterface(Atspi.Accessible.get_collection, x)
 Atspi.Collection.isAncesterOf = Atspi.Collection.is_ancestor_of
 Atspi.Collection.createMatchRule = lambda x, s, smt, a, amt, r, rmt, i, imt, inv: Atspi.MatchRule.new (s, smt, attributeListToHash(a), amt, r, rmt, i, imt, inv)
+Atspi.Collection.freeMatchRule = lambda self, x: None
 Atspi.Collection.getMatches = Atspi.Collection.get_matches
 Atspi.Collection.getMatchesFrom = Atspi.Collection.get_matches_from
 Atspi.Collection.getMatchesTo = Atspi.Collection.get_matches_to
