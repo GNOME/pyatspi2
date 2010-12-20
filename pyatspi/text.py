@@ -536,5 +536,8 @@ class Text:
                 """
         characterCount = property(fget=get_characterCount, doc=_characterCountDoc)
 
+def rangeToList(r):
+        return (r.start_offset, r.end_offset)
+
 def textRangeToList(r):
         return (r.content, r.start_offset, r.end_offset)
