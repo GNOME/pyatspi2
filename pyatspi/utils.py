@@ -20,6 +20,7 @@
 #authors: Peter Parente, Mark Doffman
 
 import Accessibility
+from deviceevent import allModifiers
 import state
 import registry
 
@@ -36,7 +37,7 @@ __all__ = [
                 "stringToConst",
                 "stateToString",
                 "relationToString",
-                #"allModifiers",
+                "allModifiers",
                 "findDescendant",
                 "findAllDescendants",
                 "findAncestor",
