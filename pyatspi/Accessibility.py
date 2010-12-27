@@ -96,6 +96,7 @@ Atspi.Accessible.__getitem__ = Accessible_getitem
 Atspi.Accessible.__len__ = Atspi.Accessible.get_child_count
 Atspi.Accessible.__nonzero__ = lambda x: True
 Atspi.Accessible.childCount = property(fget=Atspi.Accessible.get_child_count)
+Atspi.Accessible.getChildCount = Atspi.Accessible.get_child_count
 Atspi.Accessible.getIndexInParent = Atspi.Accessible.get_index_in_parent
 Atspi.Accessible.getLocalizedRoleName = Atspi.Accessible.get_localized_role_name
 Atspi.Accessible.getRelationSet = Atspi.Accessible.get_relation_set
