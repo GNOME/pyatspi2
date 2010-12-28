@@ -393,6 +393,13 @@ class Registry(object):
                         self._set_default_registry ()
                 Atspi.generate_mouse_event (x, y, name)
 
+
+        def pumpQueuedEvents (self):
+                """
+                Dispatch events that have been queued.
+                """
+                pass
+
 def set_default_registry (main_loop, app_name=None):
         registry = Registry ()
         registry._set_registry (main_loop, app_name)
