@@ -87,14 +87,6 @@ def getInterface(func, obj):
 def hashToAttributeList(h):
 	return [x + ":" + h[x] for x in h.keys()]
 
-def eventTypeToString(eventType):
-        ret = eventType.klass + ":"
-        if eventType.major:
-                ret = ret + eventType.major
-        if eventType.minor:
-                ret = ret + ":" + eventType.minor
-        return ret
-
 ### Accessible ###
 Accessible = Atspi.Accessible
 Atspi.Accessible.getChildAtIndex = Atspi.Accessible.get_child_at_index
@@ -275,8 +267,6 @@ Atspi.Value.minimumValue = property(fget=Atspi.Value.get_minimum_value)
 
 ### event ###
 Atspi.Event.host_application = property(fget=lambda x: x.source.get_application())
-Atspi.EventType.__repr__ = eventTypeToString
-Atspi.EventType.__str__ = eventTypeToString
 
 ### RelationSet ###
 Atspi.Relation.getRelationType = Atspi.Relation.get_relation_type
@@ -320,7 +310,7 @@ MODIFIER_META3 = Atspi.ModifierType.META3
 MODIFIER_NUMLOCK = Atspi.ModifierType.NUMLOCK
 
 ### EventType ###
-KEY_PRESSED_EVENT = Atspi.DeviceEventType.KEY_PRESSED_EVENT
-KEY_RELEASED_EVENT = Atspi.DeviceEventType.KEY_RELEASED_EVENT
-BUTTON_PRESSED_EVENT = Atspi.DeviceEventType.BUTTON_PRESSED_EVENT
-BUTTON_RELEASED_EVENT = Atspi.DeviceEventType.BUTTON_RELEASED_EVENT
+KEY_PRESSED_EVENT = Atspi.EventType.KEY_PRESSED_EVENT
+KEY_RELEASED_EVENT = Atspi.EventType.KEY_RELEASED_EVENT
+BUTTON_PRESSED_EVENT = Atspi.EventType.BUTTON_PRESSED_EVENT
+BUTTON_RELEASED_EVENT = Atspi.EventType.BUTTON_RELEASED_EVENT
