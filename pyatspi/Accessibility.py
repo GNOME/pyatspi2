@@ -277,7 +277,6 @@ Atspi.Value.minimumValue = property(fget=Atspi.Value.get_minimum_value)
 Atspi.Event.host_application = property(fget=lambda x: x.source.get_application())
 Atspi.EventType.__repr__ = eventTypeToString
 Atspi.EventType.__str__ = eventTypeToString
-Atspi.EventType.startswith = lambda x,s: str(x).startswith(s)
 
 ### RelationSet ###
 Atspi.Relation.getRelationType = Atspi.Relation.get_relation_type
