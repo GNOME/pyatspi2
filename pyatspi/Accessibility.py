@@ -23,6 +23,7 @@ from state import *
 from text import *
 from document import *
 from utils import *
+from appevent import *
 
 def Accessible_getitem(self, i):
         len=self.get_child_count()
@@ -86,6 +87,9 @@ def getInterface(func, obj):
 
 def hashToAttributeList(h):
 	return [x + ":" + h[x] for x in h.keys()]
+
+def getEventType(event):
+	return EventType(event.rawType)
 
 ### Accessible ###
 Accessible = Atspi.Accessible
@@ -267,6 +271,8 @@ Atspi.Value.minimumValue = property(fget=Atspi.Value.get_minimum_value)
 
 ### event ###
 Atspi.Event.host_application = property(fget=lambda x: x.source.get_application())
+Atspi.Event.rawType = Atspi.Event.type
+Atspi.Event.type = property(fget=getEventType)
 
 ### RelationSet ###
 Atspi.Relation.getRelationType = Atspi.Relation.get_relation_type
