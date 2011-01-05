@@ -166,4 +166,5 @@ StateSet = Atspi.StateSet
 StateSet.getStates = StateSet.get_states
 StateSet.isEmpty = StateSet.is_empty
 StateSet.raw = lambda x: x
+StateSet.unref = lambda x: None
 StateSet.__init__ = stateset_init
