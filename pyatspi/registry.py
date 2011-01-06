@@ -373,6 +373,8 @@ class Registry(object):
                 """
                 if not self.has_implementations:
                         self._set_default_registry ()
+                if keysym is None:
+                        keysym = ""
                 Atspi.generate_keyboard_event (keycode, keysym, kind)
 
         def generateMouseEvent(self, x, y, name):
