@@ -20,8 +20,12 @@ if not sys.modules.has_key('pyatspi_dbus'):
     try:
         gconf = None
         gconfClient = None
-        import gconf
-        gconfClient = gconf.client_get_default()
+        try:
+            from gi.repository import GConf as gconf
+            gconfClient = gconf.Client.get_default()
+        except:
+            import gconf
+            gconfClient = gconf.client_get_default()
         useCorba = \
             gconfClient.get_bool("/desktop/gnome/interface/at-spi-corba")
     except:
