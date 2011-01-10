@@ -1,3 +1,31 @@
+What's new in pyatspi2 1.91.5:
+
+* Fixed generateKeyboardEvent, description, and allModifiers.
+
+* Added a dummy stateset.unref function for backwards compatibility.
+
+* Added a pumpQueuedEvents stub.
+
+* Added RELATION_EMBEDDED_BY.
+
+* Hide children attribute since it is currently broken and caused a crash
+  with Accerciser.
+
+* Wrap event type so that sub-fields can be accessed.
+
+What's new in pyatspi2 1.91.4:
+
+* Added a dummy freeMatchRule function.
+
+* Attribute fixes.
+
+* __getitem__ now supports negative indices.
+
+* Fixed some properties, relationToString, listInterfaces, various text
+  methods.
+
+* Raise notImplementedError when querying unimplemented interfaces.
+
 What's new in pyatspi2 1.91.3:
 
 * This is a major refactor using the C-based libatspi as a core.  This should
