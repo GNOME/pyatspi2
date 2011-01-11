@@ -66,6 +66,8 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(GTK_CFLAGS)
 fi
 
+        PKG_CHECK_MODULES(PYGOBJ, [pygobject-2.0 >= 2.26.0])
+
 AM_CONDITIONAL(SET_GTK_MODULE, test -z "$GTK_MODULE_DIR")
 AC_ARG_VAR([GTK_MODULE_DIR], [Where to find the atk-adaptor gtk module])
 if test -z "$GTK_MODULE_DIR"; then
