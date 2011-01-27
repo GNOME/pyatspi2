@@ -18,23 +18,11 @@
 import sys
 if not sys.modules.has_key('pyatspi_dbus'):
     try:
-        gconf = None
-        gconfClient = None
-        try:
-            from gi.repository import GConf as gconf
-            gconfClient = gconf.Client.get_default()
-        except:
-            import gconf
-            gconfClient = gconf.client_get_default()
-        useCorba = \
-            gconfClient.get_bool("/desktop/gnome/interface/at-spi-corba")
+        import subprocess
+        o = subprocess.check_output (("gconftool-2", "--get", "/desktop/gnome/interface/at-spi-corba"))
+        useCorba = (o == "true\n")
     except:
         useCorba = False
-    finally:
-        del gconfClient
-        del gconf
-else:
-    useCorba = False
 
 if useCorba:
     import pyatspi_corba
