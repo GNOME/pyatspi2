@@ -23,6 +23,8 @@ if not sys.modules.has_key('pyatspi_dbus'):
         useCorba = (o == "true\n")
     except:
         useCorba = False
+else:
+    useCorba = False
 
 if useCorba:
     import pyatspi_corba
