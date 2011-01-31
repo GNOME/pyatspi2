@@ -1,3 +1,15 @@
+What's new in pyatspi2 1.91.6:
+
+* Added source_name and source_role to events.
+
+* Call gconftool-2 to check the value of /desktop/gnome/interface/at-spi-corba
+rather than importing gconf, since the latter can cause problems if new and
+old versions of the Python bindings are mixed.
+
+* Added setExtents, setSize, and setPosition for components.
+
+* Added setCacheMask.
+
 What's new in pyatspi2 1.91.5:
 
 * Fixed generateKeyboardEvent, description, and allModifiers.
