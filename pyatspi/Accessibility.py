@@ -165,6 +165,9 @@ Atspi.Component.getMDIZOrder = Atspi.Component.get_mdi_z_order
 Atspi.Component.getPosition = lambda x,p: pointToList(Atspi.Component.get_position(x,p))
 Atspi.Component.getSize = lambda x: pointToList(Atspi.Component.get_size(x))
 Atspi.Component.grabFocus = Atspi.Component.grab_focus
+Atspi.Component.setExtents = Atspi.Component.set_extents
+Atspi.Component.setPosition = Atspi.Component.set_position
+Atspi.Component.setSize = Atspi.Component.set_size
 
 ### document ###
 Atspi.Accessible.queryDocument = lambda x: Document(getInterface(Atspi.Accessible.get_document, x))
