@@ -112,6 +112,7 @@ Atspi.Accessible.description = property(fget=Atspi.Accessible.get_description)
 Atspi.Accessible.name = property(fget=Atspi.Accessible.get_name)
 Atspi.Accessible.isEqual = lambda a,b: a == b
 Atspi.Accessible.parent = property(fget=Atspi.Accessible.get_parent)
+Atspi.Accessible.setCacheMask = Atspi.Accessible.set_cache_mask
 
 Atspi.Accessible.toolkitName = property(fget=Atspi.Accessible.get_toolkit_name)
 Atspi.Accessible.toolkitVersion = property(fget=Atspi.Accessible.get_toolkit_version)
@@ -332,3 +333,6 @@ KEY_PRESSRELEASE = Atspi.KeySynthType.PRESSRELEASE
 KEY_RELEASE = Atspi.KeySynthType.RELEASE
 KEY_STRING = Atspi.KeySynthType.STRING
 KEY_SYM = Atspi.KeySynthType.SYM
+
+### cache ###
+cache = Atspi.Cache
