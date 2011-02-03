@@ -18,6 +18,7 @@ from registry import *
 Registry = Registry()
 
 from constants import *
+from editabletext import *
 from role import *
 from state import *
 from text import *
@@ -174,14 +175,7 @@ Atspi.Component.setSize = Atspi.Component.set_size
 Atspi.Accessible.queryDocument = lambda x: Document(getInterface(Atspi.Accessible.get_document, x))
 
 ### editable text ###
-EditableText = Atspi.EditableText
-Atspi.Accessible.queryEditableText = lambda x: getInterface(Atspi.Accessible.get_editable_text, x)
-Atspi.EditableText.copyText = Atspi.EditableText.copy_text
-Atspi.EditableText.cutText = Atspi.EditableText.cut_text
-Atspi.EditableText.deleteText = Atspi.EditableText.delete_text
-Atspi.EditableText.insertText = Atspi.EditableText.insert_text
-Atspi.EditableText.pasteText = Atspi.EditableText.paste_text
-Atspi.EditableText.setTextContents = Atspi.EditableText.set_text_contents
+Atspi.Accessible.queryEditableText = lambda x: EditableText(getInterface(Atspi.Accessible.get_text, x))
 
 ### hyperlink ###
 Hyperlink = Atspi.Hyperlink

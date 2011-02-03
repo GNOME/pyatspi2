@@ -18,6 +18,7 @@ pyatspi_PYTHON = \
 		factory.py		\
 		__init__.py		\
 	document.py \
+	editabletext.py \
 		interfaces.py		\
 		registry.py		\
 		role.py			\
