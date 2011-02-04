@@ -205,8 +205,8 @@ Atspi.Image.imageLocale = property(fget=Atspi.Image.get_image_locale)
 
 ### selection ###
 Selection = Atspi.Selection
-Atspi.Accessible.querySelection = lambda x: getInterface(Atspi.Accessible.get_selection)
-Atspi.Selection.clearSelectio = Atspi.Selection.clear_selection
+Atspi.Accessible.querySelection = lambda x: getInterface(Atspi.Accessible.get_selection, x)
+Atspi.Selection.clearSelection = Atspi.Selection.clear_selection
 Atspi.Selection.deselectChild = Atspi.Selection.deselect_child
 Atspi.Selection.deselectSelectedChild = Atspi.Selection.deselect_selected_child
 Atspi.Selection.getSelectedChild = Atspi.Selection.get_selected_child
