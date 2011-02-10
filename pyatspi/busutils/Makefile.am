@@ -1,8 +1,4 @@
-if RELOCATE
-pyatspidir = $(pythondir)/pyatspi_dbus
-else
 pyatspidir = $(pythondir)/pyatspi
-endif
 
 busutilsdir = $(pyatspidir)/busutils
 

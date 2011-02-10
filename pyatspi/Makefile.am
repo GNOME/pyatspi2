@@ -1,9 +1,5 @@
 SUBDIRS=busutils
-if RELOCATE
-pyatspidir = $(pythondir)/pyatspi_dbus
-else
 pyatspidir = $(pythondir)/pyatspi
-endif
 
 pyatspi_PYTHON = \
 		Accessibility.py	\

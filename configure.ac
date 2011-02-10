@@ -76,12 +76,6 @@ fi
 
 AC_PATH_XTRA
 
-AC_ARG_ENABLE(relocate, [--enable-relocate  Relocate to coexist with CORBA [default=no]], enable_relocate="$enableval", enable_relocate=no)
-if test x$enable_relocate = xyes ; then
-	AC_DEFINE(RELOCATE, , [Relocate to coexist with CORBA])
-fi
-AM_CONDITIONAL(RELOCATE, test x$enable_relocate = xyes)
-
 AC_CONFIG_FILES([Makefile
 		 tests/Makefile
 		 tests/dummyatk/Makefile
