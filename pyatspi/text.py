@@ -117,7 +117,7 @@ class Text:
                 """
                 return Atspi.Text.add_selection(self.obj, index)
 
-        def getAttributeRun(self, offset):
+        def getAttributeRun(self, offset, includeDefaults=True):
                 """
                 Query a particular text object for the text attributes defined
                 at a given offset, obtaining the start and end of the "attribute
@@ -166,8 +166,8 @@ class Text:
                 @return the AttributeSet defined at offset, optionally including
                 the 'default' attributes.
                 """
-                [attrs, startOffset, endOffset] = Atspi.Text.get_attribute_run(self.obj, offset)
-                dict = [key + ':' + value for key, value in attrs.values()]
+                [attrs, startOffset, endOffset] = Atspi.Text.get_attribute_run(self.obj, offset, includeDefaults)
+                dict = [key + ':' + value for key, value in attrs.items()]
                 return [dict, startOffset, endOffset]
 
         def getAttributeValue(self, offset, attributeName):
