@@ -1,3 +1,13 @@
+What's new in pyatspi2 1.91.90:
+
+* Refactor EditableText so that text methods can be called from it.
+
+* Make state accessible through pyatspi.constants.
+
+* Fix selection interface.
+
+* Fix for BGO#641869: Remove --enable-relocate option.
+
 What's new in pyatspi2 1.91.6:
 
 * Added source_name and source_role to events.
