@@ -259,7 +259,7 @@ class Registry(object):
                         result |= Atspi.KeyListenerSyncType.CANCONSUME
                 if global_:
                         result |= Atspi.KeyListenerSyncType.ALL_WINDOWS
-                return Atspi.KeyListenerSyncType(result)
+                return result
 
         def makeKind(self, kind):
                 result = 0
