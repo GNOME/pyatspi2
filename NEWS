@@ -1,3 +1,8 @@
+What's new in pyatspi2 1.91.91:
+
+* Fix for BGO#643384: registerKeystrokeListener should pass a bit mask, not an
+  enum.
+
 What's new in pyatspi2 1.91.90:
 
 * Refactor EditableText so that text methods can be called from it.
