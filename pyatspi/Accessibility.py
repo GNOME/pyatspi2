@@ -34,6 +34,18 @@ def Accessible_getitem(self, i):
 		raise IndexError
 	return self.get_child_at_index(i)
 
+def Accessible_str(self):
+        '''
+        Gets a human readable representation of the accessible.
+        
+        @return: Role and name information for the accessible
+        @rtype: string
+        '''
+        try:
+                return '[%s | %s]' % (self.getRoleName(), self.name)
+        except Exception:
+                return '[DEAD]'
+        
 def pointToList(point):
 	return (point.x, point.y)
 
@@ -100,6 +112,7 @@ Atspi.Accessible.getApplication = Atspi.Accessible.get_application
 Atspi.Accessible.__getitem__ = Accessible_getitem
 Atspi.Accessible.__len__ = Atspi.Accessible.get_child_count
 Atspi.Accessible.__nonzero__ = lambda x: True
+Atspi.Accessible.__str__ = Accessible_str
 Atspi.Accessible.childCount = property(fget=Atspi.Accessible.get_child_count)
 Atspi.Accessible.getChildCount = Atspi.Accessible.get_child_count
 Atspi.Accessible.getIndexInParent = Atspi.Accessible.get_index_in_parent
