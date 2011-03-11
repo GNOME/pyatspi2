@@ -104,6 +104,40 @@ def hashToAttributeList(h):
 def getEventType(event):
 	return EventType(event.rawType)
 
+def DeviceEvent_str(self):
+        '''
+        Builds a human readable representation of the event.
+
+        @return: Event description
+        @rtype: string
+        '''
+        if self.type == KEY_PRESSED_EVENT:
+            kind = 'pressed'
+        elif self.type == KEY_RELEASED_EVENT:
+            kind = 'released'
+        return '''\
+%s
+\thw_code: %d
+\tevent_string: %s
+\tmodifiers: %d
+\tid: %d
+\ttimestamp: %d
+\tis_text: %s''' % (kind, self.hw_code, self.event_string, self.modifiers,
+                        self.id, self.timestamp, self.is_text)
+
+def Event_str(self):
+        '''
+        Builds a human readable representation of the event including event type,
+        parameters, and source info.
+
+        @return: Event description
+        @rtype: string
+        '''
+        return '%s(%s, %s, %s)\n\tsource: %s\n\thost_application: %s' % \
+               (self.type, self.detail1, self.detail2, self.any_data,
+                self.source, self.host_application)
+  
+
 ### Accessible ###
 Accessible = Atspi.Accessible
 Atspi.Accessible.getChildAtIndex = Atspi.Accessible.get_child_at_index
@@ -280,12 +314,16 @@ Atspi.Value.maximumValue = property(fget=Atspi.Value.get_maximum_value)
 Atspi.Value.minimumIncrement = property(fget=Atspi.Value.get_minimum_increment)
 Atspi.Value.minimumValue = property(fget=Atspi.Value.get_minimum_value)
 
+### DeviceEvent ###
+Atspi.DeviceEvent.__str__ = DeviceEvent_str
+
 ### event ###
 Atspi.Event.host_application = property(fget=lambda x: x.source.get_application())
 Atspi.Event.rawType = Atspi.Event.type
 Atspi.Event.source_name = property(fget=lambda x: x.source.name)
 Atspi.Event.source_role = property(fget=lambda x: x.source.getRole())
 Atspi.Event.type = property(fget=getEventType)
+Atspi.Event.__str__ = Event_str
 
 ### RelationSet ###
 Atspi.Relation.getRelationType = Atspi.Relation.get_relation_type
