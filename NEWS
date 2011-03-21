@@ -1,3 +1,7 @@
+What's new in pyatspi2 1.91.92:
+
+* Added some missing __str__ functions for events and accessibles.
+
 What's new in pyatspi2 1.91.91:
 
 * Fix for BGO#643384: registerKeystrokeListener should pass a bit mask, not an
