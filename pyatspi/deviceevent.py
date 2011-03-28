@@ -19,7 +19,6 @@ import dbus as _dbus
 import dbus.service as _service
 
 from enum import Enum as _Enum
-from busutils import *
 
 import traceback
 

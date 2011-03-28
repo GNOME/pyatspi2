@@ -1,17 +1,11 @@
-SUBDIRS=busutils
 pyatspidir = $(pythondir)/pyatspi
 
 pyatspi_PYTHON = \
 		Accessibility.py	\
-		accessible.py		\
                 appevent.py             \
-		application.py		\
-                cache.py                \
 		constants.py		\
 		deviceevent.py		\
                 enum.py                 \
-                exceptions.py           \
-		factory.py		\
 		__init__.py		\
 	document.py \
 	editabletext.py \
