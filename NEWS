@@ -1,3 +1,7 @@
+What's new in pyatspi2 2.0.0:
+
+* Removed some unused files.
+
 What's new in pyatspi2 1.91.92:
 
 * Added some missing __str__ functions for events and accessibles.
