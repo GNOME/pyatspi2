@@ -162,6 +162,7 @@ Atspi.Accessible.isEqual = lambda a,b: a == b
 Atspi.Accessible.parent = property(fget=Atspi.Accessible.get_parent)
 Atspi.Accessible.setCacheMask = Atspi.Accessible.set_cache_mask
 
+Atspi.Accessible.id = property(fget=Atspi.Accessible.get_id)
 Atspi.Accessible.toolkitName = property(fget=Atspi.Accessible.get_toolkit_name)
 Atspi.Accessible.toolkitVersion = property(fget=Atspi.Accessible.get_toolkit_version)
 
