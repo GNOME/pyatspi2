@@ -1,3 +1,12 @@
+What's new in pyatspi2 2.0.1:
+
+* Fix for BGO#645644: Throw LookupError rather than RUntimeError
+
+* Add id property
+
+* Add a work-around for getStates failing on 64-bit systems with pygobject
+  2.28.3 and earlier.
+
 What's new in pyatspi2 2.0.0:
 
 * Removed some unused files.
