@@ -137,54 +137,66 @@ def Event_str(self):
                (self.type, self.detail1, self.detail2, self.any_data,
                 self.source, self.host_application)
   
+def exwrap(func, *args):
+	try:
+                return func(*args)
+        except RuntimeError as e:
+                try:
+                        domain = e.domain
+                except:
+                        raise e
+                if domain == "atspi_error":
+                        raise LookupError
+                else:
+                        raise e
 
 ### Accessible ###
 Accessible = Atspi.Accessible
-Atspi.Accessible.getChildAtIndex = Atspi.Accessible.get_child_at_index
-Atspi.Accessible.getAttributes = Atspi.Accessible.get_attributes_as_array
-Atspi.Accessible.getApplication = Atspi.Accessible.get_application
-Atspi.Accessible.__getitem__ = Accessible_getitem
-Atspi.Accessible.__len__ = Atspi.Accessible.get_child_count
+Atspi.Accessible.getChildAtIndex = lambda *args: exwrap(Atspi.Accessible.get_child_at_index, *args)
+Atspi.Accessible.getAttributes = lambda *args: exwrap(Atspi.Accessible.get_attributes_as_array, *args)
+Atspi.Accessible.getApplication = lambda *args: exwrap(Atspi.Accessible.get_application, *args)
+Atspi.Accessible.__getitem__ = lambda *args: exwrap(Accessible_getitem, *args)
+Atspi.Accessible.__len__ = lambda *args: exwrap(Atspi.Accessible.get_child_count, *args)
 Atspi.Accessible.__nonzero__ = lambda x: True
 Atspi.Accessible.__str__ = Accessible_str
-Atspi.Accessible.childCount = property(fget=Atspi.Accessible.get_child_count)
-Atspi.Accessible.getChildCount = Atspi.Accessible.get_child_count
-Atspi.Accessible.getIndexInParent = Atspi.Accessible.get_index_in_parent
-Atspi.Accessible.getLocalizedRoleName = Atspi.Accessible.get_localized_role_name
-Atspi.Accessible.getRelationSet = Atspi.Accessible.get_relation_set
-Atspi.Accessible.getRole = Atspi.Accessible.get_role
-Atspi.Accessible.getRoleName = Atspi.Accessible.get_role_name
-Atspi.Accessible.getState = Atspi.Accessible.get_state_set
+Atspi.Accessible.childCount = property(fget=lambda x: exwrap(Atspi.Accessible.get_child_count, x))
+Atspi.Accessible.getChildCount = lambda *args: exwrap(Atspi.Accessible.get_child_count, *args)
+Atspi.Accessible.getIndexInParent = lambda *args: exwrap(Atspi.Accessible.get_index_in_parent, *args)
+Atspi.Accessible.getLocalizedRoleName = lambda *args: exwrap(Atspi.Accessible.get_localized_role_name, *args)
+Atspi.Accessible.getRelationSet = lambda *args: exwrap(Atspi.Accessible.get_relation_set, *args)
+Atspi.Accessible.getRole = lambda *args: exwrap(Atspi.Accessible.get_role, *args)
+Atspi.Accessible.getRoleName = lambda *args: exwrap(Atspi.Accessible.get_role_name, *args)
+Atspi.Accessible.getState = lambda *args: exwrap(Atspi.Accessible.get_state_set, *args)
 del Atspi.Accessible.children
-Atspi.Accessible.description = property(fget=Atspi.Accessible.get_description)
-Atspi.Accessible.name = property(fget=Atspi.Accessible.get_name)
+Atspi.Accessible.description = property(fget=lambda x: exwrap(Atspi.Accessible.get_description, x))
+Atspi.Accessible.name = property(fget=lambda x: exwrap(Atspi.Accessible.get_name, x))
 Atspi.Accessible.isEqual = lambda a,b: a == b
 Atspi.Accessible.parent = property(fget=Atspi.Accessible.get_parent)
 Atspi.Accessible.setCacheMask = Atspi.Accessible.set_cache_mask
 
-Atspi.Accessible.id = property(fget=Atspi.Accessible.get_id)
-Atspi.Accessible.toolkitName = property(fget=Atspi.Accessible.get_toolkit_name)
-Atspi.Accessible.toolkitVersion = property(fget=Atspi.Accessible.get_toolkit_version)
+Atspi.Accessible.id = property(fget=lambda x: exwrap(Atspi.Accessible.get_id, x))
+Atspi.Accessible.toolkitName = property(fget=lambda x: exwrap(Atspi.Accessible.get_toolkit_name, x))
+Atspi.Accessible.toolkitVersion = property(fget=lambda x: exwrap(Atspi.Accessible.get_toolkit_version, x))
 
 ### action ###
-Action = Atspi.Action
+Action = lambda *args: exwrap(Atspi.Action, *args)
 Atspi.Accessible.queryAction = lambda x: getInterface(Atspi.Accessible.get_action, x)
-Atspi.Action.doAction = Atspi.Action.do_action
-Atspi.Action.getDescription = Atspi.Action.get_description
-Atspi.Action.getKeyBinding = Atspi.Action.get_key_binding
-Atspi.Action.getName = Atspi.Action.get_name
-Atspi.Action.nActions = property(fget=Atspi.Action.get_n_actions)
+Atspi.Action.doAction = lambda *args: exwrap(Atspi.Action.do_action, *args)
+Atspi.Action.getDescription = lambda *args: exwrap(Atspi.Action.get_description, *args)
+Atspi.Action.getKeyBinding = lambda *args: exwrap(Atspi.Action.get_key_binding, *args)
+Atspi.Action.getName = lambda *args: exwrap(Atspi.Action.get_name, *args)
+Atspi.Action.nActions = property(fget=lambda x: exwrap(Atspi.Action.get_n_actions, x))
 
 ### collection ###
-Collection = Atspi.Collection
+Collection = lambda *args: exwrap(Atspi.Collection, *args)
 Atspi.Accessible.queryCollection = lambda x: getInterface(Atspi.Accessible.get_collection, x)
-Atspi.Collection.isAncesterOf = Atspi.Collection.is_ancestor_of
+Atspi.Collection.isAncesterOf = lambda *args: exwrap(Atspi.Collection.is_ancestor_of, *args)
 Atspi.Collection.createMatchRule = lambda x, s, smt, a, amt, r, rmt, i, imt, inv: Atspi.MatchRule.new (s, smt, attributeListToHash(a), amt, r, rmt, i, imt, inv)
 Atspi.Collection.freeMatchRule = lambda self, x: None
-Atspi.Collection.getMatches = Atspi.Collection.get_matches
-Atspi.Collection.getMatchesFrom = Atspi.Collection.get_matches_from
-Atspi.Collection.getMatchesTo = Atspi.Collection.get_matches_to
-Atspi.Collection.getActiveDescendant = Atspi.Collection.get_active_descendant
+Atspi.Collection.getMatches = lambda *args: exwrap(Atspi.Collection.get_matches, *args)
+Atspi.Collection.getMatchesFrom = lambda *args: exwrap(Atspi.Collection.get_matches_from, *args)
+Atspi.Collection.getMatchesTo = lambda *args: exwrap(Atspi.Collection.get_matches_to, *args)
+Atspi.Collection.getActiveDescendant = lambda *args: exwrap(Atspi.Collection.get_active_descendant, *args)
 
 Atspi.Collection.MATCH_INVALID = Atspi.CollectionMatchType.INVALID
 Atspi.Collection.MATCH_ALL = Atspi.CollectionMatchType.ALL
@@ -207,17 +219,17 @@ Atspi.Collection.TREE_INORDER = Atspi.CollectionTreeTraversalType.INORDER
 ### component ###
 Component = Atspi.Component
 Atspi.Accessible.queryComponent = lambda x: getInterface(Atspi.Accessible.get_component, x)
-Atspi.Component.getAccessibleAtPoint = Atspi.Component.get_accessible_at_point
-Atspi.Component.getAlpha = Atspi.Component.get_alpha
+Atspi.Component.getAccessibleAtPoint = lambda *args: exwrap(Atspi.Component.get_accessible_at_point, *args)
+Atspi.Component.getAlpha = lambda *args: exwrap(Atspi.Component.get_alpha, *args)
 Atspi.Component.getExtents = lambda x,c: getBoundingBox(Atspi.Component.get_extents(x,c))
-Atspi.Component.getLayer = Atspi.Component.get_layer
-Atspi.Component.getMDIZOrder = Atspi.Component.get_mdi_z_order
+Atspi.Component.getLayer = lambda *args: exwrap(Atspi.Component.get_layer, *args)
+Atspi.Component.getMDIZOrder = lambda *args: exwrap(Atspi.Component.get_mdi_z_order, *args)
 Atspi.Component.getPosition = lambda x,p: pointToList(Atspi.Component.get_position(x,p))
 Atspi.Component.getSize = lambda x: pointToList(Atspi.Component.get_size(x))
-Atspi.Component.grabFocus = Atspi.Component.grab_focus
-Atspi.Component.setExtents = Atspi.Component.set_extents
-Atspi.Component.setPosition = Atspi.Component.set_position
-Atspi.Component.setSize = Atspi.Component.set_size
+Atspi.Component.grabFocus = lambda *args: exwrap(Atspi.Component.grab_focus, *args)
+Atspi.Component.setExtents = lambda *args: exwrap(Atspi.Component.set_extents, *args)
+Atspi.Component.setPosition = lambda *args: exwrap(Atspi.Component.set_position, *args)
+Atspi.Component.setSize = lambda *args: exwrap(Atspi.Component.set_size, *args)
 
 ### document ###
 Atspi.Accessible.queryDocument = lambda x: Document(getInterface(Atspi.Accessible.get_document, x))
@@ -227,20 +239,20 @@ Atspi.Accessible.queryEditableText = lambda x: EditableText(getInterface(Atspi.A
 
 ### hyperlink ###
 Hyperlink = Atspi.Hyperlink
-Atspi.Hyperlink.getObject = Atspi.Hyperlink.get_object
-Atspi.Hyperlink.getURI = Atspi.Hyperlink.get_uri
-Atspi.Hyperlink.isValid = Atspi.Hyperlink.is_valid
-Atspi.Hyperlink.endIndex = property(fget=Atspi.Hyperlink.get_end_index)
-Atspi.Hyperlink.nAnchors = property(fget=Atspi.Hyperlink.get_n_anchors)
-Atspi.Hyperlink.startIndex = property(fget=Atspi.Hyperlink.get_start_index)
+Atspi.Hyperlink.getObject = lambda *args: exwrap(Atspi.Hyperlink.get_object, *args)
+Atspi.Hyperlink.getURI = lambda *args: exwrap(Atspi.Hyperlink.get_uri, *args)
+Atspi.Hyperlink.isValid = lambda *args: exwrap(Atspi.Hyperlink.is_valid, *args)
+Atspi.Hyperlink.endIndex = property(fget=lambda x: exwrap(Atspi.Hyperlink.get_end_index, x))
+Atspi.Hyperlink.nAnchors = property(fget=lambda x: exwrap(Atspi.Hyperlink.get_n_anchors, x))
+Atspi.Hyperlink.startIndex = property(fget=lambda x: exwrap(Atspi.Hyperlink.get_start_index, x))
 
 ### hypertext ###
 Hypertext = Atspi.Hypertext
 Atspi.Accessible.queryHyperlink = lambda x: getInterface(Atspi.Accessible.get_hyperlink, x)
 Atspi.Accessible.queryHypertext = lambda x: getInterface(Atspi.Accessible.get_hypertext, x)
-Atspi.Hypertext.getLink = Atspi.Hypertext.get_link
-Atspi.Hypertext.getLinkIndex = Atspi.Hypertext.get_link_index
-Atspi.Hypertext.getNLinks = Atspi.Hypertext.get_n_links
+Atspi.Hypertext.getLink = lambda *args: exwrap(Atspi.Hypertext.get_link, *args)
+Atspi.Hypertext.getLinkIndex = lambda *args: exwrap(Atspi.Hypertext.get_link_index, *args)
+Atspi.Hypertext.getNLinks = lambda *args: exwrap(Atspi.Hypertext.get_n_links, *args)
 
 ### image ###
 Image = Atspi.Image
@@ -248,48 +260,48 @@ Atspi.Accessible.queryImage = lambda x: getInterface(Atspi.Accessible.get_image,
 Atspi.Image.getImageExtents = lambda x,c: getBoundingBox(Atspi.Image.get_image_extents(x,c))
 Atspi.Image.getImagePosition = lambda x,p: pointToList(Atspi.Image.get_image_position(x,p))
 Atspi.Image.getImageSize = lambda x: pointToList(Atspi.Image.get_image_size(x))
-Atspi.Image.imageDescription = property(fget=Atspi.Image.get_image_description)
-Atspi.Image.imageLocale = property(fget=Atspi.Image.get_image_locale)
+Atspi.Image.imageDescription = property(fget=lambda x: exwrap(Atspi.Image.get_image_description, x))
+Atspi.Image.imageLocale = property(fget=lambda x: exwrap(Atspi.Image.get_image_locale, x))
 
 ### selection ###
 Selection = Atspi.Selection
 Atspi.Accessible.querySelection = lambda x: getInterface(Atspi.Accessible.get_selection, x)
-Atspi.Selection.clearSelection = Atspi.Selection.clear_selection
-Atspi.Selection.deselectChild = Atspi.Selection.deselect_child
-Atspi.Selection.deselectSelectedChild = Atspi.Selection.deselect_selected_child
-Atspi.Selection.getSelectedChild = Atspi.Selection.get_selected_child
-Atspi.Selection.isChildSelected = Atspi.Selection.is_child_selected
-Atspi.Selection.selectAll = Atspi.Selection.select_all
-Atspi.Selection.selectChild = Atspi.Selection.select_child
-Atspi.Selection.nSelectedChildren = property(fget=Atspi.Selection.get_n_selected_children)
+Atspi.Selection.clearSelection = lambda *args: exwrap(Atspi.Selection.clear_selection, *args)
+Atspi.Selection.deselectChild = lambda *args: exwrap(Atspi.Selection.deselect_child, *args)
+Atspi.Selection.deselectSelectedChild = lambda *args: exwrap(Atspi.Selection.deselect_selected_child, *args)
+Atspi.Selection.getSelectedChild = lambda *args: exwrap(Atspi.Selection.get_selected_child, *args)
+Atspi.Selection.isChildSelected = lambda *args: exwrap(Atspi.Selection.is_child_selected, *args)
+Atspi.Selection.selectAll = lambda *args: exwrap(Atspi.Selection.select_all, *args)
+Atspi.Selection.selectChild = lambda *args: exwrap(Atspi.Selection.select_child, *args)
+Atspi.Selection.nSelectedChildren = property(fget=lambda x: exwrap(Atspi.Selection.get_n_selected_children, x))
 
 ### table ###
 Table = Atspi.Table
 Atspi.Accessible.queryTable = lambda x: getInterface(Atspi.Accessible.get_table, x)
-Atspi.Table.addColumnSelection = Atspi.Table.add_column_selection
-Atspi.Table.addRowSelection = Atspi.Table.add_row_selection
-Atspi.Table.getAccessibleAt = Atspi.Table.get_accessible_at
-Atspi.Table.getColumnAtIndex = Atspi.Table.get_column_at_index
-Atspi.Table.getColumnDescription = Atspi.Table.get_column_description
-Atspi.Table.getColumnExtentAt = Atspi.Table.get_column_extent_at
-Atspi.Table.getColumnHeader = Atspi.Table.get_column_header
-Atspi.Table.getIndexAt = Atspi.Table.get_index_at
-Atspi.Table.getRowAtIndex = Atspi.Table.get_row_at_index
-Atspi.Table.getRowColumnExtents = Atspi.Table.get_row_column_extents_at_index
-Atspi.Table.getRowDescription = Atspi.Table.get_row_description
-Atspi.Table.getRowExtentAt = Atspi.Table.get_row_extent_at
-Atspi.Table.getRowHeader = Atspi.Table.get_row_header
-Atspi.Table.getSelectedColumns = Atspi.Table.get_selected_columns
-Atspi.Table.getSelectedRows = Atspi.Table.get_selected_rows
-Atspi.Table.isColumnSelected = Atspi.Table.is_column_selected
-Atspi.Table.isRowSelected = Atspi.Table.is_row_selected
-Atspi.Table.isSelected = Atspi.Table.is_selected
-Atspi.Table.removeColumnSelection = Atspi.Table.remove_column_selection
-Atspi.Table.removeRowSelection = Atspi.Table.remove_row_selection
-Atspi.Table.nColumns = property(fget=Atspi.Table.get_n_columns)
-Atspi.Table.nRows = property(fget=Atspi.Table.get_n_rows)
-Atspi.Table.get_nSelectedColumns = Atspi.Table.get_n_selected_columns
-Atspi.Table.get_nSelectedRows = Atspi.Table.get_n_selected_rows
+Atspi.Table.addColumnSelection = lambda *args: exwrap(Atspi.Table.add_column_selection, *args)
+Atspi.Table.addRowSelection = lambda *args: exwrap(Atspi.Table.add_row_selection, *args)
+Atspi.Table.getAccessibleAt = lambda *args: exwrap(Atspi.Table.get_accessible_at, *args)
+Atspi.Table.getColumnAtIndex = lambda *args: exwrap(Atspi.Table.get_column_at_index, *args)
+Atspi.Table.getColumnDescription = lambda *args: exwrap(Atspi.Table.get_column_description, *args)
+Atspi.Table.getColumnExtentAt = lambda *args: exwrap(Atspi.Table.get_column_extent_at, *args)
+Atspi.Table.getColumnHeader = lambda *args: exwrap(Atspi.Table.get_column_header, *args)
+Atspi.Table.getIndexAt = lambda *args: exwrap(Atspi.Table.get_index_at, *args)
+Atspi.Table.getRowAtIndex = lambda *args: exwrap(Atspi.Table.get_row_at_index, *args)
+Atspi.Table.getRowColumnExtents = lambda *args: exwrap(Atspi.Table.get_row_column_extents_at_index, *args)
+Atspi.Table.getRowDescription = lambda *args: exwrap(Atspi.Table.get_row_description, *args)
+Atspi.Table.getRowExtentAt = lambda *args: exwrap(Atspi.Table.get_row_extent_at, *args)
+Atspi.Table.getRowHeader = lambda *args: exwrap(Atspi.Table.get_row_header, *args)
+Atspi.Table.getSelectedColumns = lambda *args: exwrap(Atspi.Table.get_selected_columns, *args)
+Atspi.Table.getSelectedRows = lambda *args: exwrap(Atspi.Table.get_selected_rows, *args)
+Atspi.Table.isColumnSelected = lambda *args: exwrap(Atspi.Table.is_column_selected, *args)
+Atspi.Table.isRowSelected = lambda *args: exwrap(Atspi.Table.is_row_selected, *args)
+Atspi.Table.isSelected = lambda *args: exwrap(Atspi.Table.is_selected, *args)
+Atspi.Table.removeColumnSelection = lambda *args: exwrap(Atspi.Table.remove_column_selection, *args)
+Atspi.Table.removeRowSelection = lambda *args: exwrap(Atspi.Table.remove_row_selection, *args)
+Atspi.Table.nColumns = property(fget=lambda x: exwrap(Atspi.Table.get_n_columns, x))
+Atspi.Table.nRows = property(fget=lambda x: exwrap(Atspi.Table.get_n_rows, x))
+Atspi.Table.get_nSelectedColumns = lambda *args: exwrap(Atspi.Table.get_n_selected_columns, *args)
+Atspi.Table.get_nSelectedRows = lambda *args: exwrap(Atspi.Table.get_n_selected_rows, *args)
 
 ### text ###
 Atspi.Accessible.queryText = lambda x: Text(getInterface(Atspi.Accessible.get_text, x))
@@ -310,10 +322,10 @@ TEXT_CLIP_BOTH= Atspi.TextClipType.BOTH
 ### value ###
 Value = Atspi.Value
 Atspi.Accessible.queryValue = lambda x: getInterface(Atspi.Accessible.get_value, x)
-Atspi.Value.currentValue = property(fget=Atspi.Value.get_current_value, fset=Atspi.Value.set_current_value)
-Atspi.Value.maximumValue = property(fget=Atspi.Value.get_maximum_value)
-Atspi.Value.minimumIncrement = property(fget=Atspi.Value.get_minimum_increment)
-Atspi.Value.minimumValue = property(fget=Atspi.Value.get_minimum_value)
+Atspi.Value.currentValue = property(fget=lambda x: exwrap(Atspi.Value.get_current_value, x), fset=Atspi.Value.set_current_value)
+Atspi.Value.maximumValue = property(fget=lambda x: exwrap(Atspi.Value.get_maximum_value, x))
+Atspi.Value.minimumIncrement = property(fget=lambda x: exwrap(Atspi.Value.get_minimum_increment, x))
+Atspi.Value.minimumValue = property(fget=lambda x: exwrap(Atspi.Value.get_minimum_value, x))
 
 ### DeviceEvent ###
 Atspi.DeviceEvent.__str__ = DeviceEvent_str

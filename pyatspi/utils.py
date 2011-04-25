@@ -42,6 +42,8 @@ __all__ = [
                 "findAllDescendants",
                 "findAncestor",
                 "getPath",
+                "rectToList",
+                "exwrap"
          ]
 
 def setCacheLevel(level):
@@ -329,3 +331,9 @@ def pointToList(point):
 
 def rectToList(rect):
 	return (rect.x, rect.y, rect.width, rect.height)
+
+def exwrap(func, *args):
+	try:
+		return func(*args)
+        except RuntimeError:
+                raise LookupError

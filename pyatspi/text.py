@@ -15,7 +15,7 @@
 
 from gi.repository import Atspi
 from enum import *
-import utils
+from utils import *
 
 
 __all__ = [
@@ -115,7 +115,7 @@ class Text:
                 other reasons (for instance if the user does not have permission
                 to copy the text into the relevant selection buffer).
                 """
-                return Atspi.Text.add_selection(self.obj, index)
+                return exwrap(Atspi.Text.add_selection, self.obj, index)
 
         def getAttributeRun(self, offset, includeDefaults=True):
                 """
@@ -166,7 +166,7 @@ class Text:
                 @return the AttributeSet defined at offset, optionally including
                 the 'default' attributes.
                 """
-                [attrs, startOffset, endOffset] = Atspi.Text.get_attribute_run(self.obj, offset, includeDefaults)
+                [attrs, startOffset, endOffset] = exwrap(Atspi.Text.get_attribute_run, self.obj, offset, includeDefaults)
                 dict = [key + ':' + value for key, value in attrs.items()]
                 return [dict, startOffset, endOffset]
 
@@ -192,7 +192,7 @@ class Text:
                 @return the value of attribute (name-value pair) corresponding
                 to "name", if defined.
                 """
-                return Atspi.Text.get_attribute_value(self.obj, offset, attributeName)
+                return exwrap(Atspi.Text.get_attribute_value, self.obj, offset, attributeName)
 
         def getAttributes(self, offset):
                 """
@@ -200,7 +200,7 @@ class Text:
                 @return the attributes at offset, as a semicolon-delimited set
                 of colon-delimited name-value pairs.
                 """
-                [attrs, startOffset, endOffset] = Atspi.Text.get_attributes(self.obj, offset)
+                [attrs, startOffset, endOffset] = exwrap(Atspi.Text.get_attributes, self.obj, offset)
                 arr = [key + ':' + value for key, value in attrs.items()]
 		str = ';'.join (arr)
                 return [str, startOffset, endOffset]
@@ -233,7 +233,7 @@ class Text:
                 determines whether text which intersects the bounding box in
                 the y direction is included.
                 """
-                return Atspi.Text.get_bounded_ranges(self.obj, x, y, width, height, coordType, xClipType, yClipType)
+                return exwrap(Atspi.Text.get_bounded_ranges, self.obj, x, y, width, height, coordType, xClipType, yClipType)
 
         def getCharacterAtOffset(self, offset):
                 """
@@ -243,7 +243,7 @@ class Text:
                 UCS-4 representation of the character at the specified text offset,
                 or 0 if offset is out of range.
                 """
-                return Atspi.Text.get_character_offset(self.obj, offset)
+                return exwrap(Atspi.Text.get_character_offset, self.obj, offset)
 
         def getCharacterExtents(self, offset, coordType):
                 """
@@ -264,8 +264,8 @@ class Text:
                 window, with the x axis pointing right and the y axis pointing
                 down.
                 """
-                ret = Atspi.Text.get_character_extents(self.obj, offset, coordType)
-                return utils.rectToList(ret)
+                ret = exwrap(Atspi.Text.get_character_extents, self.obj, offset, coordType)
+                return rectToList(ret)
 
         def getDefaultAttributeSet(self):
                 """
@@ -278,7 +278,7 @@ class Text:
                 whereas an object whose text weight is inspecified may report
                 the default or implied text weight in the default AttributeSet.
                 """
-                ret = Atspi.Text.get_default_attribute_set(self.obj)
+                ret = exwrap(Atspi.Text.get_default_attribute_set, self.obj)
                 return [key + ':' + value for key, value in ret.values()]
 
         def getDefaultAttributes(self):
@@ -287,7 +287,7 @@ class Text:
                 @return the attributes which apply to the entire text content,
                 but which were not explicitly specified by the content creator.
                 """
-                ret = Atspi.Text.get_default_attributes(self.obj)
+                ret = exwrap(Atspi.Text.get_default_attributes, self.obj)
                 return ';'.join([key + ':' + value for key, value in ret.iteritems()])
 
         def getNSelections(self):
@@ -302,7 +302,7 @@ class Text:
                 @return the number of contiguous selections in the current Text
                 object.
                 """
-                return Atspi.Text.get_n_selections(self.obj)
+                return exwrap(Atspi.Text.get_n_selections, self.obj)
 
         def getOffsetAtPoint(self, x, y, coordType):
                 """
@@ -319,7 +319,7 @@ class Text:
                 of the glyph whose onscreen bounds contain the point x,y, or
                 -1 if the point is outside the bounds of any glyph.
                 """
-                return Atspi.Text.get_offset_at_point(self.obj, x, y, UInt32(coordType))
+                return exwrap(Atspi.Text.get_offset_at_point, self.obj, x, y, UInt32(coordType))
 
         def getRangeExtents(self, startOffset, endOffset, coordType):
                 """
@@ -349,8 +349,8 @@ class Text:
                 corner of the screen; if 1, the coordinates are reported relative
                 to the corner of the containing toplevel window.
                 """
-                ret = Atspi.Text.get_range_extents(self.obj, startOffset, endOffset, coordType)
-                return utils.rectToList(ret)
+                ret = exwrap(Atspi.Text.get_range_extents, self.obj, startOffset, endOffset, coordType)
+                return rectToList(ret)
 
         def getSelection(self, selectionNum):
                 """
@@ -366,7 +366,7 @@ class Text:
                 back-filled with the offset of the character immediately following
                 the resulting substring, if one exists. 
                 """
-                ret = Atspi.Text.get_selection(self.obj, selectionNum)
+                ret = exwrap(Atspi.Text.get_selection, self.obj, selectionNum)
                 return rangeToList(ret)
 
         def getText(self, startOffset, endOffset):
@@ -386,7 +386,7 @@ class Text:
                 """
                 if not endOffset:
                         endOffset = -1
-                return Atspi.Text.get_text(self.obj, startOffset, endOffset)
+                return exwrap(Atspi.Text.get_text, self.obj, startOffset, endOffset)
 
         def getTextAfterOffset(self, offset, type):
                 """
@@ -413,7 +413,7 @@ class Text:
                 @return a string which is a substring of the text content of
                 the object, delimited by the specified boundary condition.
                 """
-                ret = Atspi.Text.get_text_after_offset(self.obj, offset, type)
+                ret = exwrap(Atspi.Text.get_text_after_offset, self.obj, offset, type)
                 return textRangeToList(ret)
 
         def getTextAtOffset(self, offset, type):
@@ -440,7 +440,7 @@ class Text:
                 @return a string which is a substring of the text content of
                 the object, delimited by the specified boundary condition.
                 """
-                ret = Atspi.Text.get_text_at_offset(self.obj, offset, type)
+                ret = exwrap(Atspi.Text.get_text_at_offset, self.obj, offset, type)
                 return textRangeToList(ret)
 
         def getTextBeforeOffset(self, offset, type):
@@ -468,7 +468,7 @@ class Text:
                 the object, delimited by the specified boundary condition.
                 """
                 func = self.get_dbus_method("GetTextBeforeOffset", dbus_interface=ATSPI_TEXT)
-                ret = Atspi.Text.get_text_before_offset(self.obj, offset, type)
+                ret = exwrap(Atspi.Text.get_text_before_offset, self.obj, offset, type)
                 return textRangeToList(ret)
 
         def removeSelection(self, selectionNum):
@@ -481,7 +481,7 @@ class Text:
                 @return True if the selection was successfully removed, False
                 otherwise.
                 """
-                return Atspi.Text.remove_selection(self.obj, index)
+                return exwrap(Atspi.Text.remove_selection, self.obj, index)
 
         def setCaretOffset(self, offset):
                 """
@@ -494,7 +494,7 @@ class Text:
                 @return TRUE if the request was carried out, or FALSE if the
                 caret could not be moved to the requested position.
                 """
-                return Atspi.Text.set_caret_offset(self.obj, offset)
+                return exwrap(Atspi.Text.set_caret_offset, self.obj, offset)
 
         def setSelection(self, selectionNum, startOffset, endOffset):
                 """
@@ -512,10 +512,10 @@ class Text:
                 @return True if the selection corresponding to selectionNum is
                 successfully modified, False otherwise.
                 """
-                return Atspi.Text.set_selection(self.obj, selectionNum, startOffset, endOffset)
+                return exwrap(Atspi.Text.set_selection, self.obj, selectionNum, startOffset, endOffset)
 
         def get_caretOffset(self):
-                return Atspi.Text.get_caret_offset(self.obj)
+                return exwrap(Atspi.Text.get_caret_offset, self.obj)
         _caretOffsetDoc = \
                 """
                 The current offset of the text caret in the Text object. This
@@ -528,7 +528,7 @@ class Text:
         caretOffset = property(fget=get_caretOffset, doc=_caretOffsetDoc)
 
         def get_characterCount(self):
-                return Atspi.Text.get_character_count(self.obj)
+                return exwrap(Atspi.Text.get_character_count, self.obj)
         _characterCountDoc = \
                 """
                 The total current number of characters in the Text object, including

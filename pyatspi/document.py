@@ -14,6 +14,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from gi.repository import Atspi
+import utils
 
 __all__ = [
            "Document",
@@ -46,7 +47,7 @@ class Document:
                 attribute, or an empty string if the attribute is unspecified
                 for the object.
                 """
-                return Atspi.Document.get_attribute_value(self.obj, key)
+                return exwrap(Atspi.Document.get_attribute_value, self.obj, key)
 
         def getAttributes(self):
                 """
@@ -56,7 +57,7 @@ class Document:
                 @return an AttributeSet containing the attributes of the document,
                 as name-value pairs.
                 """
-                ret = Atspi.Document.get_attributes(self.obj)
+                ret = exwrap(Atspi.Document.get_attributes, self.obj)
                 return [key + ':' + value for key, value in ret.iteritems()]
 
         def getLocale(self):
@@ -66,6 +67,6 @@ class Document:
                 @return a string compliant with the POSIX standard for locale
                 description.
                 """
-                return Atspi.Document.get_locale(self.obj)
+                return exwrap(Atspi.Document.get_locale, self.obj)
 
 #END----------------------------------------------------------------------------
