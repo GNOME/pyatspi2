@@ -14,7 +14,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from gi.repository import Atspi
-import utils
+from utils import *
 
 __all__ = [
            "Document",
