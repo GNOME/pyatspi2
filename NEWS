@@ -1,3 +1,7 @@
+What's new in pyatspi2 2.1.1:
+
+* Fix traceback when calling document functions
+
 What's new in pyatspi2 2.0.1:
 
 * Fix for BGO#645644: Throw LookupError rather than RUntimeError
