@@ -88,7 +88,8 @@ def getBoundingBox(rect):
 
 def attributeListToHash(list):
 	ret = dict()
-	for key, val in list:
+	for item in list:
+                [key, val] = item.split(":")
 		ret[key] = val
 	return ret
 
