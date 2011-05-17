@@ -281,6 +281,7 @@ Table = Atspi.Table
 Atspi.Accessible.queryTable = lambda x: getInterface(Atspi.Accessible.get_table, x)
 Atspi.Table.addColumnSelection = lambda *args: exwrap(Atspi.Table.add_column_selection, *args)
 Atspi.Table.addRowSelection = lambda *args: exwrap(Atspi.Table.add_row_selection, *args)
+Atspi.Table.caption = property(fget=lambda x: exwrap(Atspi.Table.get_caption, x))
 Atspi.Table.getAccessibleAt = lambda *args: exwrap(Atspi.Table.get_accessible_at, *args)
 Atspi.Table.getColumnAtIndex = lambda *args: exwrap(Atspi.Table.get_column_at_index, *args)
 Atspi.Table.getColumnDescription = lambda *args: exwrap(Atspi.Table.get_column_description, *args)
@@ -288,7 +289,7 @@ Atspi.Table.getColumnExtentAt = lambda *args: exwrap(Atspi.Table.get_column_exte
 Atspi.Table.getColumnHeader = lambda *args: exwrap(Atspi.Table.get_column_header, *args)
 Atspi.Table.getIndexAt = lambda *args: exwrap(Atspi.Table.get_index_at, *args)
 Atspi.Table.getRowAtIndex = lambda *args: exwrap(Atspi.Table.get_row_at_index, *args)
-Atspi.Table.getRowColumnExtents = lambda *args: exwrap(Atspi.Table.get_row_column_extents_at_index, *args)
+Atspi.Table.getRowColumnExtentsAtIndex = lambda *args: exwrap(Atspi.Table.get_row_column_extents_at_index, *args)
 Atspi.Table.getRowDescription = lambda *args: exwrap(Atspi.Table.get_row_description, *args)
 Atspi.Table.getRowExtentAt = lambda *args: exwrap(Atspi.Table.get_row_extent_at, *args)
 Atspi.Table.getRowHeader = lambda *args: exwrap(Atspi.Table.get_row_header, *args)
@@ -303,6 +304,7 @@ Atspi.Table.nColumns = property(fget=lambda x: exwrap(Atspi.Table.get_n_columns,
 Atspi.Table.nRows = property(fget=lambda x: exwrap(Atspi.Table.get_n_rows, x))
 Atspi.Table.get_nSelectedColumns = lambda *args: exwrap(Atspi.Table.get_n_selected_columns, *args)
 Atspi.Table.get_nSelectedRows = lambda *args: exwrap(Atspi.Table.get_n_selected_rows, *args)
+Atspi.Table.summary = property(fget=lambda x: exwrap(Atspi.Table.get_summary, x))
 
 ### text ###
 Atspi.Accessible.queryText = lambda x: Text(getInterface(Atspi.Accessible.get_text, x))
