@@ -178,6 +178,7 @@ Atspi.Accessible.setCacheMask = Atspi.Accessible.set_cache_mask
 Atspi.Accessible.id = property(fget=lambda x: exwrap(Atspi.Accessible.get_id, x))
 Atspi.Accessible.toolkitName = property(fget=lambda x: exwrap(Atspi.Accessible.get_toolkit_name, x))
 Atspi.Accessible.toolkitVersion = property(fget=lambda x: exwrap(Atspi.Accessible.get_toolkit_version, x))
+Atspi.Accessible.atspiVersion = property(fget=lambda x: exwrap(Atspi.Accessible.get_atspi_version, x))
 
 ### action ###
 Action = lambda *args: exwrap(Atspi.Action, *args)
