@@ -1,6 +1,10 @@
-What's new in pyatspi2 2.1.1:
+What's new in pyatspi 2.0.2:
 
 * Fix traceback when calling document functions
+
+* Fix traceback when creating match rules with attribute sets
+
+* Fix several table functions
 
 What's new in pyatspi2 2.0.1:
 
