@@ -174,6 +174,7 @@ Atspi.Accessible.name = property(fget=lambda x: exwrap(Atspi.Accessible.get_name
 Atspi.Accessible.isEqual = lambda a,b: a == b
 Atspi.Accessible.parent = property(fget=Atspi.Accessible.get_parent)
 Atspi.Accessible.setCacheMask = Atspi.Accessible.set_cache_mask
+Atspi.Accessible.clearCache = Atspi.Accessible.clear_cache
 
 Atspi.Accessible.id = property(fget=lambda x: exwrap(Atspi.Accessible.get_id, x))
 Atspi.Accessible.toolkitName = property(fget=lambda x: exwrap(Atspi.Accessible.get_toolkit_name, x))
