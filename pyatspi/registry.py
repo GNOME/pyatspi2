@@ -252,7 +252,7 @@ class Registry(object):
         _KEY_RELEASED_EVENT=2
 
         def makeSyncType(self, synchronous, preemptive, global_):
-                result = 0
+                result = Atspi.KeyListenerSyncType.NOSYNC
                 if synchronous:
                         result |= Atspi.KeyListenerSyncType.SYNCHRONOUS
                 if preemptive:
