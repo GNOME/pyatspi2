@@ -8,7 +8,7 @@
   <shortdesc xml:lang="en">Python client bindings for D-Bus AT-SPI.</shortdesc>
   <homepage rdf:resource="http://www.linuxfoundation.org/en/Accessibility/ATK/AT-SPI/AT-SPI_on_D-Bus"/>
   <mailing-list rdf:resource="https://lists.linux-foundation.org/mailman/listinfo/accessibility-atspi"/>
-  <download-page rdf:resource="http://download.gnome.org/sources/pyatspi2/" />
+  <download-page rdf:resource="http://download.gnome.org/sources/pyatspi/" />
 
   <maintainer>
     <foaf:Person>
