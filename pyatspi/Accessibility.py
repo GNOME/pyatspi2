@@ -103,7 +103,11 @@ def hashToAttributeList(h):
 	return [x + ":" + h[x] for x in h.keys()]
 
 def getEventType(event):
-	return EventType(event.rawType)
+        try:
+                return event.pyType
+        except:
+                event.pyType = EventType(event.rawType)
+                return event.pyType
 
 def DeviceEvent_str(self):
         '''
