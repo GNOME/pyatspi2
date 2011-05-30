@@ -5,3 +5,5 @@ SUBDIRS+=tests
 else
 SUBDIRS+=
 endif
+
+EXTRA_DIST = COPYING.GPL
