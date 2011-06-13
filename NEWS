@@ -1,3 +1,20 @@
+What's new in pyatspi 2.1.2:
+
+* Fix traceback when creating match rules with attribute sets
+
+* Add atspiVersion().
+
+* Fix several table functions
+
+* Fix makeSyncType to generate a proper enum (will be needed when enum-types
+  branch of at-spi2-core is merged).
+
+* Add clearCache().
+
+* Cache eventTypes in events for performance reasons.
+
+* Add GPL2 license because a couple of test files are licensed under it.
+
 What's new in pyatspi2 2.1.1:
 
 * Fix traceback when calling document functions
