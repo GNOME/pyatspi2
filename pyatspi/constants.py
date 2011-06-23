@@ -66,7 +66,6 @@ EVENT_TREE = {
     ['document:load-complete',
      'document:reload',
      'document:load-stopped',
-     'document:content-changed',
      'document:attributes-changed'
      ],
   'object': 
