@@ -108,7 +108,20 @@ class Role(_Enum):
                 87:'ROLE_FORM',
                 88:'ROLE_LINK',
                 89:'ROLE_INPUT_METHOD_WINDOW',
-                90:'ROLE_LAST_DEFINED',
+                90:'ROLE_TABLE_ROW',
+                91:'ROLE_TREE_ITEM',
+                92:'ROLE_DOCUMENT_SPREADSHEET',
+                93:'ROLE_DOCUMENT_PRESENTATION',
+                94:'ROLE_DOCUMENT_TEXT',
+                95:'ROLE_DOCUMENT_WEB',
+                96:'ROLE_DOCUMENT_EMAIL',
+                97:'ROLE_COMMENT',
+                98:'ROLE_LIST_BOX',
+                99:'ROLE_GROUPING',
+                100:'ROLE_IMAGE_MAP',
+                101:'ROLE_NOTIFICATION',
+                102:'ROLE_INFO_BAR',
+                103:'ROLE_LAST_DEFINED',
         }
 
 ROLE_ACCELERATOR_LABEL = Role(1)
@@ -126,13 +139,19 @@ ROLE_CHECK_MENU_ITEM = Role(8)
 ROLE_COLOR_CHOOSER = Role(9)
 ROLE_COLUMN_HEADER = Role(10)
 ROLE_COMBO_BOX = Role(11)
+ROLE_COMMENT = Role(97)
 ROLE_DATE_EDITOR = Role(12)
 ROLE_DESKTOP_FRAME = Role(14)
 ROLE_DESKTOP_ICON = Role(13)
 ROLE_DIAL = Role(15)
 ROLE_DIALOG = Role(16)
 ROLE_DIRECTORY_PANE = Role(17)
+ROLE_DOCUMENT_EMAIL = Role(96)
 ROLE_DOCUMENT_FRAME = Role(82)
+ROLE_DOCUMENT_PRESENTATION = Role(93)
+ROLE_DOCUMENT_SPREADSHEET = Role(92)
+ROLE_DOCUMENT_TEXT = Role(94)
+ROLE_DOCUMENT_WEB = Role(95)
 ROLE_DRAWING_AREA = Role(18)
 ROLE_EDITBAR = Role(77)
 ROLE_EMBEDDED = Role(78)
@@ -146,23 +165,28 @@ ROLE_FOOTER = Role(72)
 ROLE_FORM = Role(87)
 ROLE_FRAME = Role(23)
 ROLE_GLASS_PANE = Role(24)
+ROLE_GROUPING = Role(99)
 ROLE_HEADER = Role(71)
 ROLE_HEADING = Role(83)
 ROLE_HTML_CONTAINER = Role(25)
 ROLE_ICON = Role(26)
 ROLE_IMAGE = Role(27)
+ROLE_IMAGE_MAP = Role(100)
+ROLE_INFO_BAR = Role(102)
 ROLE_INPUT_METHOD_WINDOW = Role(89)
 ROLE_INTERNAL_FRAME = Role(28)
 ROLE_INVALID = Role(0)
 ROLE_LABEL = Role(29)
-ROLE_LAST_DEFINED = Role(90)
+ROLE_LAST_DEFINED = Role(103)
 ROLE_LAYERED_PANE = Role(30)
 ROLE_LINK = Role(88)
 ROLE_LIST = Role(31)
+ROLE_LIST_BOX = Role(98)
 ROLE_LIST_ITEM = Role(32)
 ROLE_MENU = Role(33)
 ROLE_MENU_BAR = Role(34)
 ROLE_MENU_ITEM = Role(35)
+ROLE_NOTIFICATION = Role(101)
 ROLE_OPTION_PANE = Role(36)
 ROLE_PAGE = Role(84)
 ROLE_PAGE_TAB = Role(37)
@@ -190,6 +214,7 @@ ROLE_STATUS_BAR = Role(54)
 ROLE_TABLE = Role(55)
 ROLE_TABLE_CELL = Role(56)
 ROLE_TABLE_COLUMN_HEADER = Role(57)
+ROLE_TABLE_ROW = Role(90)
 ROLE_TABLE_ROW_HEADER = Role(58)
 ROLE_TEAROFF_MENU_ITEM = Role(59)
 ROLE_TERMINAL = Role(60)
@@ -198,6 +223,7 @@ ROLE_TOGGLE_BUTTON = Role(62)
 ROLE_TOOL_BAR = Role(63)
 ROLE_TOOL_TIP = Role(64)
 ROLE_TREE = Role(65)
+ROLE_TREE_ITEM = Role(91)
 ROLE_TREE_TABLE = Role(66)
 ROLE_UNKNOWN = Role(67)
 ROLE_VIEWPORT = Role(68)
@@ -292,6 +318,19 @@ ROLE_NAMES = {
         ROLE_FORM:'form',
         ROLE_LINK:'link',
         ROLE_INPUT_METHOD_WINDOW:'input method window',
+        ROLE_TABLE_ROW:'table row',
+        ROLE_TREE_ITEM:'tree item',
+        ROLE_DOCUMENT_SPREADSHEET:'document spreadsheet',
+        ROLE_DOCUMENT_PRESENTATION:'document presentation',
+        ROLE_DOCUMENT_TEXT:'document text',
+        ROLE_DOCUMENT_WEB:'document web',
+        ROLE_DOCUMENT_EMAIL:'document email',
+        ROLE_COMMENT:'comment',
+        ROLE_LIST_BOX:'list box',
+        ROLE_GROUPING:'grouping',
+        ROLE_IMAGE_MAP:'image map',
+        ROLE_NOTIFICATION:'notification',
+        ROLE_INFO_BAR:'info bar',
 }
 
 #END----------------------------------------------------------------------------

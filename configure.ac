@@ -57,7 +57,7 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(LIB_XML_LIBS)
         AC_SUBST(LIB_XML_CFLAGS)
 
-        PKG_CHECK_MODULES(ATK, [atk >= 1.17.0])
+        PKG_CHECK_MODULES(ATK, [atk >= 2.1.0])
         AC_SUBST(ATK_LIBS)
         AC_SUBST(ATK_CFLAGS)
 
