@@ -190,6 +190,9 @@ class Registry(object):
                         self._set_default_registry ()
                 return Atspi.get_desktop(i)
 
+        def eventWrapper(self, event, callback):
+                callback(event)
+
         def registerEventListener(self, client, *names):
                 """
                 Registers a new client callback for the given event names. Supports 
@@ -215,7 +218,7 @@ class Registry(object):
                 try:
                         listener = self.event_listeners[client]
                 except:
-                        listener = self.event_listeners[client] = Atspi.EventListener.new_simple(client)
+                        listener = self.event_listeners[client] = Atspi.EventListener.new(self.eventWrapper, client)
                 for name in names:
                         Atspi.EventListener.register (listener, name)
 
@@ -308,7 +311,7 @@ class Registry(object):
                 try:
                         listener = self.event_listeners[client]
                 except:
-                        listener = self.event_listeners[client] = Atspi.DeviceListener.new_simple(client)
+                        listener = self.event_listeners[client] = Atspi.DeviceListener.new(self.eventWrapper, client)
                 syncFlag = self.makeSyncType(synchronous, preemptive, global_)
                 try:
                         iter(mask)
