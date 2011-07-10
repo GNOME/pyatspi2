@@ -191,7 +191,7 @@ class Registry(object):
                 return Atspi.get_desktop(i)
 
         def eventWrapper(self, event, callback):
-                callback(event)
+                return callback(event)
 
         def registerEventListener(self, client, *names):
                 """
