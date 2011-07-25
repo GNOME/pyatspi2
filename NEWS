@@ -1,3 +1,9 @@
+What's new in pyatspi 2.1.4:
+
+* Update to handle libatspi API changes.
+
+* Fix for BGO#653874 - new ATK roles.
+
 What's new in pyatspi 2.1.3:
 
 * BGO#644393: Remove document:content-changed from EVENT_TREE
