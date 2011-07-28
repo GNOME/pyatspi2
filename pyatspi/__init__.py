@@ -12,31 +12,14 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-# Do not replace yourself if you've been imported explicitly by name
-# already.
-#
+__version__ = (1, 9, 0)
+
+from gi.repository import Atspi
+
+from Accessibility import *
+
+#This is a re-creation of the namespace pollution implemented
+#by PyORBit.
 import sys
-if not sys.modules.has_key('pyatspi_dbus'):
-    try:
-        import subprocess
-        o = subprocess.check_output (("gconftool-2", "--get", "/desktop/gnome/interface/at-spi-corba"))
-        useCorba = (o == "true\n")
-    except:
-        useCorba = False
-else:
-    useCorba = False
-
-if useCorba:
-    import pyatspi_corba
-    sys.modules['pyatspi'] = pyatspi_corba
-else:
-    __version__ = (1, 9, 0)
-
-    from gi.repository import Atspi
-
-    from Accessibility import *
-
-    #This is a re-creation of the namespace pollution implemented
-    #by PyORBit.
-    import Accessibility
-    sys.modules['Accessibility'] = Accessibility
+import Accessibility
+sys.modules['Accessibility'] = Accessibility
