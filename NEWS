@@ -1,3 +1,9 @@
+What's new in pyatspi 2.1.5:
+
+* Remove support for relocated pyatspi-corba.
+
+* Fix getTextBeforeOffset.
+
 What's new in pyatspi 2.1.4:
 
 * Update to handle libatspi API changes.
