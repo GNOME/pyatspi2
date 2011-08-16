@@ -466,6 +466,7 @@ class Text:
                 the resulting substring, if one exists. 
                 @return a string which is a substring of the text content of
                 the object, delimited by the specified boundary condition.
+                """
                 ret = exwrap(Atspi.Text.get_text_before_offset, self.obj, offset, type)
                 return textRangeToList(ret)
 
