@@ -28,7 +28,6 @@ __all__ = ["Registry",
 	   "set_default_registry"]
 
 import os as _os
-import gobject
 from gi.repository import Atspi
 from gi.repository import GObject
 import time
@@ -80,7 +79,7 @@ class Registry(object):
                 self.app_event_register = None
                 self.desktop = None
 
-		self.main_loop = gobject.MainLoop()
+		self.main_loop = GObject.MainLoop()
 
         def __call__(self):
                 """
