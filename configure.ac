@@ -1,4 +1,4 @@
-AC_INIT([pyatspi], [2.1.5], [accessibility-atspi@lists.linux-foundation.org])
+AC_INIT([pyatspi], [2.1.90], [accessibility-atspi@lists.linux-foundation.org])
 AC_CONFIG_AUX_DIR(config)
 
 LT_RELEASE=$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION
