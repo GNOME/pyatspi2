@@ -312,10 +312,9 @@ class Registry(object):
                 except:
                         listener = self.event_listeners[client] = Atspi.DeviceListener.new(self.eventWrapper, client)
                 syncFlag = self.makeSyncType(synchronous, preemptive, global_)
-                try:
-                        iter(mask)
+                if hasattr(mask, '__iter__'):
                         masks = mask
-                except:
+                else:
                         masks = [mask]
                 for m in masks:
                         Atspi.register_keystroke_listener(listener,
