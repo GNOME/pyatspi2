@@ -319,7 +319,7 @@ class Text:
                 of the glyph whose onscreen bounds contain the point x,y, or
                 -1 if the point is outside the bounds of any glyph.
                 """
-                return exwrap(Atspi.Text.get_offset_at_point, self.obj, x, y, UInt32(coordType))
+                return exwrap(Atspi.Text.get_offset_at_point, self.obj, x, y, coordType)
 
         def getRangeExtents(self, startOffset, endOffset, coordType):
                 """
