@@ -1,4 +1,4 @@
-AC_INIT([pyatspi], [2.2.0], [accessibility-atspi@lists.linux-foundation.org])
+AC_INIT([pyatspi], [2.2.1], [accessibility-atspi@lists.linux-foundation.org])
 AC_CONFIG_AUX_DIR(config)
 
 LT_RELEASE=$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION
@@ -12,7 +12,7 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
-AM_INIT_AUTOMAKE([-Wall foreign])
+AM_INIT_AUTOMAKE([-Wall foreign no-dist-gzip dist-xz])
 
 AC_PROG_CC
 AM_PATH_PYTHON(2.4)

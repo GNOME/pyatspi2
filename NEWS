@@ -1,3 +1,9 @@
+What's new in pyatspi 2.2.1:
+
+* Use hasattr rather than a try in registerEventListener, for performance.
+
+* Fix for BGO#661613: getOffsetAtPoint now works.
+
 What's new in pyatspi 2.1.91:
 
 * Fix for BGO#658343: Have configure check for pygobject-3.0
