@@ -354,7 +354,14 @@ class Registry(object):
                         listener = self.event_listeners[client]
                 except:
                         return
-                Atspi.deregister_keystroke_listener (listener, key_set, mask, kind)
+
+                if hasattr(mask, '__iter__'):
+                        masks = mask
+                else:
+                        masks = [mask]
+                for m in masks:
+                        Atspi.deregister_keystroke_listener (listener, key_set,
+                                m, self.makeKind(kind))
 
                 # TODO: enqueueEvent, etc?
 
