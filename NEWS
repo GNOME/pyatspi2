@@ -1,3 +1,7 @@
+What's new in pyatspi 2.3.4:
+
+* Fix for BGO#666871: deregisterKeystrokeListener was broken.
+
 What's new in pyatspi 2.2.1:
 
 * Use hasattr rather than a try in registerEventListener, for performance.
