@@ -41,7 +41,7 @@ class EditableText(Text):
                 the offset of the first character past the end of the range of
                 text being copied.
                 """
-                return exwrap(Atspi.EditableText.copy_text, self.obj, start, end)
+                return Atspi.EditableText.copy_text(self.obj, start, end)
 
         def cutText(self, start, end):
                 """
@@ -55,7 +55,7 @@ class EditableText(Text):
                 text being cut. 
                 @return True if the text was successfully cut, False otherwise.
                 """
-                return exwrap(Atspi.EditableText.cut_text, self.obj, start, end)
+                return Atspi.EditableText.cut_text(self.obj, start, end)
 
         def deleteText(self, start, end):
                 """
@@ -69,7 +69,7 @@ class EditableText(Text):
                 text being deleted. 
                 @return True if the text was successfully deleted, False otherwise.
                 """
-                return exwrap(Atspi.EditableText.delete_text, self.obj, start, end)
+                return Atspi.EditableText.delete_text(self.obj, start, end)
 
         def insertText(self, position, text, length):
                 """
@@ -88,7 +88,7 @@ class EditableText(Text):
                 @return True if the text content was successfully inserted, False
                 otherwise.
                 """
-                return exwrap(Atspi.EditableText.insert_text, self.obj, position, text, length)
+                return Atspi.EditableText.insert_text(self.obj, position, text, length)
 
         def pasteText(self, position):
                 """
@@ -99,7 +99,7 @@ class EditableText(Text):
                 @return True if the text was successfully pasted into the Text
                 object, False otherwise.
                 """
-                return exwrap(Atspi.EditableText.paste_text, self.obj, position)
+                return Atspi.EditableText.paste_text(self.obj, position)
 
         def setTextContents(self, contents):
                 """
@@ -111,6 +111,6 @@ class EditableText(Text):
                 @return True if the text content was successfully changed, False
                 otherwise.
                 """
-                return exwrap(Atspi.EditableText.set_text_contents, self.obj, contents)
+                return Atspi.EditableText.set_text_contents(self.obj, contents)
 
 #END----------------------------------------------------------------------------

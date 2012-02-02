@@ -47,7 +47,7 @@ class Document:
                 attribute, or an empty string if the attribute is unspecified
                 for the object.
                 """
-                return exwrap(Atspi.Document.get_attribute_value, self.obj, key)
+                return Atspi.Document.get_attribute_value(self.obj, key)
 
         def getAttributes(self):
                 """
@@ -57,7 +57,7 @@ class Document:
                 @return an AttributeSet containing the attributes of the document,
                 as name-value pairs.
                 """
-                ret = exwrap(Atspi.Document.get_attributes, self.obj)
+                ret = Atspi.Document.get_attributes(self.obj)
                 return [key + ':' + value for key, value in ret.iteritems()]
 
         def getLocale(self):
@@ -67,6 +67,6 @@ class Document:
                 @return a string compliant with the POSIX standard for locale
                 description.
                 """
-                return exwrap(Atspi.Document.get_locale, self.obj)
+                return Atspi.Document.get_locale(self.obj)
 
 #END----------------------------------------------------------------------------
