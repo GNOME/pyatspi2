@@ -1,3 +1,12 @@
+What's new in pyatspi 2.3.5:
+
+* Fix for BGO#660826: Drop unneeded pygtk check.
+
+* Remove exception wrapping - pyatspi will now return the real exception
+  as translated by pygi, rather than LookupError. This means that it is now
+  necessary to catch, eg, RuntimeError rather than LookupError if one wishes
+  to catch exceptions, but it is now possible to see the original error.
+
 What's new in pyatspi 2.3.4:
 
 * Fix for BGO#666871: deregisterKeystrokeListener was broken.
