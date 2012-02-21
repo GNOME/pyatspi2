@@ -28,7 +28,7 @@ AC_ARG_ENABLE(tests,
               enable_tests=yes,
               enable_tests=no)
 AC_MSG_RESULT($enable_tests)
-AM_CONDITIONAL(ENABLE_TESTING, test x$enable_tests == xyes)
+AM_CONDITIONAL(ENABLE_TESTING, test x$enable_tests = xyes)
 
 if test "$enable_tests" = "yes"; then
         AM_CHECK_PYMOD(dbus, , , [AC_MSG_ERROR(Could not find python module: dbus)])
