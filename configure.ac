@@ -25,7 +25,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_MSG_CHECKING([whether tests are enabled])
 AC_ARG_ENABLE(tests,
               [AS_HELP_STRING([--enable-tests], [Build with testing enabled])],
-              enable_tests=yes,
+              enable_tests=$enableval,
               enable_tests=no)
 AC_MSG_RESULT($enable_tests)
 AM_CONDITIONAL(ENABLE_TESTING, test x$enable_tests = xyes)
