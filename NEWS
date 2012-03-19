@@ -1,3 +1,7 @@
+What's new in pyatspi 2.3.92:
+
+* Another fix for --enable-tests.
+
 What's new in pyatspi 2.3.91:
 
 * Fix --enable-tests.
