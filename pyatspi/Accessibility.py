@@ -388,5 +388,6 @@ KEY_RELEASE = Atspi.KeySynthType.RELEASE
 KEY_STRING = Atspi.KeySynthType.STRING
 KEY_SYM = Atspi.KeySynthType.SYM
 
-### cache ###
+### misc ###
 cache = Atspi.Cache
+setTimeout = Atspi.set_timeout
