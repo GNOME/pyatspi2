@@ -23,9 +23,9 @@
 #------------------------------------------------------------------------------
 
 __all__ = ["Registry",
-	   "MAIN_LOOP_GLIB",
-	   "MAIN_LOOP_NONE",
-	   "set_default_registry"]
+           "MAIN_LOOP_GLIB",
+           "MAIN_LOOP_NONE",
+           "set_default_registry"]
 
 import os as _os
 from gi.repository import Atspi
@@ -79,7 +79,7 @@ class Registry(object):
                 self.app_event_register = None
                 self.desktop = None
 
-		self.main_loop = GObject.MainLoop()
+                self.main_loop = GObject.MainLoop()
 
         def __call__(self):
                 """
@@ -111,10 +111,10 @@ class Registry(object):
 
                 self.has_implementations = True
 
-		# TODO: Move to libatspi
+                # TODO: Move to libatspi
                 _os.environ["AT_SPI_CLIENT"] = "1"
 
-		self.async = False	# not fully supported yet
+                self.async = False	# not fully supported yet
                 self.started = False
                 self.event_listeners = dict()
 
@@ -141,7 +141,7 @@ class Registry(object):
                         def releaseGIL():
                                 try:
                                         time.sleep(1e-2)
-                                except KeyboardInterrupt, e:
+                                except KeyboardInterrupt as e:
                                         # store the exception for later
                                         releaseGIL.keyboard_exception = e
                                         self.stop()

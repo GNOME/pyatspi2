@@ -127,51 +127,12 @@ STATE_VALUE_TO_NAME = dict(((value, name[6:].lower().replace('_', ' '))
 
 #------------------------------------------------------------------------------
 
-def _marshal_state_set(bitfield):
-        """
-        The D-Bus protocol has a stateset object passed
-        as a 64bit bitfield. The Bits are passed as two 32bit
-        integers.
-
-        This function marshals the D-Bus message into a 
-        StateSet object that corresponds to these states.
-        """
-        (lower, upper) = bitfield
-
-        states = []
-
-        pos = 0
-        while (lower):
-                if (1L)&lower:
-                        states.append(StateType(pos))
-                pos+=1
-                lower >>= 1
-
-        pos = 32
-        while (upper):
-                if (1L)&upper:
-                        states.append(StateType(pos))
-                pos+=1
-                upper >>= 1
-
-        return StateSet(*states)
-
-#------------------------------------------------------------------------------
-
 def stateset_init(self, *states):
 	GObject.GObject.__init__(self)
 	map(self.add, states)
 
-# TODO: Probably remove this hack for 2.2, since BGO#646581 is fixed
-def StateSet_getStates(self):
-        ret = []
-        for i in range(0, 64):
-                if (self.states & (1 << i)):
-                        ret.append(Atspi.StateType(i))
-        return ret
-
 StateSet = Atspi.StateSet
-StateSet.getStates = StateSet_getStates
+StateSet.getStates = StateSet.get_states
 StateSet.isEmpty = StateSet.is_empty
 StateSet.raw = lambda x: x
 StateSet.unref = lambda x: None

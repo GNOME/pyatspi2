@@ -202,7 +202,7 @@ class Text:
                 """
                 [attrs, startOffset, endOffset] = Atspi.Text.get_attributes(self.obj, offset)
                 arr = [key + ':' + value for key, value in attrs.items()]
-		str = ';'.join (arr)
+                str = ';'.join (arr)
                 return [str, startOffset, endOffset]
 
         def getBoundedRanges(self, x, y, width, height, coordType, xClipType, yClipType):

@@ -55,7 +55,7 @@ def clearCache():
         pass
 
 def printCache():
-        print "Print cache function is deprecated";
+        print("Print cache function is deprecated")
 
 def getInterfaceIID(obj):
         """

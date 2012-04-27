@@ -30,9 +30,9 @@ def Accessible_getitem(self, i):
         len=self.get_child_count()
         if i < 0:
                 i = len + i
-	if i < 0 or i >= len:
-		raise IndexError
-	return self.get_child_at_index(i)
+        if i < 0 or i >= len:
+                raise IndexError
+        return self.get_child_at_index(i)
 
 def Accessible_str(self):
         '''
@@ -47,10 +47,10 @@ def Accessible_str(self):
                 return '[DEAD]'
         
 def pointToList(point):
-	return (point.x, point.y)
+        return (point.x, point.y)
 
 def rectToList(rect):
-	return (rect.x, rect.y, rect.width, rect.height)
+        return (rect.x, rect.y, rect.width, rect.height)
 
 # TODO: Figure out how to override Atspi.Rect constructor and remove this class
 class BoundingBox(list):
@@ -84,23 +84,23 @@ class BoundingBox(list):
         height = property(fget=_get_height, fset=_set_height)
 
 def getBoundingBox(rect):
-	return BoundingBox (rect.x, rect.y, rect.width, rect.height)
+        return BoundingBox (rect.x, rect.y, rect.width, rect.height)
 
 def attributeListToHash(list):
-	ret = dict()
-	for item in list:
+        ret = dict()
+        for item in list:
                 [key, val] = item.split(":")
-		ret[key] = val
-	return ret
+                ret[key] = val
+        return ret
 
 def getInterface(func, obj):
-	ret = func(obj)
-	if ret:
-		return ret
-	raise NotImplementedError
+        ret = func(obj)
+        if ret:
+                return ret
+        raise NotImplementedError
 
 def hashToAttributeList(h):
-	return [x + ":" + h[x] for x in h.keys()]
+        return [x + ":" + h[x] for x in h.keys()]
 
 def getEventType(event):
         try:
@@ -388,6 +388,5 @@ KEY_RELEASE = Atspi.KeySynthType.RELEASE
 KEY_STRING = Atspi.KeySynthType.STRING
 KEY_SYM = Atspi.KeySynthType.SYM
 
-### misc ###
+### cache ###
 cache = Atspi.Cache
-setTimeout = Atspi.set_timeout

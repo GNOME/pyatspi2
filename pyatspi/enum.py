@@ -12,15 +12,13 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-from dbus.types import UInt32
-
 __all__ = [
            "Enum",
           ]
 
 #------------------------------------------------------------------------------
 
-class Enum(UInt32):
+class Enum(int):
         def __str__(self):
                 return self._enum_lookup[int(self)]
 
