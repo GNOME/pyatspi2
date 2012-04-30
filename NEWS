@@ -1,3 +1,9 @@
+What's new in pyatspi 2.5.1:
+
+* Add setTimeout.
+
+* Some clean-ups for Python 3.
+
 What's new in pyatspi 2.3.92:
 
 * Another fix for --enable-tests.
