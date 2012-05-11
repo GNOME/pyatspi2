@@ -16,10 +16,10 @@ __version__ = (1, 9, 0)
 
 from gi.repository import Atspi
 
-from Accessibility import *
+from pyatspi.Accessibility import *
 
 #This is a re-creation of the namespace pollution implemented
 #by PyORBit.
 import sys
-import Accessibility
+import pyatspi.Accessibility
 sys.modules['Accessibility'] = Accessibility

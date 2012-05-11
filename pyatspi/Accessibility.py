@@ -14,17 +14,17 @@
 
 from gi.repository import Atspi
 
-from registry import *
+from pyatspi.registry import *
 Registry = Registry()
 
-from constants import *
-from editabletext import *
-from role import *
-from state import *
-from text import *
-from document import *
-from utils import *
-from appevent import *
+from pyatspi.constants import *
+from pyatspi.editabletext import *
+from pyatspi.role import *
+from pyatspi.state import *
+from pyatspi.text import *
+from pyatspi.document import *
+from pyatspi.utils import *
+from pyatspi.appevent import *
 
 def Accessible_getitem(self, i):
         len=self.get_child_count()

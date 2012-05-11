@@ -143,4 +143,4 @@ EVENT_TREE = {
     ['focus:']
 }
 
-from state import *
+from pyatspi.state import *

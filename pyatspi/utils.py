@@ -19,10 +19,10 @@
 
 #authors: Peter Parente, Mark Doffman
 
-import Accessibility
-from deviceevent import allModifiers
-import state
-import registry
+import pyatspi.Accessibility
+from pyatspi.deviceevent import allModifiers
+import pyatspi.state
+import pyatspi.registry
 
 #from deviceevent import *
 

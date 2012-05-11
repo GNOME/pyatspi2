@@ -12,10 +12,10 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-from interfaces import *
-import registry
+from pyatspi.interfaces import *
+import pyatspi.registry
 
-from enum import Enum as _Enum
+from pyatspi.enum import Enum as _Enum
 
 import traceback
 

@@ -14,8 +14,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from gi.repository import Atspi
-from enum import *
-from utils import *
+from pyatspi.enum import *
+from pyatspi.utils import *
 
 
 __all__ = [

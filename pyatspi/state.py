@@ -21,7 +21,7 @@
 
 from gi.repository import Atspi
 from gi.repository import GObject
-from enum import Enum as _Enum
+from pyatspi.enum import Enum as _Enum
 
 #------------------------------------------------------------------------------
 
