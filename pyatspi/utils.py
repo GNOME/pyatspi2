@@ -21,8 +21,8 @@
 
 import pyatspi.Accessibility
 from pyatspi.deviceevent import allModifiers
-import pyatspi.state
-import pyatspi.registry
+import pyatspi.state as state
+import pyatspi.registry as registry
 
 #from deviceevent import *
 
@@ -155,7 +155,7 @@ def relationToString(value):
         @return: Human readable, untranslated name of the relation
         @rtype: string
         """
-        return Accessibility.RELATION_VALUE_TO_NAME.get(value)
+        return pyatspi.Accessibility.RELATION_VALUE_TO_NAME.get(value)
 
 
 def findDescendant(acc, pred, breadth_first=False):

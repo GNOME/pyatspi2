@@ -21,5 +21,5 @@ from pyatspi.Accessibility import *
 #This is a re-creation of the namespace pollution implemented
 #by PyORBit.
 import sys
-import pyatspi.Accessibility
+import pyatspi.Accessibility as Accessibility
 sys.modules['Accessibility'] = Accessibility

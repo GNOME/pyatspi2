@@ -13,7 +13,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from pyatspi.interfaces import *
-import pyatspi.registry
+import pyatspi.registry as registry
 
 from pyatspi.enum import Enum as _Enum
 
