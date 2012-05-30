@@ -131,8 +131,16 @@ def stateset_init(self, *states):
 	GObject.GObject.__init__(self)
 	map(self.add, states)
 
+# TODO: Fix pygobject so that this isn't needed (BGO#646581 may be related)
+def StateSet_getStates(self):
+        ret = []
+        for i in range(0, 64):
+                if (self.states & (1 << i)):
+                        ret.append(Atspi.StateType(i))
+        return ret
+
 StateSet = Atspi.StateSet
-StateSet.getStates = StateSet.get_states
+StateSet.getStates = StateSet_getStates
 StateSet.isEmpty = StateSet.is_empty
 StateSet.raw = lambda x: x
 StateSet.unref = lambda x: None
