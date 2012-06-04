@@ -1,3 +1,9 @@
+What's new in pyatspi 2.5.2:
+
+* More Python 3 fixes.
+
+* Fix getStates regression (BGO#677070)
+
 What's new in pyatspi 2.5.1:
 
 * Add setTimeout.
