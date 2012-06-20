@@ -58,7 +58,7 @@ class Document:
                 as name-value pairs.
                 """
                 ret = Atspi.Document.get_attributes(self.obj)
-                return [key + ':' + value for key, value in ret.iteritems()]
+                return [key + ':' + value for key, value in ret.items()]
 
         def getLocale(self):
                 """

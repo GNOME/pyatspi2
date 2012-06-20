@@ -288,7 +288,7 @@ class Text:
                 but which were not explicitly specified by the content creator.
                 """
                 ret = Atspi.Text.get_default_attributes(self.obj)
-                return ';'.join([key + ':' + value for key, value in ret.iteritems()])
+                return ';'.join([key + ':' + value for key, value in ret.items()])
 
         def getNSelections(self):
                 """
