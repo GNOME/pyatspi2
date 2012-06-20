@@ -149,6 +149,7 @@ Atspi.Accessible.getAttributes = Atspi.Accessible.get_attributes_as_array
 Atspi.Accessible.getApplication = Atspi.Accessible.get_application
 Atspi.Accessible.__getitem__ = Accessible_getitem
 Atspi.Accessible.__len__ = Atspi.Accessible.get_child_count
+Atspi.Accessible.__bool__ = lambda x: True
 Atspi.Accessible.__nonzero__ = lambda x: True
 Atspi.Accessible.__str__ = Accessible_str
 Atspi.Accessible.childCount = property(fget=Atspi.Accessible.get_child_count)
