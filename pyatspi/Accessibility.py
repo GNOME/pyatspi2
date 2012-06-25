@@ -391,3 +391,4 @@ KEY_SYM = Atspi.KeySynthType.SYM
 
 ### cache ###
 cache = Atspi.Cache
+setTimeout = Atspi.set_timeout
