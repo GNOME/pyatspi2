@@ -1,3 +1,11 @@
+What's new in pyatspi 2.5.3:
+
+* Fix truth evaluation for accessibles in Python 3.
+
+* Fix for bug #678497 - dict.iteritems() is no longer supported in Python 3
+
+* Re-add setTimeout (it seems that it was lost among the Python 3 updates).
+
 What's new in pyatspi 2.5.2:
 
 * More Python 3 fixes.
