@@ -66,7 +66,6 @@ class Action(interface):
                 @return : a string containing the description of the specified
                 action.
                 """
-                func = self.get_dbus_method("GetDescription", dbus_interface=ATSPI_ACTION)
                 return Atspi.Action.get_description(self.obj, index)
 
         def getKeyBinding(self, index):

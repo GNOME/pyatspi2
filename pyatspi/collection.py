@@ -100,7 +100,6 @@ class Collection:
                 return Atspi.Collection.get_matches_to(self.obj, current_object._acc_path, rule, sortby, tree, recurse, count, traverse)
 
         def getMatchesFrom(self, current_object, rule, sortby, tree, count, traverse):
-                func = self.get_dbus_method("GetMatchesFrom", dbus_interface=ATSPI_COLLECTION)
                 return Atspi.Collection.get_matches_from(self.obj, current_object._acc_path, rule, sortby, tree, count, traverse)
 
         def getActiveDescendant(self):
