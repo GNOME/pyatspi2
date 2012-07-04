@@ -208,6 +208,15 @@ interface.queryTable = lambda x: Table(getInterface(Atspi.Accessible.get_table, 
 interface.queryText = lambda x: Text(getInterface(Atspi.Accessible.get_text, x.obj))
 interface.queryValue = lambda x: Value(getInterface(Atspi.Accessible.get_value, x.obj))
 
+### hyperlink ###
+Hyperlink = Atspi.Hyperlink
+Atspi.Hyperlink.getObject = Atspi.Hyperlink.get_object
+Atspi.Hyperlink.getURI = Atspi.Hyperlink.get_uri
+Atspi.Hyperlink.isValid = Atspi.Hyperlink.is_valid
+Atspi.Hyperlink.endIndex = property(fget=Atspi.Hyperlink.get_end_index)
+Atspi.Hyperlink.nAnchors = property(fget=Atspi.Hyperlink.get_n_anchors)
+Atspi.Hyperlink.startIndex = property(fget=Atspi.Hyperlink.get_start_index)
+
 ### DeviceEvent ###
 Atspi.DeviceEvent.__str__ = DeviceEvent_str
 
