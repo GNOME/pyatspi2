@@ -16,6 +16,7 @@
 from gi.repository import Atspi
 from pyatspi.enum import *
 from pyatspi.utils import *
+from pyatspi.interface import *
 
 
 __all__ = [
@@ -73,7 +74,7 @@ TEXT_CLIP_NONE = TEXT_CLIP_TYPE(0)
 
 #------------------------------------------------------------------------------
 
-class Text:
+class Text(interface):
         """
         The text interface should be implemented by objects which place
         textual information onscreen as character strings or glyphs.
@@ -99,9 +100,6 @@ class Text:
         in effect are the union of the set returned by Text::getDefaultAttributes,
         and the set returned at a particular character offset via Text::getAttributeRun.
         """
-
-        def __init__(self, obj):
-                self.obj = obj
 
         def addSelection(self, index):
                 """

@@ -7,13 +7,23 @@ pyatspi_PYTHON = \
 		deviceevent.py		\
                 enum.py                 \
 		__init__.py		\
+	action.py \
+	application.py \
+	collection.py \
+	component.py \
 	document.py \
 	editabletext.py \
-		interfaces.py		\
+	hypertext.py \
+	image.py \
+		interface.py		\
 		registry.py		\
 		role.py			\
+	selection.py \
 		state.py		\
+table.py \
 	text.py \
-		utils.py
+		utils.py \
+	value.py
 
 CLEANFILES = *.pyc
+

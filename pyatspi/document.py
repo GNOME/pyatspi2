@@ -15,6 +15,7 @@
 
 from gi.repository import Atspi
 from pyatspi.utils import *
+from pyatspi.interface import *
 
 __all__ = [
            "Document",
@@ -22,7 +23,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class Document:
+class Document(interface):
         """
         Primarily a 'tagging' interface which indicates the start of
         document content in the Accessibility hierarchy. Accessible objects
@@ -32,9 +33,6 @@ class Document:
         implement Document are normally expected to implement Collection
         as well.
         """
-
-        def __init__(self, obj):
-                self.obj = obj
 
         def getAttributeValue(self, key):
                 """

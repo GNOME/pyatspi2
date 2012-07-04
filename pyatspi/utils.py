@@ -42,6 +42,7 @@ __all__ = [
                 "findAllDescendants",
                 "findAncestor",
                 "getPath",
+                "pointToList",
                 "rectToList"
          ]
 
