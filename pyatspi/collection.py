@@ -19,7 +19,6 @@ from pyatspi.utils import *
 
 __all__ = [
            "Collection",
-           "MatchRule",
            "SortOrder",
            "MatchType",
            "TreeTraversalType",
@@ -97,10 +96,10 @@ class Collection:
                 return Atspi.Collection.get_matches(self.obj, rule, sortby, count, traverse)
 
         def getMatchesTo(self, current_object, rule, sortby, tree, recurse, count, traverse):
-                return Atspi.Collection.get_matches_to(self.obj, current_object._acc_path, rule, sortby, tree, recurse, count, traverse)
+                return Atspi.Collection.get_matches_to(self.obj, current_object, rule, sortby, tree, recurse, count, traverse)
 
         def getMatchesFrom(self, current_object, rule, sortby, tree, count, traverse):
-                return Atspi.Collection.get_matches_from(self.obj, current_object._acc_path, rule, sortby, tree, count, traverse)
+                return Atspi.Collection.get_matches_from(self.obj, current_object, rule, sortby, tree, count, traverse)
 
         def getActiveDescendant(self):
                 return Atspi.Collection.get_active_descendant(self.obj)

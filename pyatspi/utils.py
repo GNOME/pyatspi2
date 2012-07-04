@@ -43,7 +43,9 @@ __all__ = [
                 "findAncestor",
                 "getPath",
                 "pointToList",
-                "rectToList"
+                "rectToList",
+                "attributeListToHash",
+                "hashToAttributeList"
          ]
 
 def setCacheLevel(level):
@@ -331,3 +333,13 @@ def pointToList(point):
 
 def rectToList(rect):
 	return (rect.x, rect.y, rect.width, rect.height)
+
+def attributeListToHash(list):
+        ret = dict()
+        for item in list:
+                [key, val] = item.split(":")
+                ret[key] = val
+        return ret
+
+def hashToAttributeList(h):
+        return [x + ":" + h[x] for x in h.keys()]

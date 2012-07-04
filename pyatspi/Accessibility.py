@@ -26,6 +26,7 @@ from pyatspi.document import *
 from pyatspi.utils import *
 from pyatspi.action import *
 from pyatspi.component import *
+from pyatspi.collection import *
 from pyatspi.hypertext import *
 from pyatspi.image import *
 from pyatspi.selection import *
@@ -94,21 +95,11 @@ class BoundingBox(list):
 def getBoundingBox(rect):
         return BoundingBox (rect.x, rect.y, rect.width, rect.height)
 
-def attributeListToHash(list):
-        ret = dict()
-        for item in list:
-                [key, val] = item.split(":")
-                ret[key] = val
-        return ret
-
 def getInterface(func, obj):
         ret = func(obj)
         if ret:
                 return ret
         raise NotImplementedError
-
-def hashToAttributeList(h):
-        return [x + ":" + h[x] for x in h.keys()]
 
 def getEventType(event):
         try:
