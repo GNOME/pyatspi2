@@ -117,7 +117,7 @@ class Component(interface):
                 @return a BoundingBox which entirely contains the object's onscreen
                 visual representation.
                 """
-                return Atspi.Component.get_extents(self.obj, coord_type)
+                return rectToList(Atspi.Component.get_extents(self.obj, coord_type))
 
         def getLayer(self):
                 """
@@ -148,7 +148,7 @@ class Component(interface):
                 an out parameter which will be back-filled with the returned
                 y coordinate.
                 """
-                return Atspi.Component.get_position(self.obj, coord_type)
+                return pointToList(Atspi.Component.get_position(self.obj, coord_type))
 
         def getSize(self):
                 """
@@ -160,7 +160,7 @@ class Component(interface):
                 @param : height
                 the object's vertical extents in the specified coordinate system.
                 """
-                return Atspi.Component.get_size(self.obj)
+                return pointToList(Atspi.Component.get_size(self.obj))
 
         def grabFocus(self):
                 """

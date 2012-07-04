@@ -13,6 +13,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+from gi.repository import Atspi
 from pyatspi.utils import *
 from pyatspi.interface import *
 
@@ -41,10 +42,7 @@ class Selection(interface):
                 @return True if the selections were successfully cleared, False
                 otherwise.
                 """
-                try:
-                        return Atspi.Text.clear_selection(self.obj)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Text.clear_selection(self.obj)
 
         def deselectChild(self, childIndex):
                 """
@@ -56,10 +54,7 @@ class Selection(interface):
                 to be selected.
                 @return True if the child was successfully selected, False otherwise.
                 """
-                try:
-                        return Atspi.Selection.deselect_child(self.obj, childIndex)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.deselect_child(self.obj, childIndex)
 
         def deselectSelectedChild(self, index):
                 """
@@ -72,10 +67,7 @@ class Selection(interface):
                 @return True if the child was successfully deselected, False
                 otherwise.
                 """
-                try:
-                        return Atspi.Selection.deselect_selected_child(self.obj, index)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.deselect_selected_child(self.obj, index)
 
         def getSelectedChild(self, index):
                 """
@@ -86,10 +78,7 @@ class Selection(interface):
                 @return a pointer to a selected Accessible child object, specified
                 by selectedChildIndex.
                 """
-                try:
-                        return Atspi.Selection.get_selected_child(self.obj, index)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.get_selected_child(self.obj, index)
 
         def isChildSelected(self, index):
                 """
@@ -101,10 +90,7 @@ class Selection(interface):
                 @return True if the specified child is currently selected, False
                 otherwise.
                 """
-                try:
-                        return Atspi.Selection.is_child_selected(self.obj, index)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.is_child_selected(self.obj, index)
 
         def selectAll(self):
                 """
@@ -114,10 +100,7 @@ class Selection(interface):
                 support this operation).
                 @return True if successful, False otherwise.
                 """
-                try:
-                        return Atspi.Selection.select_all(self.obj)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.select_all(self.obj)
 
         def selectChild(self, index):
                 """
@@ -127,16 +110,10 @@ class Selection(interface):
                 be selected.
                 @return True if the child was successfully selected, False otherwise.
                 """
-                try:
-                        return Atspi.Selection.select_child(self.obj, index)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.select_child(self.obj, index)
 
         def get_nSelectedChildren(self):
-                try:
-                        return Atspi.Selection.get_n_selected_children(self.obj)
-                except Exception as e:
-                        raiseException(e)
+                return Atspi.Selection.get_n_selected_children(self.obj)
         _nSelectedChildrenDoc = \
                 """
                 The number of children of a Selection implementor which are currently
