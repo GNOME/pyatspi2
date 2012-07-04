@@ -61,8 +61,6 @@ class Hypertext(interface):
                 @return the number of Hyperlinks associated with this Hypertext
                 object, as a long integer.
                 """
-                func = self.get_dbus_method("GetNLinks", dbus_interface=ATSPI_HYPERTEXT)
-                return func()
                 return Atspi.Hypertext.get_n_links(self.obj)
 
 #END----------------------------------------------------------------------------
