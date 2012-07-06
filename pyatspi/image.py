@@ -50,7 +50,7 @@ class Image:
                 to the containing window. 
                 @return a BoundingBox enclosing the image's onscreen representation.
                 """
-                return rectToList(Atspi.Image.get_image_extents(self.obj, coordType))
+                return getBoundingBox(Atspi.Image.get_image_extents(self.obj, coordType))
 
         def getImagePosition(self, coord_type):
                 """

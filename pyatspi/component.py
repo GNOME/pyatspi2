@@ -117,7 +117,7 @@ class Component(interface):
                 @return a BoundingBox which entirely contains the object's onscreen
                 visual representation.
                 """
-                return Atspi.Component.get_extents(self.obj, coord_type)
+                return getBoundingBox(Atspi.Component.get_extents(self.obj, coord_type))
 
         def getLayer(self):
                 """

@@ -58,9 +58,6 @@ def Accessible_str(self):
 def pointToList(point):
         return (point.x, point.y)
 
-def rectToList(rect):
-        return (rect.x, rect.y, rect.width, rect.height)
-
 # TODO: Figure out how to override Atspi.Rect constructor and remove this class
 class BoundingBox(list):
         def __new__(cls, x, y, width, height):
@@ -91,9 +88,6 @@ class BoundingBox(list):
         def _set_height(self, val):
                 self[3] = val
         height = property(fget=_get_height, fset=_set_height)
-
-def getBoundingBox(rect):
-        return BoundingBox (rect.x, rect.y, rect.width, rect.height)
 
 def getInterface(func, obj):
         ret = func(obj)

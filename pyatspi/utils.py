@@ -45,7 +45,8 @@ __all__ = [
                 "pointToList",
                 "rectToList",
                 "attributeListToHash",
-                "hashToAttributeList"
+                "hashToAttributeList",
+                "getBoundingBox"
          ]
 
 def setCacheLevel(level):
@@ -343,3 +344,6 @@ def attributeListToHash(list):
 
 def hashToAttributeList(h):
         return [x + ":" + h[x] for x in h.keys()]
+
+def getBoundingBox(rect):
+        return BoundingBox (rect.x, rect.y, rect.width, rect.height)
