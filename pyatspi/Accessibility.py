@@ -59,36 +59,6 @@ def pointToList(point):
         return (point.x, point.y)
 
 # TODO: Figure out how to override Atspi.Rect constructor and remove this class
-class BoundingBox(list):
-        def __new__(cls, x, y, width, height):
-                return list.__new__(cls, (x, y, width, height))
-        def __init__(self, x, y, width, height):
-                list.__init__(self, (x, y, width, height))
-
-        def __str__(self):
-                return ("(%d, %d, %d, %d)" % (self.x, self.y, self.width, self.height))
-
-        def _get_x(self):
-                return self[0]
-        def _set_x(self, val):
-                self[0] = val
-        x = property(fget=_get_x, fset=_set_x)
-        def _get_y(self):
-                return self[1]
-        def _set_y(self, val):
-                self[1] = val
-        y = property(fget=_get_y, fset=_set_y)
-        def _get_width(self):
-                return self[2]
-        def _set_width(self, val):
-                self[2] = val
-        width = property(fget=_get_width, fset=_set_width)
-        def _get_height(self):
-                return self[3]
-        def _set_height(self, val):
-                self[3] = val
-        height = property(fget=_get_height, fset=_set_height)
-
 def getInterface(func, obj):
         ret = func(obj)
         if ret:
