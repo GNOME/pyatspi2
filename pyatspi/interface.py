@@ -21,7 +21,7 @@ __all__ = [
            "interface"
 ]
 
-class interface:
+class interface(object):
         def __init__(self, obj):
                 self.obj = obj
 
