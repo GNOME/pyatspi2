@@ -18,12 +18,12 @@ from pyatspi.utils import *
 #from pyatspi.component import *
 
 __all__ = [
-           "interface"
+	   "interface"
 ]
 
 class interface(object):
-        def __init__(self, obj):
-                self.obj = obj
+	def __init__(self, obj):
+		self.obj = obj
 
 	def __eq__(a, b):
 		return (a.__class__ == b.__class__ and a.obj == b.obj)
