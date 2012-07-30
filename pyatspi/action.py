@@ -84,12 +84,24 @@ class Action(interface):
                 getName: 
                 @param : index
                 the index of the action whose name is requested.
-                Get the name of the specified action. Action names generally
-                describe the user action, i.e. "click" or "press", rather then
-                the result of invoking the action.
+                Get the unlocalized name of the specified action. Action names
+                generally describe the user action, i.e. "click" or "press",
+                rather than the result of invoking the action.
                 @return : a string containing the name of the specified action.
                 """
                 return Atspi.Action.get_name(self.obj, index)
+
+        def getLocalizedName(self, index):
+                """
+                getLocalizedName: 
+                @param : index
+                the index of the action whose name is requested.
+                Get the localized name of the specified action. Action names
+                generally describe the user action, i.e. "click" or "press",
+                rather than the result of invoking the action.
+                @return : a string containing the name of the specified action.
+                """
+                return Atspi.Action.get_localized_name(self.obj, index)
 
         def get_nActions(self):
                 return Atspi.Action.get_n_actions(self.obj)
