@@ -1,3 +1,7 @@
+What's new in pyatspi 2.5.5:
+
+* Add getLocalizedName for actions.
+
 What's new in pyatspi 2.5.4:
 
 * Wrap all interfaces (BGO#679044).
