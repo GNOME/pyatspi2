@@ -2,24 +2,24 @@
 # Run this to generate all the initial makefiles, etc.
 
 #name of package
-PKG_NAME=${PKG_NAME:-Package}
-srcdir=${srcdir:-.}
+test "$PKG_NAME" || PKG_NAME=Package
+test "$srcdir" || srcdir=.
 
 # default version requirements ...
-REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.53}
-REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.9}
-REQUIRED_LIBTOOL_VERSION=${REQUIRED_LIBTOOL_VERSION:-1.4.3}
-REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.10.40}
-REQUIRED_GLIB_GETTEXT_VERSION=${REQUIRED_GLIB_GETTEXT_VERSION:-2.2.0}
-REQUIRED_INTLTOOL_VERSION=${REQUIRED_INTLTOOL_VERSION:-0.25}
-REQUIRED_PKG_CONFIG_VERSION=${REQUIRED_PKG_CONFIG_VERSION:-0.14.0}
-REQUIRED_GTK_DOC_VERSION=${REQUIRED_GTK_DOC_VERSION:-1.0}
-REQUIRED_DOC_COMMON_VERSION=${REQUIRED_DOC_COMMON_VERSION:-2.3.0}
-REQUIRED_GNOME_DOC_UTILS_VERSION=${REQUIRED_GNOME_DOC_UTILS_VERSION:-0.4.2}
+test "$REQUIRED_AUTOCONF_VERSION" || REQUIRED_AUTOCONF_VERSION=2.53
+test "$REQUIRED_AUTOMAKE_VERSION" || REQUIRED_AUTOMAKE_VERSION=1.9
+test "$REQUIRED_LIBTOOL_VERSION" || REQUIRED_LIBTOOL_VERSION=1.4.3
+test "$REQUIRED_GETTEXT_VERSION" || REQUIRED_GETTEXT_VERSION=0.10.40
+test "$REQUIRED_GLIB_GETTEXT_VERSION" || REQUIRED_GLIB_GETTEXT_VERSION=2.2.0
+test "$REQUIRED_INTLTOOL_VERSION" || REQUIRED_INTLTOOL_VERSION=0.25
+test "$REQUIRED_PKG_CONFIG_VERSION" || REQUIRED_PKG_CONFIG_VERSION=0.14.0
+test "$REQUIRED_GTK_DOC_VERSION" || REQUIRED_GTK_DOC_VERSION=1.0
+test "$REQUIRED_DOC_COMMON_VERSION" || REQUIRED_DOC_COMMON_VERSION=2.3.0
+test "$REQUIRED_GNOME_DOC_UTILS_VERSION" || REQUIRED_GNOME_DOC_UTILS_VERSION=0.4.2
 
 # a list of required m4 macros.  Package can set an initial value
-REQUIRED_M4MACROS=${REQUIRED_M4MACROS:-}
-FORBIDDEN_M4MACROS=${FORBIDDEN_M4MACROS:-}
+test "$REQUIRED_M4MACROS" || REQUIRED_M4MACROS=
+test "$FORBIDDEN_M4MACROS" || FORBIDDEN_M4MACROS=
 
 # Not all echo versions allow -n, so we check what is possible. This test is
 # based on the one in autoconf.
@@ -174,7 +174,8 @@ check_m4macros() {
     # but it contains only Automake's own macros, so we can ignore it.
 
     # Read the dirlist file, supported by Automake >= 1.7.
-    if compare_versions 1.7 $AUTOMAKE_VERSION && [ -s $cm_macrodirs/dirlist ]; then
+    # If AUTOMAKE was defined, no version was detected.
+    if [ -z "$AUTOMAKE_VERSION" ] || compare_versions 1.7 $AUTOMAKE_VERSION && [ -s $cm_macrodirs/dirlist ]; then
 	cm_dirlist=`sed 's/[ 	]*#.*//;/^$/d' $cm_macrodirs/dirlist`
 	if [ -n "$cm_dirlist" ] ; then
 	    for cm_dir in $cm_dirlist; do
@@ -264,7 +265,24 @@ want_gtk_doc=false
 want_gnome_doc_utils=false
 want_maintainer_mode=false
 
-configure_files="`find $srcdir -name '{arch}' -prune -o -name '_darcs' -prune -o -name '.??*' -prune -o -name configure.ac -print -o -name configure.in -print`"
+find_configure_files() {
+    configure_ac=
+    if test -f "$1/configure.ac"; then
+	configure_ac="$1/configure.ac"
+    elif test -f "$1/configure.in"; then
+	configure_ac="$1/configure.in"
+    fi
+    if test "x$configure_ac" != x; then
+	echo "$configure_ac"
+	# TODO We have not detected the right autoconf yet!
+	autoconf -t 'AC_CONFIG_SUBDIRS:$1' "$configure_ac" | while read dir; do
+	    find_configure_files "$1/$dir"
+	done
+    fi
+}
+
+configure_files="`find_configure_files .`"
+
 for configure_ac in $configure_files; do
     dirname=`dirname $configure_ac`
     if [ -f $dirname/NO-AUTO-GEN ]; then
@@ -339,7 +357,7 @@ version_check automake AUTOMAKE "$automake_progs" $REQUIRED_AUTOMAKE_VERSION \
 ACLOCAL=`echo $AUTOMAKE | sed s/automake/aclocal/`
 
 if $want_libtool; then
-    version_check libtool LIBTOOLIZE libtoolize $REQUIRED_LIBTOOL_VERSION \
+    version_check libtool LIBTOOLIZE "libtoolize glibtoolize" $REQUIRED_LIBTOOL_VERSION \
         "http://ftp.gnu.org/pub/gnu/libtool/libtool-$REQUIRED_LIBTOOL_VERSION.tar.gz"
     require_m4macro libtool.m4
 fi
@@ -484,7 +502,7 @@ for configure_ac in $configure_files; do
           cp -pf INSTALL INSTALL.autogen_bak
         fi
 	if [ $REQUIRED_AUTOMAKE_VERSION != 1.4 ]; then
-	    $AUTOMAKE --gnu --add-missing --force --copy -Wno-portability || exit 1
+	    $AUTOMAKE --gnu --add-missing --copy -Wno-portability || exit 1
 	else
 	    $AUTOMAKE --gnu --add-missing --copy || exit 1
 	fi
