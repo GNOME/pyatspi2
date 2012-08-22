@@ -3,7 +3,11 @@
 
 #name of package
 test "$PKG_NAME" || PKG_NAME=Package
+test "$srcdir" || srcdir=`dirname "$0"`
 test "$srcdir" || srcdir=.
+
+olddir=`pwd`
+cd "$srcdir"
 
 # default version requirements ...
 test "$REQUIRED_AUTOCONF_VERSION" || REQUIRED_AUTOCONF_VERSION=2.53
@@ -524,6 +528,8 @@ conf_flags=""
 if $want_maintainer_mode; then
     conf_flags="--enable-maintainer-mode"
 fi
+
+cd "$olddir"
 
 if test x$NOCONFIGURE = x; then
     printbold Running $srcdir/configure $conf_flags "$@" ...
