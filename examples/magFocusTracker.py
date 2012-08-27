@@ -47,6 +47,7 @@ from gi.repository.Gio import Settings
 
 _screenWidth = 0
 _screenHeight = 0
+_magnifier = None
 _zoomer = None
 
 class RoiHandler:
@@ -220,39 +221,27 @@ def magnifyAccessible(event, obj=None, extents=None):
     if haveSomethingToMagnify:
         _setROICursorPush(x, y, width, height)
 
-def init():
-    global _zoomer
+def startTracking():
     global _screenWidth
     global _screenHeight
+    global _magnifier
+    global _zoomer
 
-    screen = Gdk.Screen.get_default()
-    _screenWidth = screen.width()
-    _screenHeight = screen.height()
+    if _magnifier and _zoomer:
+        screen = Gdk.Screen.get_default()
+        _screenWidth = screen.width()
+        _screenHeight = screen.height()
 
-    _dbusLoop = DBusGMainLoop()
-    _bus = dbus.SessionBus(mainloop=_dbusLoop)
-    _proxy_obj = _bus.get_object("org.gnome.Magnifier", "/org/gnome/Magnifier")
-    _magnifier = dbus.Interface(_proxy_obj, "org.gnome.Magnifier")
-    zoomerPaths = _magnifier.getZoomRegions()
-    if not zoomerPaths:
-        return
+        pyatspi.Registry.registerEventListener(magnifyAccessible,
+                                               "object:text-caret-moved",
+                                               "object:state-changed:focused",
+                                               "object:state-changed:selected")
 
-    zoomProxy = _bus.get_object('org.gnome.Magnifier', zoomerPaths[0])
-    _zoomer = dbus.Interface(
-        zoomProxy, dbus_interface='org.gnome.Magnifier.ZoomRegion')
-
-    pyatspi.Registry.registerEventListener(magnifyAccessible,
-                                           "object:text-caret-moved",
-                                           "object:state-changed:focused",
-                                           "object:state-changed:selected")
-    pyatspi.Registry.start()
-
-def shutdown():
+def stopTracking():
     pyatspi.Registry.deregisterEventListener(magnifyAccessible,
                                              "object:text-caret-moved",
                                              "object:state-changed:focused",
                                              "object:state-changed:selected")
-    pyatspi.Registry.stop()
 
 def onEnabledChanged(gsetting, key):
     if key != 'screen-magnifier-enabled':
@@ -260,17 +249,40 @@ def onEnabledChanged(gsetting, key):
 
     enabled = gsetting.get_boolean(key)
     if enabled:
-        init()
+        startTracking()
     else:
-        shutdown()
+        stopTracking()
+
+def _initMagDbus():
+    global _magnifier
+    global _zoomer
+
+    available = False
+    try:
+        bus = dbus.SessionBus(mainloop=DBusGMainLoop())
+        proxy = \
+          bus.get_object('org.gnome.Magnifier', '/org/gnome/Magnifier')
+        _magnifier = dbus.Interface(proxy, 'org.gnome.Magnifier')
+        zoomerPaths = _magnifier.getZoomRegions()
+        if zoomerPaths:
+            proxy = bus.get_object('org.gnome.Magnifier', zoomerPaths[0])
+            _zoomer = dbus.Interface(proxy, 'org.gnome.Magnifier.ZoomRegion')
+            available = True
+    except:
+        available = False
+
+    return available
 
 def main():
-    a11yAppSettings = Settings('org.gnome.desktop.a11y.applications')
-    if a11yAppSettings.get_boolean('screen-magnifier-enabled'):
+    magServiceAvailable = _initMagDbus()
+    if magServiceAvailable:
+        a11yAppSettings = Settings('org.gnome.desktop.a11y.applications')
         a11yAppSettings.connect('changed', onEnabledChanged)
-        init()
+        if a11yAppSettings.get_boolean('screen-magnifier-enabled'):
+            startTracking()
+        pyatspi.Registry.start()
     else:
-        print 'Magnification is not running. Exiting.'
+        print 'Magnification service not available. Exiting.'
 
     return 0
 
