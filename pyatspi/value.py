@@ -35,7 +35,7 @@ class Value(interface):
         def get_currentValue(self):
                 return Atspi.Value.get_current_value(self.obj)
         def set_currentValue(self, value):
-                Atspi.Value.set_current_value(self.obj)
+                Atspi.Value.set_current_value(self.obj, value)
         _currentValueDoc = \
                 """
                 The current value of the valuator.
