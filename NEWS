@@ -1,3 +1,7 @@
+What's new in pyatspi 2.5.91:
+
+* Fix autogen.sh for non-sourcedir build.
+    
 What's new in pyatspi 2.5.5:
 
 * Add getLocalizedName for actions.
