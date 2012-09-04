@@ -1,4 +1,4 @@
-SUBDIRS=pyatspi
+SUBDIRS=pyatspi examples
 
 if ENABLE_TESTING
 SUBDIRS+=tests

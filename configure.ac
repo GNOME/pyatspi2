@@ -85,6 +85,7 @@ AC_CONFIG_FILES([Makefile
 		 tests/pyatspi/pasytest/Makefile
 		 tests/apps/Makefile
 		 pyatspi/Makefile
+		 examples/Makefile
 		])
 
 AC_OUTPUT
