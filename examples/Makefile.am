@@ -1,6 +1,1 @@
-examplesdir = $(pythondir)/examples
-
-examples_PYTHON = \
-		magFocusTracker.py
-
-CLEANFILES = *.pyc
+EXTRA_DIST = magFocusTracker.py
