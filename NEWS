@@ -1,3 +1,9 @@
+What's new in pyatspi 2.5.92:
+
+* Fix for bug #683302 - Missing argument for set_current_value method
+
+* Include interim focus tracker as an example.
+
 What's new in pyatspi 2.5.91:
 
 * Fix autogen.sh for non-sourcedir build.
