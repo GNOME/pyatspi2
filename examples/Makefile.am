@@ -1,1 +1,3 @@
-EXTRA_DIST = magFocusTracker.py
+pyatspi_SCRIPTS = magFocusTracker.py
+
+pyatspidir=$(bindir)
