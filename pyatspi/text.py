@@ -241,7 +241,7 @@ class Text(interface):
                 UCS-4 representation of the character at the specified text offset,
                 or 0 if offset is out of range.
                 """
-                return Atspi.Text.get_character_offset(self.obj, offset)
+                return Atspi.Text.get_character_at_offset(self.obj, offset)
 
         def getCharacterExtents(self, offset, coordType):
                 """
