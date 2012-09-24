@@ -1,3 +1,9 @@
+What's new in pyatspi 2.6.0:
+
+* Install caret focus tracker into $bindir, rather than $pythondir/examples.
+
+* Fix incorrect FSF address in file headers.
+
 What's new in pyatspi 2.5.92:
 
 * Fix for bug #683302 - Missing argument for set_current_value method
