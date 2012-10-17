@@ -17,6 +17,7 @@ from gi.repository import Atspi
 from pyatspi.registry import *
 Registry = Registry()
 
+from pyatspi.application import *
 from pyatspi.constants import *
 from pyatspi.editabletext import *
 from pyatspi.role import *
