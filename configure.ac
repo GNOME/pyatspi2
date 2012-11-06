@@ -1,6 +1,17 @@
 AC_INIT([pyatspi], [2.7.1], [accessibility-atspi@lists.linux-foundation.org])
 AC_CONFIG_AUX_DIR(config)
 
+# The version of python used is determined by the executable pointed to by the
+# --with-python switch, or if that's not set, by the PYTHON environment
+# variable.  For instance if your system installs Python 3 as python3 to
+# configure to compile pygobject under Python 3 you would do this:
+#   $ ./configure --with-python=python3
+# or
+#   $ PYTHON=python3 ./configure
+#
+# You can also build against a full interpreter path, such as
+#   $ ./configure --with-python=~/my-patched-python/python
+
 LT_RELEASE=$AT_SPI_MAJOR_VERSION.$AT_SPI_MINOR_VERSION
 LT_CURRENT=0
 LT_REVISION=0
@@ -15,6 +26,20 @@ AC_SUBST(LT_AGE)
 AM_INIT_AUTOMAKE([-Wall foreign no-dist-gzip dist-xz])
 
 AC_PROG_CC
+
+# option to specify python interpreter to use; this just sets $PYTHON, so that
+# we will fallback to reading $PYTHON if --with-python is not given, and
+# python.m4 will get the expected input
+AC_ARG_WITH(python,
+  AC_HELP_STRING([--with-python=PATH], [Path to Python interpreter; searches $PATH if only a program name is given; if not given, searches for a few standard names such as "python3" or "python2"]),
+  [PYTHON="$withval"], [])
+if test x"$PYTHON" = xyes; then
+	AC_MSG_ERROR([--with-python option requires a path or program argument])
+fi
+if test -n "$PYTHON" && ! which "$PYTHON"; then
+	AC_MSG_ERROR([Python interpreter $PYTHON does not exist])
+fi
+
 AM_PATH_PYTHON(2.6)
 AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
