@@ -1,3 +1,9 @@
+What's new in pyatspi 2.7.2:
+
+* Add a --with-python option to configure.ac.
+
+* Fix getCharacterAtOffset.
+
 What's new in pyatspi 2.7.1:
 
 * Export application class in the Accessibility namespace, for
