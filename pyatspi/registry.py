@@ -29,7 +29,7 @@ __all__ = ["Registry",
 
 import os as _os
 from gi.repository import Atspi
-from gi.repository import GObject
+from gi.repository import GLib
 import time
 
 #------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ class Registry(object):
                 self.app_event_register = None
                 self.desktop = None
 
-                self.main_loop = GObject.MainLoop()
+                self.main_loop = GLib.MainLoop()
 
         def __call__(self):
                 """
@@ -148,9 +148,9 @@ class Registry(object):
                                 return True
                         # make room for an exception if one occurs during the 
                         releaseGIL.keyboard_exception = None
-                        i = GObject.idle_add(releaseGIL)
+                        i = GLib.idle_add(releaseGIL)
                         Atspi.event_main()
-                        GObject.source_remove(i)
+                        GLib.source_remove(i)
                         if releaseGIL.keyboard_exception is not None:
                                 # raise an keyboard exception we may have gotten earlier
                                 raise releaseGIL.keyboard_exception
