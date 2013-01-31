@@ -121,7 +121,8 @@ class Role(_Enum):
                 100:'ROLE_IMAGE_MAP',
                 101:'ROLE_NOTIFICATION',
                 102:'ROLE_INFO_BAR',
-                103:'ROLE_LAST_DEFINED',
+                103:'ROLE_LEVEL_BAR',
+                104:'ROLE_LAST_DEFINED',
         }
 
 ROLE_ACCELERATOR_LABEL = Role(1)
@@ -179,6 +180,7 @@ ROLE_INVALID = Role(0)
 ROLE_LABEL = Role(29)
 ROLE_LAST_DEFINED = Role(103)
 ROLE_LAYERED_PANE = Role(30)
+ROLE_LEVEL_BAR = Role(103)
 ROLE_LINK = Role(88)
 ROLE_LIST = Role(31)
 ROLE_LIST_BOX = Role(98)
@@ -331,6 +333,7 @@ ROLE_NAMES = {
         ROLE_IMAGE_MAP:'image map',
         ROLE_NOTIFICATION:'notification',
         ROLE_INFO_BAR:'info bar',
+        ROLE_LEVEL_BAR:'level bar',
 }
 
 #END----------------------------------------------------------------------------
