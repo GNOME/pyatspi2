@@ -1,3 +1,7 @@
+What's new in pyatspi 2.7.5:
+
+* Support new levelbar role.
+
 What's new in pyatspi 2.7.2:
 
 * Add a --with-python option to configure.ac.
