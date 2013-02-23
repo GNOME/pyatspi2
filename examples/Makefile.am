@@ -1,4 +1,4 @@
-pyatspi_SCRIPTS = magFocusTracker.py
+noinst_SCRIPTS = magFocusTracker.py
 
 EXTRA_DIST = magFocusTracker.py
 
