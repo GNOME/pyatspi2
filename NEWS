@@ -1,3 +1,11 @@
+What's new in pyatspi 2.7.91:
+
+* Add objectLocale property (BGO#694368).
+
+* Stop using a deprecated method.
+
+* Don't install the example, since it isn't compatible with Python 3.
+
 What's new in pyatspi 2.7.5:
 
 * Support new levelbar role.
