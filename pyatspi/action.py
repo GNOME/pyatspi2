@@ -66,7 +66,7 @@ class Action(interface):
                 @return : a string containing the description of the specified
                 action.
                 """
-                return Atspi.Action.get_description(self.obj, index)
+                return Atspi.Action.get_action_description(self.obj, index)
 
         def getKeyBinding(self, index):
                 """
@@ -89,7 +89,7 @@ class Action(interface):
                 rather than the result of invoking the action.
                 @return : a string containing the name of the specified action.
                 """
-                return Atspi.Action.get_name(self.obj, index)
+                return Atspi.Action.get_action_name(self.obj, index)
 
         def getLocalizedName(self, index):
                 """

@@ -45,7 +45,7 @@ class Document(interface):
                 attribute, or an empty string if the attribute is unspecified
                 for the object.
                 """
-                return Atspi.Document.get_attribute_value(self.obj, key)
+                return Atspi.Document.get_document_attribute_value(self.obj, key)
 
         def getAttributes(self):
                 """
@@ -55,7 +55,7 @@ class Document(interface):
                 @return an AttributeSet containing the attributes of the document,
                 as name-value pairs.
                 """
-                ret = Atspi.Document.get_attributes(self.obj)
+                ret = Atspi.Document.get_document_attributes(self.obj)
                 return [key + ':' + value for key, value in ret.items()]
 
         def getLocale(self):

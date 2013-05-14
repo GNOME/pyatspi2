@@ -190,7 +190,7 @@ class Text(interface):
                 @return the value of attribute (name-value pair) corresponding
                 to "name", if defined.
                 """
-                return Atspi.Text.get_attribute_value(self.obj, offset, attributeName)
+                return Atspi.Text.get_text_attribute_value(self.obj, offset, attributeName)
 
         def getAttributes(self, offset):
                 """
@@ -198,7 +198,7 @@ class Text(interface):
                 @return the attributes at offset, as a semicolon-delimited set
                 of colon-delimited name-value pairs.
                 """
-                [attrs, startOffset, endOffset] = Atspi.Text.get_attributes(self.obj, offset)
+                [attrs, startOffset, endOffset] = Atspi.Text.get_text_attributes(self.obj, offset)
                 arr = [key + ':' + value for key, value in attrs.items()]
                 str = ';'.join (arr)
                 return [str, startOffset, endOffset]
