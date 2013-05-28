@@ -1,3 +1,7 @@
+What's new in pyatspi 2.9.2:
+
+* Update for libatspi API changes (BGO#700243).
+
 What's new in pyatspi 2.7.91:
 
 * Add objectLocale property (BGO#694368).
