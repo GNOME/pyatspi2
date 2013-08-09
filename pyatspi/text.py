@@ -34,6 +34,11 @@ __all__ = [
            "TEXT_CLIP_MIN",
            "TEXT_CLIP_MAX",
            "TEXT_CLIP_BOTH",
+           "TEXT_GRANULARITY_CHAR",
+           "TEXT_GRANULARITY_WORD",
+           "TEXT_GRANULARITY_SENTENCE",
+           "TEXT_GRANULARITY_LINE",
+           "TEXT_GRANULARITY_PARAGRAPH",
           ]
 
 #------------------------------------------------------------------------------
@@ -71,6 +76,23 @@ TEXT_CLIP_BOTH = TEXT_CLIP_TYPE(3)
 TEXT_CLIP_MAX = TEXT_CLIP_TYPE(2)
 TEXT_CLIP_MIN = TEXT_CLIP_TYPE(1)
 TEXT_CLIP_NONE = TEXT_CLIP_TYPE(0)
+
+#------------------------------------------------------------------------------
+
+class TEXT_GRANULARITY_TYPE(Enum):
+        _enum_lookup = {
+                0:'TEXT_GRANULARITY_CHAR',
+                1:'TEXT_GRANULARITY_WORD',
+                2:'TEXT_GRANULARITY_SENTENCE',
+                3:'TEXT_GRANULARITY_LINE',
+                4:'TEXT_GRANULARITY_PARAGRAPH',
+        }
+
+TEXT_GRANULARITY_CHAR = TEXT_GRANULARITY_TYPE(0)
+TEXT_GRANULARITY_WORD = TEXT_GRANULARITY_TYPE(1)
+TEXT_GRANULARITY_SENTENCE = TEXT_GRANULARITY_TYPE(2)
+TEXT_GRANULARITY_LINE = TEXT_GRANULARITY_TYPE(3)
+TEXT_GRANULARITY_PARAGRAPH = TEXT_GRANULARITY_TYPE(4)
 
 #------------------------------------------------------------------------------
 
@@ -388,6 +410,7 @@ class Text(interface):
 
         def getTextAfterOffset(self, offset, type):
                 """
+                Deprecated in favor of getStringAtOffset.
                 Obtain a subset of the text content of an object which entirely
                 follows offset, delimited by character, word, line, or sentence
                 boundaries as specified by type. The starting and ending offsets
@@ -416,6 +439,7 @@ class Text(interface):
 
         def getTextAtOffset(self, offset, type):
                 """
+                Deprecated in favor of getStringAtOffset.
                 Obtain a subset of the text content of an object which includes
                 the specified offset, delimited by character, word, line, or
                 sentence boundaries as specified by type. The starting and ending
@@ -443,6 +467,7 @@ class Text(interface):
 
         def getTextBeforeOffset(self, offset, type):
                 """
+                Deprecated in favor of getStringAtOffset.
                 Obtain a subset of the text content of an object which entirely
                 precedes offset, delimited by character, word, line, or sentence
                 boundaries as specified by type. The starting and ending offsets
@@ -466,6 +491,34 @@ class Text(interface):
                 the object, delimited by the specified boundary condition.
                 """
                 ret = Atspi.Text.get_text_before_offset(self.obj, offset, type)
+                return textRangeToList(ret)
+
+        def getStringAtOffset(self, offset, type):
+                """
+                Obtain a subset of the text content of an object which includes
+                the specified offset, delimited by character, word, line, sentence
+                or paragraph granularity as specified by type. The starting and ending
+                offsets of the resulting substring are returned in startOffset
+                and endOffset.
+                @param : offset
+                the offset from which the substring search begins, and which
+                must lie within the returned substring.
+                @param : type
+                the text granularity which determines whether the  returned text
+                constitures a character, word, line, sentence or paragraph (and
+                possibly attendant  whitespace). For all of those cases, boundaries
+                will always be defined from the start of the current substring to
+                the start of the following one for the same granularity.
+                @param : startOffset
+                back-filled with the starting offset of the resulting substring,
+                if one exists.
+                @param : endOffset
+                back-filled with the offset of the character immediately following
+                the resulting substring, if one exists.
+                @return a string which is a substring of the text content of
+                the object, delimited by the specified text granularity.
+                """
+                ret = Atspi.Text.get_string_at_offset(self.obj, offset, type)
                 return textRangeToList(ret)
 
         def removeSelection(self, selectionNum):
