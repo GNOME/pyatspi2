@@ -339,7 +339,11 @@ def attributeListToHash(list):
         ret = dict()
         for item in list:
                 [key, val] = item.split(":")
-                ret[key] = val
+                val = val.replace(":", "\:")
+                if ret.__contains__(key):
+                    ret[key] = ret[key] + ":" + val
+                else:
+                    ret[key] = val
         return ret
 
 def hashToAttributeList(h):
