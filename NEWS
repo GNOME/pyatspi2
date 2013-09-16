@@ -1,3 +1,8 @@
+What's new in pyatspi 2.9.92:
+
+* Handle attribute lists with multiple accepted values for the same key
+  when creating a collection match rule (BGO#700865).
+
 What's new in pyatspi 2.9.90:
 
 * Added getStringAtOffset.
