@@ -122,7 +122,11 @@ class Role(_Enum):
                 101:'ROLE_NOTIFICATION',
                 102:'ROLE_INFO_BAR',
                 103:'ROLE_LEVEL_BAR',
-                104:'ROLE_LAST_DEFINED',
+                104:'ROLE_TITLE_BAR',
+                105:'ROLE_BLOCK_QUOTE',
+                106:'ROLE_AUDIO',
+                107:'ROLE_VIDEO',
+                108:'ROLE_LAST_DEFINED',
         }
 
 ROLE_ACCELERATOR_LABEL = Role(1)
@@ -130,7 +134,9 @@ ROLE_ALERT = Role(2)
 ROLE_ANIMATION = Role(3)
 ROLE_APPLICATION = Role(75)
 ROLE_ARROW = Role(4)
+ROLE_AUDIO = Role(106)
 ROLE_AUTOCOMPLETE = Role(76)
+ROLE_BLOCK_QUOTE = Role(105)
 ROLE_CALENDAR = Role(5)
 ROLE_CANVAS = Role(6)
 ROLE_CAPTION = Role(81)
@@ -178,7 +184,7 @@ ROLE_INPUT_METHOD_WINDOW = Role(89)
 ROLE_INTERNAL_FRAME = Role(28)
 ROLE_INVALID = Role(0)
 ROLE_LABEL = Role(29)
-ROLE_LAST_DEFINED = Role(103)
+ROLE_LAST_DEFINED = Role(108)
 ROLE_LAYERED_PANE = Role(30)
 ROLE_LEVEL_BAR = Role(103)
 ROLE_LINK = Role(88)
@@ -221,6 +227,7 @@ ROLE_TABLE_ROW_HEADER = Role(58)
 ROLE_TEAROFF_MENU_ITEM = Role(59)
 ROLE_TERMINAL = Role(60)
 ROLE_TEXT = Role(61)
+ROLE_TITLE_BAR = Role(104)
 ROLE_TOGGLE_BUTTON = Role(62)
 ROLE_TOOL_BAR = Role(63)
 ROLE_TOOL_TIP = Role(64)
@@ -228,6 +235,7 @@ ROLE_TREE = Role(65)
 ROLE_TREE_ITEM = Role(91)
 ROLE_TREE_TABLE = Role(66)
 ROLE_UNKNOWN = Role(67)
+ROLE_AUDIO = Role(107)
 ROLE_VIEWPORT = Role(68)
 ROLE_WINDOW = Role(69)
 
@@ -334,6 +342,10 @@ ROLE_NAMES = {
         ROLE_NOTIFICATION:'notification',
         ROLE_INFO_BAR:'info bar',
         ROLE_LEVEL_BAR:'level bar',
+        ROLE_TITLE_BAR:'title bar',
+        ROLE_BLOCK_QUOTE:'block quote',
+        ROLE_AUDIO:'audio',
+        ROLE_VIDEO:'video',
 }
 
 #END----------------------------------------------------------------------------
