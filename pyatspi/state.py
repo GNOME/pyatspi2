@@ -68,7 +68,9 @@ class StateType(_Enum):
                 38:'STATE_SELECTABLE_TEXT',
                 39:'STATE_IS_DEFAULT',
                 40:'STATE_VISITED',
-                41:'STATE_LAST_DEFINED',
+                41:'STATE_CHECKABLE',
+                42:'STATE_HAS_POPUP',
+                43:'STATE_LAST_DEFINED',
         }
 
 #------------------------------------------------------------------------------
@@ -77,6 +79,7 @@ STATE_ACTIVE = StateType(1)
 STATE_ANIMATED = StateType(35)
 STATE_ARMED = StateType(2)
 STATE_BUSY = StateType(3)
+STATE_CHECKABLE = StateType(41)
 STATE_CHECKED = StateType(4)
 STATE_COLLAPSED = StateType(5)
 STATE_DEFUNCT = StateType(6)
@@ -86,6 +89,7 @@ STATE_EXPANDABLE = StateType(9)
 STATE_EXPANDED = StateType(10)
 STATE_FOCUSABLE = StateType(11)
 STATE_FOCUSED = StateType(12)
+STATE_HAS_POPUP = StateType(42)
 STATE_HAS_TOOLTIP = StateType(13)
 STATE_HORIZONTAL = StateType(14)
 STATE_ICONIFIED = StateType(15)
@@ -93,7 +97,7 @@ STATE_INDETERMINATE = StateType(32)
 STATE_INVALID = StateType(0)
 STATE_INVALID_ENTRY = StateType(36)
 STATE_IS_DEFAULT = StateType(39)
-STATE_LAST_DEFINED = StateType(41)
+STATE_LAST_DEFINED = StateType(43)
 STATE_MANAGES_DESCENDANTS = StateType(31)
 STATE_MODAL = StateType(16)
 STATE_MULTISELECTABLE = StateType(18)
