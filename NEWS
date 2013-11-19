@@ -1,3 +1,7 @@
+What's new in pyatspi 2.11.2:
+
+* Add new roles and states to track atk (BGO#710464, BGO#712608, BGO#712609).
+
 What's new in pyatspi 2.9.92:
 
 * Handle attribute lists with multiple accepted values for the same key
