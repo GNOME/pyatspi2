@@ -67,4 +67,20 @@ class Document(interface):
                 """
                 return Atspi.Document.get_locale(self.obj)
 
+        def getCurrentPageNumber(self):
+                """
+                Gets the current page number associated with the document.
+                @return a integer with the current page number. -1 if error
+                or unknown.
+                """
+                return Atspi.Document.get_current_page_number(self.obj)
+
+        def getPageCount(self):
+                """
+                Gets the page count of the document.
+                @return a integer with the page count of the document.
+                -1 if error or unknown.
+                """
+                return Atspi.Document.get_page_count(self.obj)
+
 #END----------------------------------------------------------------------------

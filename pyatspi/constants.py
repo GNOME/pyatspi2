@@ -67,6 +67,7 @@ EVENT_TREE = {
      'document:reload',
      'document:load-stopped',
      'document:attributes-changed'
+     'document:page-changed'
      ],
   'object': 
     ['object:property-change',
