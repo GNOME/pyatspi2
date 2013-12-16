@@ -1,3 +1,7 @@
+What's new in pyatspi 2.11.3:
+
+* document: add support to current page and page count (BGO#719508).
+
 What's new in pyatspi 2.11.2:
 
 * Add new roles and states to track atk (BGO#710464, BGO#712608, BGO#712609).
