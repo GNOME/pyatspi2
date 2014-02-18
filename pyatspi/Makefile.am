@@ -21,6 +21,7 @@ pyatspi_PYTHON = \
 	selection.py \
 		state.py		\
 table.py \
+tablecell.py \
 	text.py \
 		utils.py \
 	value.py

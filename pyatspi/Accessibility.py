@@ -32,6 +32,7 @@ from pyatspi.hypertext import *
 from pyatspi.image import *
 from pyatspi.selection import *
 from pyatspi.table import *
+from pyatspi.tablecell import *
 from pyatspi.value import *
 from pyatspi.appevent import *
 from pyatspi.interface import *
@@ -148,6 +149,7 @@ Atspi.Accessible.queryHypertext = lambda x: Hypertext(getInterface(Atspi.Accessi
 Atspi.Accessible.queryImage = lambda x: Image(getInterface(Atspi.Accessible.get_image_iface, x))
 Atspi.Accessible.querySelection = lambda x: Selection(getInterface(Atspi.Accessible.get_selection_iface, x))
 Atspi.Accessible.queryTable = lambda x: Table(getInterface(Atspi.Accessible.get_table_iface, x))
+Atspi.Accessible.queryTableCell = lambda x: TableCell(getInterface(Atspi.Accessible.get_table_cell, x))
 Atspi.Accessible.queryText = lambda x: Text(getInterface(Atspi.Accessible.get_text_iface, x))
 Atspi.Accessible.queryValue = lambda x: Value(getInterface(Atspi.Accessible.get_value_iface, x))
 
@@ -162,6 +164,7 @@ interface.queryHypertext = lambda x: Hypertext(getInterface(Atspi.Accessible.get
 interface.queryImage = lambda x: Image(getInterface(Atspi.Accessible.get_image, x.obj))
 interface.querySelection = lambda x: Selection(getInterface(Atspi.Accessible.get_selection, x.obj))
 interface.queryTable = lambda x: Table(getInterface(Atspi.Accessible.get_table, x.obj))
+interface.queryTableCell = lambda x: Table(getInterface(Atspi.Accessible.get_table_cell, x.obj))
 interface.queryText = lambda x: Text(getInterface(Atspi.Accessible.get_text, x.obj))
 interface.queryValue = lambda x: Value(getInterface(Atspi.Accessible.get_value, x.obj))
 
