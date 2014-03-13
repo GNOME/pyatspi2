@@ -531,7 +531,7 @@ class Text(interface):
                 @return True if the selection was successfully removed, False
                 otherwise.
                 """
-                return Atspi.Text.remove_selection(self.obj, index)
+                return Atspi.Text.remove_selection(self.obj, selectionNum)
 
         def setCaretOffset(self, offset):
                 """
