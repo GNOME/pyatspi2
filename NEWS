@@ -1,3 +1,11 @@
+What's new in pyatspi 2.11.92:
+
+*Fix a traceback when removing a text selection.
+
+What's new in pyatspi 2.11.90:
+
+* Add AtspiTableCell, tracking the new atk interface.
+
 What's new in pyatspi 2.11.3:
 
 * document: add support to current page and page count (BGO#719508).
