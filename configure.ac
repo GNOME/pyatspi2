@@ -1,4 +1,4 @@
-AC_INIT([pyatspi], [2.11.92], [accessibility-atspi@lists.linux-foundation.org])
+AC_INIT([pyatspi], [2.12.0], [accessibility-atspi@lists.linux-foundation.org])
 AC_CONFIG_AUX_DIR(config)
 
 # The version of python used is determined by the executable pointed to by the
