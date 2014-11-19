@@ -134,7 +134,8 @@ class Role(_Enum):
                 113:'ROLE_MATH',
                 114:'ROLE_RATING',
                 115:'ROLE_TIMER',
-                116:'ROLE_LAST_DEFINED',
+                116:'ROLE_STATIC',
+                117:'ROLE_LAST_DEFINED',
         }
 
 ROLE_ACCELERATOR_LABEL = Role(1)
@@ -195,7 +196,7 @@ ROLE_INTERNAL_FRAME = Role(28)
 ROLE_INVALID = Role(0)
 ROLE_LABEL = Role(29)
 ROLE_LANDMARK = Role(110)
-ROLE_LAST_DEFINED = Role(116)
+ROLE_LAST_DEFINED = Role(117)
 ROLE_LAYERED_PANE = Role(30)
 ROLE_LEVEL_BAR = Role(103)
 ROLE_LINK = Role(88)
@@ -233,6 +234,7 @@ ROLE_SEPARATOR = Role(50)
 ROLE_SLIDER = Role(51)
 ROLE_SPIN_BUTTON = Role(52)
 ROLE_SPLIT_PANE = Role(53)
+ROLE_STATIC = Role(116)
 ROLE_STATUS_BAR = Role(54)
 ROLE_TABLE = Role(55)
 ROLE_TABLE_CELL = Role(56)
@@ -370,6 +372,7 @@ ROLE_NAMES = {
         ROLE_MATH:'math',
         ROLE_RATING:'rating',
         ROLE_TIMER:'timer',
+        ROLE_STATIC:'static',
 }
 
 #END----------------------------------------------------------------------------
