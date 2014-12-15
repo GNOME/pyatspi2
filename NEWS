@@ -1,3 +1,7 @@
+What's new in pyatspi 2.15.3:
+
+* Add ROLE_STATIC (bgo#740364).
+    
 What's new in pyatspi 2.14.0:
 
 * Test fixes.
