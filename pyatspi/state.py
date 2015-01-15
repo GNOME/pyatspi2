@@ -70,7 +70,8 @@ class StateType(_Enum):
                 40:'STATE_VISITED',
                 41:'STATE_CHECKABLE',
                 42:'STATE_HAS_POPUP',
-                43:'STATE_LAST_DEFINED',
+                43:'STATE_READ_ONLY',
+                44:'STATE_LAST_DEFINED',
         }
 
 #------------------------------------------------------------------------------
@@ -104,6 +105,7 @@ STATE_MULTISELECTABLE = StateType(18)
 STATE_MULTI_LINE = StateType(17)
 STATE_OPAQUE = StateType(19)
 STATE_PRESSED = StateType(20)
+STATE_READ_ONLY = StateType(43)
 STATE_REQUIRED = StateType(33)
 STATE_RESIZABLE = StateType(21)
 STATE_SELECTABLE = StateType(22)
