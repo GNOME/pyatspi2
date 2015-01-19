@@ -1,3 +1,7 @@
+What's new in pyatspi 2.15.4:
+
+* Support ATSPI_STATE_READ_ONLY (bgo#690108).
+
 What's new in pyatspi 2.15.3:
 
 * Add ROLE_STATIC (bgo#740364).
