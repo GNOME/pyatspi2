@@ -298,6 +298,8 @@ class Text(interface):
                 whereas an object whose text weight is inspecified may report
                 the default or implied text weight in the default AttributeSet.
                 """
+                return Atspi.Text.get_default_attributes(self.obj)
+
                 ret = Atspi.Text.get_default_attribute_set(self.obj)
                 return [key + ':' + value for key, value in ret.values()]
 
