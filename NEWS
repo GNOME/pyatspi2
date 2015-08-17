@@ -1,3 +1,7 @@
+What's new in pyatspi 2.17.90:
+
+* Fix text.getDefaultAttributeSet (bgo#752928).
+
 What's new in pyatspi 2.15.90:
 
 * Add new roles for fractions, roots, subscripts, and superscripts (bgo#743413).
