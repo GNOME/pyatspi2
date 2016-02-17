@@ -14,6 +14,8 @@
 
 __version__ = (1, 9, 0)
 
+import gi
+gi.require_version('Atspi', '2.0')
 from gi.repository import Atspi
 
 from pyatspi.Accessibility import *
