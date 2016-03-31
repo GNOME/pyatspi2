@@ -406,8 +406,6 @@ class Text(interface):
                 startOffset (inclusive) up to but not including the character
                 at endOffset.
                 """
-                if not endOffset:
-                        endOffset = -1
                 return Atspi.Text.get_text(self.obj, startOffset, endOffset)
 
         def getTextAfterOffset(self, offset, type):
