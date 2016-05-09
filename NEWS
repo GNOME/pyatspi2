@@ -1,3 +1,8 @@
+What's new in pyatspi 2.20.2:
+
+* Update STATE_LAST_DEFINED so that STATE_READ_ONLY is recognized
+  (bgo#766121).
+
 What's new in pyatspi 2.20.1:
 
 * gettext: Don't modify endOffset (bgo#721860).
