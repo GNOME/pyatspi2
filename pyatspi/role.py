@@ -12,11 +12,11 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-from pyatspi.enum import Enum as _Enum
+from pyatspi.atspienum import *
 
 #------------------------------------------------------------------------------
 
-class Role(_Enum):
+class Role(AtspiEnum):
         _enum_lookup = {
                 0:'ROLE_INVALID',
                 1:'ROLE_ACCELERATOR_LABEL',

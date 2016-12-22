@@ -21,11 +21,11 @@
 
 from gi.repository import Atspi
 from gi.repository import GObject
-from pyatspi.enum import Enum as _Enum
+from pyatspi.atspienum import *
 
 #------------------------------------------------------------------------------
 
-class StateType(_Enum):
+class StateType(AtspiEnum):
         _enum_lookup = {
                 0:'STATE_INVALID',
                 1:'STATE_ACTIVE',

@@ -14,7 +14,7 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from gi.repository import Atspi
-from pyatspi.enum import *
+from pyatspi.atspienum import *
 from pyatspi.utils import *
 from pyatspi.interface import *
 
@@ -37,7 +37,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class CoordType(Enum):
+class CoordType(AtspiEnum):
         _enum_lookup = {
                 0:'XY_SCREEN',
                 1:'XY_WINDOW',
@@ -48,7 +48,7 @@ XY_WINDOW = CoordType(1)
 
 #------------------------------------------------------------------------------
 
-class ComponentLayer(Enum):
+class ComponentLayer(AtspiEnum):
         _enum_lookup = {
                 0:'LAYER_INVALID',
                 1:'LAYER_BACKGROUND',

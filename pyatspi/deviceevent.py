@@ -14,13 +14,13 @@
 
 import pyatspi.registry as registry
 
-from pyatspi.enum import Enum as _Enum
+from pyatspi.atspienum import *
 
 import traceback
 
 #------------------------------------------------------------------------------
 
-class PressedEventType(_Enum):
+class PressedEventType(AtspiEnum):
         _enum_lookup = {
                 0:'KEY_PRESSED_EVENT',
                 1:'KEY_RELEASED_EVENT',
@@ -35,7 +35,7 @@ BUTTON_RELEASED_EVENT = PressedEventType(3)
 
 #------------------------------------------------------------------------------
 
-class ControllerEventMask(_Enum):
+class ControllerEventMask(AtspiEnum):
         _enum_lookup = {
                 1:'KEY_PRESSED_EVENT_MASK',
                 2:'KEY_RELEASED_EVENT_MASK',
@@ -50,7 +50,7 @@ BUTTON_RELEASED_EVENT_MASK = ControllerEventMask(8)
 
 #------------------------------------------------------------------------------
 
-class KeyEventType(_Enum):
+class KeyEventType(AtspiEnum):
         _enum_lookup = {
                 0:'KEY_PRESSED',
                 1:'KEY_RELEASED',
@@ -60,7 +60,7 @@ KEY_RELEASED = KeyEventType(1)
 
 #------------------------------------------------------------------------------
 
-class KeySynthType(_Enum):
+class KeySynthType(AtspiEnum):
         _enum_lookup = {
                 0:'KEY_PRESS',
                 1:'KEY_RELEASE',
@@ -77,7 +77,7 @@ KEY_SYM = KeySynthType(3)
 
 #------------------------------------------------------------------------------
 
-class ModifierType(_Enum):
+class ModifierType(AtspiEnum):
         _enum_lookup = {
                 0:'MODIFIER_SHIFT',
                 1:'MODIFIER_SHIFTLOCK',

@@ -14,7 +14,7 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from gi.repository import Atspi
-from pyatspi.enum import *
+from pyatspi.atspienum import *
 from pyatspi.utils import *
 from pyatspi.interface import *
 
@@ -43,7 +43,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class TEXT_BOUNDARY_TYPE(Enum):
+class TEXT_BOUNDARY_TYPE(AtspiEnum):
         _enum_lookup = {
                 0:'TEXT_BOUNDARY_CHAR',
                 1:'TEXT_BOUNDARY_WORD_START',
@@ -64,7 +64,7 @@ TEXT_BOUNDARY_WORD_START = TEXT_BOUNDARY_TYPE(1)
 
 #------------------------------------------------------------------------------
 
-class TEXT_CLIP_TYPE(Enum):
+class TEXT_CLIP_TYPE(AtspiEnum):
         _enum_lookup = {
                 0:'TEXT_CLIP_NONE',
                 1:'TEXT_CLIP_MIN',
@@ -79,7 +79,7 @@ TEXT_CLIP_NONE = TEXT_CLIP_TYPE(0)
 
 #------------------------------------------------------------------------------
 
-class TEXT_GRANULARITY_TYPE(Enum):
+class TEXT_GRANULARITY_TYPE(AtspiEnum):
         _enum_lookup = {
                 0:'TEXT_GRANULARITY_CHAR',
                 1:'TEXT_GRANULARITY_WORD',
