@@ -14,7 +14,7 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from gi.repository import Atspi
-from pyatspi.enum import *
+from pyatspi.atspienum import *
 from pyatspi.utils import *
 
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
 
 #------------------------------------------------------------------------------
 
-class MatchType(Enum):
+class MatchType(AtspiEnum):
         _enum_lookup = {
                 0:'MATCH_INVALID',
                 1:'MATCH_ALL',
@@ -36,7 +36,7 @@ class MatchType(Enum):
                 5:'MATCH_LAST_DEFINED',
         }
 
-class SortOrder(Enum):
+class SortOrder(AtspiEnum):
         _enum_lookup = {
                 0:'SORT_ORDER_INVALID',
                 1:'SORT_ORDER_CANONICAL',
@@ -48,7 +48,7 @@ class SortOrder(Enum):
                 7:'SORT_ORDER_LAST_DEFINED',
         }
 
-class TreeTraversalType(Enum):
+class TreeTraversalType(AtspiEnum):
         _enum_lookup = {
                 0:'TREE_RESTRICT_CHILDREN',
                 1:'TREE_RESTRICT_SIBLING',

@@ -13,7 +13,6 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from gi.repository import Atspi
-from pyatspi.enum import *
 from pyatspi.utils import *
 from pyatspi.interface import *
 
