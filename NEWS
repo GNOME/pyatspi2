@@ -1,10 +1,26 @@
-What's new in pyatspi 2.17.90:
+What's new in pyatspi 2.24.0:
 
-* Call gi.require_version() before import
+* Fix an invalid escape sequence.
+
+* Rename enum class to atspienum to avoid name conflict; fixes build with
+  python 3.6.
+
+What's new in pyatspi 2.20.2:
+
+* Update STATE_LAST_DEFINED so that STATE_READ_ONLY is recognized
+  (bgo#766121).
+
+What's new in pyatspi 2.20.1:
+
+* gettext: Don't modify endOffset (bgo#721860).
 
 What's new in pyatspi 2.19.91:
 
 * Fix text.getDefaultAttributeSet (bgo#752928).
+
+What's new in pyatspi 2.17.90:
+
+* Call gi.require_version() before import
 
 What's new in pyatspi 2.15.90:
 
