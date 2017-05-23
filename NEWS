@@ -1,3 +1,8 @@
+What's new in pyatspi 2.25.2:
+
+* Add some missing roles to correspond with atk (description list,
+  description term, description value, and footnote).
+
 What's new in pyatspi 2.24.0:
 
 * Fix an invalid escape sequence.
