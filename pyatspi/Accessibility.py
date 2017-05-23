@@ -211,6 +211,10 @@ RELATION_POPUP_FOR = Atspi.RelationType.POPUP_FOR
 RELATION_PARENT_WINDOW_OF = Atspi.RelationType.PARENT_WINDOW_OF
 RELATION_DESCRIPTION_FOR = Atspi.RelationType.DESCRIPTION_FOR
 RELATION_DESCRIBED_BY = Atspi.RelationType.DESCRIBED_BY
+RELATION_DETAILS = Atspi.RelationType.DETAILS
+RELATION_DETAILS_FOR = Atspi.RelationType.DETAILS_FOR
+RELATION_ERROR_MESSAGE = Atspi.RelationType.ERROR_MESSAGE
+RELATION_ERROR_FOR = Atspi.RelationType.ERROR_FOR
 
 # Build a dictionary mapping relation values to names based on the prefix of the enum constants.
 
