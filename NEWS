@@ -1,3 +1,7 @@
+What's new in pyatspi 2.25.3:
+
+* Add error-message, error-for, details, and details-for relation types
+
 What's new in pyatspi 2.25.2:
 
 * Add some missing roles to correspond with atk (description list,
