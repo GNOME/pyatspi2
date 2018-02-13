@@ -33,6 +33,14 @@ __all__ = [
            "LAYER_POPUP",
            "LAYER_WIDGET",
            "LAYER_WINDOW",
+           "ScrollType",
+           "SCROLL_TOP_LEFT",
+           "SCROLL_BOTTOM_RIGHT",
+           "SCROLL_TOP_EDGE",
+           "SCROLL_BOTTOM_EDGE",
+           "SCROLL_LEFT_EDGE",
+           "SCROLL_RIGHT_EDGE",
+           "SCROLL_ANYWHERE",
           ]
 
 #------------------------------------------------------------------------------
@@ -41,10 +49,12 @@ class CoordType(AtspiEnum):
         _enum_lookup = {
                 0:'XY_SCREEN',
                 1:'XY_WINDOW',
+                2:'XY_PARENT',
         }
 
 XY_SCREEN = CoordType(0)
 XY_WINDOW = CoordType(1)
+XY_PARENT = CoordType(2)
 
 #------------------------------------------------------------------------------
 
@@ -70,6 +80,27 @@ LAYER_OVERLAY = ComponentLayer(6)
 LAYER_POPUP = ComponentLayer(5)
 LAYER_WIDGET = ComponentLayer(3)
 LAYER_WINDOW = ComponentLayer(7)
+
+#------------------------------------------------------------------------------
+
+class ScrollType(AtspiEnum):
+        _enum_lookup = {
+                0:'SCROLL_TOP_LEFT',
+                1:'SCROLL_BOTTOM_RIGHT',
+                2:'SCROLL_TOP_EDGE',
+                3:'SCROLL_BOTTOM_EDGE',
+                4:'SCROLL_LEFT_EDGE',
+                5:'SCROLL_RIGHT_EDGE',
+                6:'SCROLL_ANYWHERE',
+        }
+
+SCROLL_ANYWHERE = ScrollType(6)
+SCROLL_BOTTOM_EDGE = ScrollType(3)
+SCROLL_BOTTOM_RIGHT = ScrollType(1)
+SCROLL_LEFT_EDGE = ScrollType(4)
+SCROLL_RIGHT_EDGE = ScrollType(5)
+SCROLL_TOP_EDGE = ScrollType(2)
+SCROLL_TOP_LEFT = ScrollType(0)
 
 #------------------------------------------------------------------------------
 
@@ -169,5 +200,21 @@ class Component(interface):
                 the Component.
                 """
                 return Atspi.Component.grab_focus(self.obj)
+
+        def scrollTo(self, scroll_type):
+                """
+                Makes the object visible on the screen at a given position by
+                scrolling all necessary parents.
+                @return True if scrolling was successful.
+                """
+                return Atspi.Component.scroll_to(self.obj, scroll_type)
+
+        def scrollToPoint(self, coord_type, x, y):
+                """
+                Makes the object visible on the screen at a given position by
+                scrolling all necessary parents.
+                @return True if scrolling was successful.
+                """
+                return Atspi.Component.scroll_to_point(self.obj, coord_type, x, y)
 
 #END----------------------------------------------------------------------------
