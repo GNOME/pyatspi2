@@ -22,6 +22,7 @@ __all__ = [
            "CoordType",
            "XY_SCREEN",
            "XY_WINDOW",
+           "XY_PARENT",
            "ComponentLayer",
            "Component",
            "LAYER_BACKGROUND",
