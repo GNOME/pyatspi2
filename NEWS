@@ -1,3 +1,7 @@
+What's new in pyatspi 2.31.2:
+
+* Add ScrollSubstringTo and ScrollSubstringToPoint text interfaces.
+
 What's new in pyatspi 2.31.1:
 
 * Add support for locking/unlocking modifiers.
