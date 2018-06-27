@@ -586,6 +586,22 @@ class Text(interface):
                 """
         characterCount = property(fget=get_characterCount, doc=_characterCountDoc)
 
+        def scrollSubstringTo(self, startOffset, endOffset, scroll_type):
+                """
+                Makes the text range visible on the screen at a given position by
+                scrolling all necessary parents.
+                @return True if scrolling was successful.
+                """
+                return Atspi.Text.scroll_substring_to(self.obj, startOffset, endOffset, scroll_type)
+
+        def scrollSubstringToPoint(self, startOffset, endOffset, coord_type, x, y):
+                """
+                Makes the text range visible on the screen at a given position by
+                scrolling all necessary parents.
+                @return True if scrolling was successful.
+                """
+                return Atspi.Text.scroll_substring_to_point(self.obj, startOffset, endOffset, coord_type, x, y)
+
 def rangeToList(r):
         return (r.start_offset, r.end_offset)
 
