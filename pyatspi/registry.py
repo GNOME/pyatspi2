@@ -121,7 +121,7 @@ class Registry(object):
             """
             if name == 'async':
                 return self.asynchronous
-            return super().__getattr__(name)
+            return object.__getattr__(self, name)
 
         def __setattr__(self, name, value):
             """
@@ -129,7 +129,7 @@ class Registry(object):
             """
             if name == 'async':
                 self.asynchronous = value
-            super().__setattr__(name, velue)
+            object.__setattr__(self, name, velue)
 
         def _set_default_registry (self):
                 self._set_registry (MAIN_LOOP_GLIB)
