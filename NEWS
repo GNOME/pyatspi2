@@ -1,3 +1,9 @@
+What's new in pyatspi 2.25.90:
+
+* registry: Rename async keyword for compatibility with Python 3.7.
+
+* Add missing XY_PARENT export.
+
 What's new in pyatspi 2.25.3:
 
 * Add error-message, error-for, details, and details-for relation types
