@@ -245,6 +245,8 @@ KEY_PRESSRELEASE = Atspi.KeySynthType.PRESSRELEASE
 KEY_RELEASE = Atspi.KeySynthType.RELEASE
 KEY_STRING = Atspi.KeySynthType.STRING
 KEY_SYM = Atspi.KeySynthType.SYM
+KEY_LOCKMODIFIERS = Atspi.KeySynthType.LOCKMODIFIERS
+KEY_UNLOCKMODIFIERS = Atspi.KeySynthType.UNLOCKMODIFIERS
 
 ### cache ###
 cache = Atspi.Cache

@@ -67,13 +67,17 @@ class KeySynthType(AtspiEnum):
                 2:'KEY_PRESSRELEASE',
                 3:'KEY_SYM',
                 4:'KEY_STRING',
+                5:'KEY_LOCKMODIFIERS',
+                6:'KEY_UNLOCKMODIFIERS',
         }
 
+KEY_LOCKMODIFIERS = KeySynthType(5)
 KEY_PRESS = KeySynthType(0)
 KEY_PRESSRELEASE = KeySynthType(2)
 KEY_RELEASE = KeySynthType(1)
 KEY_STRING = KeySynthType(4)
 KEY_SYM = KeySynthType(3)
+KEY_UNLOCKMODIFIERS = KeySynthType(6)
 
 #------------------------------------------------------------------------------
 

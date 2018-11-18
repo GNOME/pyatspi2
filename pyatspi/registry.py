@@ -386,7 +386,7 @@ class Registry(object):
                 Generates a keyboard event. One of the keycode or the keysym parameters
                 should be specified and the other should be None. The kind parameter is 
                 required and should be one of the KEY_PRESS, KEY_RELEASE, KEY_PRESSRELEASE,
-                KEY_SYM, or KEY_STRING.
+                KEY_SYM, KEY_STRING, KEY_LOCKMODIFIERS, or KEY_UNLOCKMODIFIERS.
 
                 @@param keycode: Hardware keycode or None
                 @@type keycode: integer
