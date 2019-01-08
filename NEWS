@@ -1,3 +1,7 @@
+What's new in pyatspi 2.31.1:
+
+* Add support for locking/unlocking modifiers.
+
 What's new in pyatspi 2.25.90:
 
 * registry: Rename async keyword for compatibility with Python 3.7.
