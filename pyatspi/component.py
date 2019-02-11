@@ -145,6 +145,8 @@ class Component(interface):
                 """
                 Obtain the Component's bounding box, in pixels, relative to the
                 specified coordinate system. 
+                The returned values are meaningful only if the Component has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param coord_type
                 @return a BoundingBox which entirely contains the object's onscreen
                 visual representation.
@@ -172,6 +174,8 @@ class Component(interface):
                 """
                 Obtain the position of the current component in the coordinate
                 system specified by coord_type. 
+                The returned values are meaningful only if the Component has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : coord_type
                 @param : x
                 an out parameter which will be back-filled with the returned
@@ -187,6 +191,8 @@ class Component(interface):
                 Obtain the size, in the coordinate system specified by coord_type,
                 of the rectangular area which fully contains the object's visual
                 representation, without accounting for viewport clipping. 
+                The returned values are meaningful only if the Component has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : width
                 the object's horizontal extents in the specified coordinate system.
                 @param : height

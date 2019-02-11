@@ -274,6 +274,8 @@ class Text(interface):
                 to multiple character offsets, for instance if the glyph is a
                 ligature, the bounding box reported will include the entire glyph
                 and therefore may apply to more than one character offset. 
+                The returned values are meaningful only if the Text has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : offset
                 the character offset of the character or glyph being queried.
                 @param : coordType
@@ -349,6 +351,8 @@ class Text(interface):
                 range. Negative values may be returned for the bounding box parameters
                 in the event that all or part of the text range is offscreen
                 or not mapped to the screen. 
+                The returned values are meaningful only if the Text has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : startOffset
                 the offset of the first character in the specified range. 
                 @param : endOffset

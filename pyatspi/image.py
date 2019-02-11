@@ -43,6 +43,8 @@ class Image:
                 as displayed on screen. The bounds returned do not account for
                 any viewport clipping or the fact that the image may be partially
                 or wholly obscured by other onscreen content. 
+                The returned values are meaningful only if the Image has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : coordType
                 If 0, the returned bounding box position is returned relative
                 to the screen; if 1, the bounding box position is returned relative
@@ -54,6 +56,8 @@ class Image:
         def getImagePosition(self, coord_type):
                 """
                 Get the coordinates of the current image position on screen.
+                The returned values are meaningful only if the Image has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : x
                 Back-filled with the x coordinate of the onscreen image (i.e.
                 the minimum x coordinate) 
@@ -73,6 +77,8 @@ class Image:
                 image. The extents returned do not account for any viewport clipping
                 or the fact that the image may be partially or wholly obscured
                 by other onscreen content. 
+                The returned values are meaningful only if the Image has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : width
                 Back-filled with the x extents of the onscreen image (i.e. the
                 image width in pixels) 
