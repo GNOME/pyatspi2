@@ -98,6 +98,8 @@ class Table(interface):
                 Get the number of columns spanned by the table cell at the specific
                 row and column. (some tables can have cells which span multiple
                 rows and/or columns).
+                The returned values are meaningful only if the Table has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : row
                 the specified table row, zero-indexed. 
                 @param : column
@@ -149,6 +151,8 @@ class Table(interface):
                 extents, and whether the cell is currently selected. If the child
                 at index is not a cell (for instance, if it is a summary, caption,
                 etc.), False is returned.
+                The returned values are meaningful only if the Table has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : index
                 the index of the Table child whose row/column extents are requested.
                 @param : row
@@ -197,6 +201,8 @@ class Table(interface):
                 Get the number of rows spanned by the table cell at the specific
                 row and column. (some tables can have cells which span multiple
                 rows and/or columns).
+                The returned values are meaningful only if the Table has
+                both STATE_VISIBLE and STATE_SHOWING.
                 @param : row
                 the specified table row, zero-indexed. 
                 @param : column
