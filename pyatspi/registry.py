@@ -266,8 +266,8 @@ class Registry(object):
         # -------------------------------------------------------------------------------
 
         # TODO: Remove this hack
-        _KEY_PRESSED_EVENT=1
-        _KEY_RELEASED_EVENT=2
+        _KEY_PRESSED_EVENT=0
+        _KEY_RELEASED_EVENT=1
 
         def makeSyncType(self, synchronous, preemptive, global_):
                 result = Atspi.KeyListenerSyncType.NOSYNC
