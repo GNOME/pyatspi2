@@ -123,7 +123,7 @@ class Text(interface):
         and the set returned at a particular character offset via Text::getAttributeRun.
         """
 
-        def addSelection(self, index):
+        def addSelection(self, startOffset, endOffset):
                 """
                 The result of calling addSelection on objects which already have
                 one selection present, and which do not include STATE_MULTISELECTABLE,
@@ -135,7 +135,7 @@ class Text(interface):
                 other reasons (for instance if the user does not have permission
                 to copy the text into the relevant selection buffer).
                 """
-                return Atspi.Text.add_selection(self.obj, index)
+                return Atspi.Text.add_selection(self.obj, startOffset, endOffset)
 
         def getAttributeRun(self, offset, includeDefaults=True):
                 """
