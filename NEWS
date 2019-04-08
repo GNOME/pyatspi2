@@ -1,3 +1,11 @@
+What's new in pyatspi 2.32.1:
+
+* Fix arguments in Text.addSelection.
+
+* Document that extents are only meaningful when both visible and showing.
+
+* Fix default kind value for registerKeystrokeListener.
+
 What's new in pyatspi 2.31.2:
 
 * Add ScrollSubstringTo and ScrollSubstringToPoint text interfaces.
