@@ -128,6 +128,7 @@ Atspi.Accessible.getState = Atspi.Accessible.get_state_set
 del Atspi.Accessible.children
 Atspi.Accessible.description = property(fget=Atspi.Accessible.get_description)
 Atspi.Accessible.objectLocale = property(fget=Atspi.Accessible.get_object_locale)
+Atspi.Accessible.accessibleId = property(fget=Atspi.Accessible.get_accessible_id)
 Atspi.Accessible.name = property(fget=Atspi.Accessible.get_name)
 Atspi.Accessible.isEqual = lambda a,b: a == b
 Atspi.Accessible.parent = property(fget=Atspi.Accessible.get_parent)
