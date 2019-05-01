@@ -282,7 +282,7 @@ def main():
             startTracking()
         pyatspi.Registry.start()
     else:
-        print 'Magnification service not available. Exiting.'
+        print('Magnification service not available. Exiting.')
 
     return 0
 
