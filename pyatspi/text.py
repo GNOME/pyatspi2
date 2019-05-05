@@ -606,14 +606,14 @@ class Text(interface):
                 """
                 return Atspi.Text.scroll_substring_to_point(self.obj, startOffset, endOffset, coord_type, x, y)
 
-        def notifyReadPosition(self, offset):
+        def notifyReadingPosition(self, offset):
                 """
                 Notifies interested listeners of the specific text that the
                 screen reader is currently reading. This allows a magnifier to
                 synchronize with the screen reader and highlight the text that
                 is currently being read.
                 """
-                return Atspi.Text.notify_read_position(self.obj, offset)
+                return Atspi.Text.notify_reading_position(self.obj, offset)
 
 def rangeToList(r):
         return (r.start_offset, r.end_offset)
