@@ -111,6 +111,8 @@ EVENT_TREE = {
     'object:children-changed:remove'],
   'object:state-changed' :
     ['object:state-changed:'],
+  'object:text-reading-position' :
+      ['object:text-reading-position:'],
   'mouse' :
     ['mouse:abs',
     'mouse:rel',
