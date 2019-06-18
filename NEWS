@@ -1,3 +1,7 @@
+What's new in pyatspi 2.33.2:
+
+* Add support for ROLE_CONTENT_DELETION and ROLE_CONTENT_INSERTION.
+
 What's new in pyatspi 2.33.1:
 
 * Fix arguments in text.addSelection.
