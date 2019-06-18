@@ -143,7 +143,9 @@ class Role(AtspiEnum):
                 122:'ROLE_DESCRIPTION_TERM',
                 123:'ROLE_DESCRIPTION_VALUE',
                 124:'ROLE_FOOTNOTE',
-                125:'ROLE_LAST_DEFINED',
+                125:'ROLE_CONTENT_DELETION',
+                126:'ROLE_CONTENT_INSERTION',
+                127:'ROLE_LAST_DEFINED',
         }
 
 ROLE_ACCELERATOR_LABEL = Role(1)
@@ -165,6 +167,8 @@ ROLE_COLOR_CHOOSER = Role(9)
 ROLE_COLUMN_HEADER = Role(10)
 ROLE_COMBO_BOX = Role(11)
 ROLE_COMMENT = Role(97)
+ROLE_CONTENT_DELETION = Role(125)
+ROLE_CONTENT_INSERTION = Role(126)
 ROLE_DATE_EDITOR = Role(12)
 ROLE_DEFINITION = Role(108)
 ROLE_DESCRIPTION_LIST = Role(121)
@@ -208,7 +212,7 @@ ROLE_INTERNAL_FRAME = Role(28)
 ROLE_INVALID = Role(0)
 ROLE_LABEL = Role(29)
 ROLE_LANDMARK = Role(110)
-ROLE_LAST_DEFINED = Role(125)
+ROLE_LAST_DEFINED = Role(127)
 ROLE_LAYERED_PANE = Role(30)
 ROLE_LEVEL_BAR = Role(103)
 ROLE_LINK = Role(88)
@@ -393,6 +397,8 @@ ROLE_NAMES = {
         ROLE_MATH_ROOT: 'math root',
         ROLE_SUBSCRIPT: 'subscript',
         ROLE_SUPERSCRIPT: 'superscript',
+        ROLE_CONTENT_DELETION: 'content deletion',
+        ROLE_CONTENT_INSERTION: 'content insertion',
 }
 
 #END----------------------------------------------------------------------------
