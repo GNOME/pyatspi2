@@ -98,7 +98,7 @@ class Image:
         imageDescription = property(fget=get_imageDescription, doc=_imageDescriptionDoc)
 
         def get_imageLocale(self):
-                return Atspi.Image.get_image_local(self.obj)
+                return Atspi.Image.get_image_locale(self.obj)
         _imageLocaleDoc = \
                 """
                 A string corresponding to the POSIX LC_MESSAGES locale used by
