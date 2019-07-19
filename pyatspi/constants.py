@@ -111,8 +111,6 @@ EVENT_TREE = {
     'object:children-changed:remove'],
   'object:state-changed' :
     ['object:state-changed:'],
-  'object:text-reading-position' :
-      ['object:text-reading-position:'],
   'mouse' :
     ['mouse:abs',
     'mouse:rel',
@@ -124,6 +122,8 @@ EVENT_TREE = {
     'mouse:button:2r',
     'mouse:button:3p',
     'mouse:button:3r'],
+  'screen-reader' :
+    ['screen-reader:region-changed'],
   'window' :
     ['window:minimize',
     'window:maximize',
