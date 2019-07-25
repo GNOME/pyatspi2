@@ -103,9 +103,9 @@ def Event_str(self):
         @return: Event description
         @rtype: string
         '''
-        return '%s(%s, %s, %s)\n\tsource: %s\n\thost_application: %s' % \
+        return '%s(%s, %s, %s)\n\tsource: %s\n\thost_application: %s\n\tsender: %s' % \
                (self.type, self.detail1, self.detail2, self.any_data,
-                self.source, self.host_application)
+                self.source, self.host_application, self.sender)
   
 ### Accessible ###
 Accessible = Atspi.Accessible
