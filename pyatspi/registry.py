@@ -419,6 +419,23 @@ class Registry(object):
                         self._set_default_registry ()
                 Atspi.generate_mouse_event (x, y, name)
 
+        def setReferenceWIndow(accessible):
+                """
+                Sets the reference window that will be used when
+                generateMouseEvent is called. Coordinates will be assumed to
+                be relative to this window. This * is needed because, due to
+                Wayland's security model, it is not currently possible to
+                possible to retrieve global coordinates.
+                If NULL is passed, then AT-SPI will use the window that has
+                focus at the time that atspi_generate_mouse_event is called.
+
+                @@param accessible: the accessible corresponding to the window
+                to select. should be a top-level window with a role of
+                pyatspi.ROLE_APPLICATION.
+                """
+                if not self.has_implementations:
+                        self._set_default_registry ()
+                Atspi.setReferenceWindow(accessible)
 
         def pumpQueuedEvents (self):
                 """
