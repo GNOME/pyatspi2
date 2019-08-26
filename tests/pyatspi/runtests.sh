@@ -1,4 +1,4 @@
-export PYTHONPATH=$top_srcdir
+export PYTHONPATH=$top_srcdir:$top_srcdir/tests/pyatspi
 
 export TEST_DATA_DIRECTORY=$top_srcdir/tests/data
 export TEST_ATSPI_LIBRARY=$gtk_module_dir/libatk-bridge.so
@@ -7,8 +7,8 @@ export TEST_APPLICATION=$top_builddir/tests/apps/test-application
 
 run()
 {
-  chmod a+x $top_srcdir/tests/pyatspi/testrunner
-  $top_srcdir/tests/pyatspi/testrunner -l $1 -m $2 -n $3
+  chmod a+x $top_builddir/tests/pyatspi/testrunner
+  $top_builddir/tests/pyatspi/testrunner -l $1 -m $2 -n $3
   result=$?
   if [ $result -ne 0 ]; then
     ret=$result
