@@ -86,9 +86,9 @@ def main(argv):
 	def finished_handler():
 		loop.quit()
 		print "\n" + test_object.report() + "\n"
+		if test_object.failMsg:
+			sys.exit (1)
 		test.finish()
-                if test_object.failMsg:
-                        sys.exit (-1)
 
 	test_object.events.finished += finished_handler
 
