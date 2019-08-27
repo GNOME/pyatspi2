@@ -1,6 +1,9 @@
 #C#-Style Events in Python
 #Taken from http://code.activestate.com/recipes/410686/
-#By Zoran Isailovski
+#Copyright 2005-2008 Zoran Isailovski
+#
+#This file is distributed under the terms of the PSF (Python Software
+#Foundation) license. See the COPYING file in this directory
 
 class Events:
 	def __getattr__(self, name):
