@@ -65,17 +65,17 @@ if __name__ == '__main__':
 			model.events.OnChange += self.DisplayValue
 			##model.events.OnChange2 += self.DisplayValue # would raise exeception
 		def DisplayValue(self):
-			print self.model.Value
+			print(self.model.Value)
 
 
 	model = ValueModel()
 	view = SillyView(model)
 
-	print '\n--- Events Demo ---'
+	print('\n--- Events Demo ---')
 	# Events in action
 	for i in range(5):
 		model.Value = 2*i + 1
 	# Events introspection
-	print model.events
+	print(model.events)
 	for event in model.events:
-		print event
+		print(event)
