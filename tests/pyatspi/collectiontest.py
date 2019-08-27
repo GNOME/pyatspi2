@@ -64,22 +64,22 @@ class AccessibleTest(_PasyTest):
 
         def setup(self, test):
                 self._registry = pyatspi.Registry()
-                print self._path
+                print(self._path)
                 self._desktop = self._registry.getDesktop(0)
                 self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_WINDOW)
 
         def assertObjects(self,test,obj,vars,msg):
-                test.assertEqual(len(obj), len(vars) / 2, msg + " length")
+                test.assertEqual(len(obj), len(vars) // 2, msg + " length")
                 for i in range(0, len(vars), 2):
-                        test.assertEqual (vars[i], obj[i/2].name, msg + "name" + "#" + str(i/2))
-                        test.assertEqual(vars[i+1], obj[i/2].getRole(), msg + " role" + "#" + str(i/2))
+                        test.assertEqual (vars[i], obj[i//2].name, msg + "name" + "#" + str(i//2))
+                        test.assertEqual(vars[i+1], obj[i//2].getRole(), msg + " role" + "#" + str(i//2))
 
-	# Used to help add new tests
+        # Used to help add new tests
         def printAsserts(self,obj,msg):
-                print "\t\tself.assertObjects(test,ret,("
+                print("\t\tself.assertObjects(test,ret,(")
                 for i in range(0,len(obj)):
-                        print "\t\t\t\"" + obj[i].name + "\", " + str(obj[i].getRole()) + ","
-                print "\t\t), \"", msg, "\")"
+                        print("\t\t\t\"" + obj[i].name + "\", " + str(obj[i].getRole()) + ",")
+                print("\t\t), \"", msg, "\")")
 
         def test_basic(self, test):
                 collection = self._root.queryCollection()
@@ -114,7 +114,7 @@ class AccessibleTest(_PasyTest):
 
                 obj=ret[2]
                 ret = collection.getMatchesTo (obj, rule, collection.SORT_ORDER_REVERSE_CANONICAL, collection.TREE_INORDER, True, 5, True)
-		print "--ret:", len(ret)
+                print("--ret:", len(ret))
                 self.assertObjects(test,ret,(
                         "gnome-settings-daemon", 79,
                         "gnome-panel", 79,

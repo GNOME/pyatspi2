@@ -14,7 +14,7 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 from gi.repository import GObject, GLib
-from Events import Events
+from .Events import Events
 
 import traceback
 
@@ -31,7 +31,7 @@ class PasyTestStep(object):
 	def __init__(self, name):
 		self.events = PasyEvents()
 		self._state = PASY_TEST_NOT_STARTED
-                self.failMsg = None
+		self.failMsg = None
 
 		self._name = name
 
@@ -79,7 +79,7 @@ class PasyTestFunc(PasyTestStep):
 	def entry(self):
 		try:
 			self._func(self)
-		except Exception, e:
+		except Exception as e:
 			self.fail(e.message)
 			traceback.print_exc()
 		self.win()
@@ -96,10 +96,10 @@ class PasyTest(PasyTestStep):
 
 		for name in self.__tests__:
 			func = getattr(self, name)
-			self._addfunc(func.func_name, func)
+			self._addfunc(name, func)
 
 	def _addfunc(self, name, func):
-		functest = PasyTestFunc(func.func_name, func)
+		functest = PasyTestFunc(name, func)
 		self._tests.append(functest)
 
 	def entry(self):
@@ -108,7 +108,7 @@ class PasyTest(PasyTestStep):
 
 	def idle_handler(self):
 		try:
-			step = self._iter.next()
+			step = next(self._iter)
 			def finished_handler():
 				if step.state == PASY_TEST_WIN or self._cont == True:
 					GLib.idle_add(self.idle_handler)

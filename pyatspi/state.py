@@ -135,7 +135,7 @@ STATE_VALUE_TO_NAME = dict(((value, name[6:].lower().replace('_', ' '))
 
 def stateset_init(self, *states):
 	GObject.GObject.__init__(self)
-	map(self.add, states)
+	list(map(self.add, states))
 
 # TODO: Fix pygobject so that this isn't needed (BGO#646581 may be related)
 def StateSet_getStates(self):

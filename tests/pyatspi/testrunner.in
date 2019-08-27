@@ -44,12 +44,12 @@ def run_test_app(module_name, dbus_name=None, wait_for_debug=False):
 	test_module = os.path.join(test_modules_directory, module_name)
 
 	if (dbus_name):
-		print " ".join([test_application,
+		print(" ".join([test_application,
 			"--atspi-dbus-name", dbus_name,
 			"--test-dbus-name", dbus_name,
 			"--test-atspi-library", test_atspi_library,
 			"--test-module", test_module,
-			"--test-data-directory", test_data_directory,])
+			"--test-data-directory", test_data_directory,]))
 		pop = Popen([test_application,
 			"--atspi-dbus-name", dbus_name,
 			"--test-dbus-name", dbus_name,
@@ -57,10 +57,10 @@ def run_test_app(module_name, dbus_name=None, wait_for_debug=False):
 			"--test-module", test_module,
 			"--test-data-directory", test_data_directory,])
 	else:
-		print " ".join([test_application,
+		print(" ".join([test_application,
 			"--test-atspi-library", test_atspi_library,
 			"--test-module", test_module,
-			"--test-data-directory", test_data_directory,])
+			"--test-data-directory", test_data_directory,]))
 		pop = Popen([test_application,
 			"--test-atspi-library", test_atspi_library,
 			"--test-module", test_module,
@@ -87,7 +87,7 @@ def main(argv):
 
 	app = run_test_app(options.test_library, name, wait_for_debug=options.wait)
 	time.sleep(1)
-	print "Started test app on bus name %s" % (name,)
+	print("Started test app on bus name %s" % (name,))
 
 	to = bus.get_object(name, "/org/codethink/atspi/test")
 	test = dbus.Interface(to, "org.codethink.atspi.test")
@@ -103,7 +103,7 @@ def main(argv):
 
 	def finished_handler():
 		loop.quit()
-		print "\n" + test_object.report() + "\n"
+		print("\n" + test_object.report() + "\n")
 		if test_object.failMsg:
 			sys.exit (1)
 		test.finish()

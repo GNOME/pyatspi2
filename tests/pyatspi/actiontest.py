@@ -48,14 +48,14 @@ class ActionTest(_PasyTest):
 		self._registry = pyatspi.Registry()
 		import time
 		self._desktop = self._registry.getDesktop(0)
-		print "--desktop len", len(self._desktop)
+		print("--desktop len", len(self._desktop))
 		for i in self._desktop:
 			try:
-				print "-- object",i,i.getRole()
+				print("-- object",i,i.getRole())
 			except:
 				pass
-                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_APPLICATION)
-		print "--root", self._root
+		self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_APPLICATION)
+		print("--root", self._root)
 
 	def test_nActions(self, test):
 		root = self._root
