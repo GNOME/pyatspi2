@@ -35,15 +35,21 @@ st = [pyatspi.STATE_MULTI_LINE,
       pyatspi.STATE_SUPPORTS_AUTOCOMPLETION,
       pyatspi.STATE_VERTICAL,]
 
-def _createNode(accessible, parentElement):
+def _createNode(doc, accessible, parentElement):
 	e = minidom.Element("accessible")
 
-	e.attributes["name"] = accessible.name
-	e.attributes["role"] = str(int(accessible.getRole()))
-	e.attributes["description"] = accessible.description
+	nameA = doc.createAttribute('name')
+	roleA = doc.createAttribute('role')
+	descA = doc.createAttribute('description')
+	e.setAttributeNode(nameA)
+	e.setAttributeNode(roleA)
+	e.setAttributeNode(descA)
+	e.setAttribute("name", accessible.name)
+	e.setAttribute("role", str(int(accessible.getRole())))
+	e.setAttribute("description", accessible.description)
 
 	for i in range(0, accessible.childCount):
-		_createNode(accessible.getChildAtIndex(i), e)
+		_createNode(doc, accessible.getChildAtIndex(i), e)
 
 	parentElement.appendChild(e)
 
@@ -77,7 +83,7 @@ class AccessibleTest(_PasyTest):
 	def setup(self, test):
 		self._registry = pyatspi.Registry()
 		self._desktop = self._registry.getDesktop(0)
-                self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_WINDOW)
+		self._root = pyatspi.findDescendant (self._desktop, lambda x: x.name == "atspi-test-main" and x.getRole() == pyatspi.ROLE_WINDOW)
 
 	def test_name(self, test):
 		root = self._root
@@ -130,8 +136,8 @@ class AccessibleTest(_PasyTest):
 		root = self._root
 		attr = root.getAttributes()
 		res = ["foo:bar", "baz:qux", "quux:corge"]
-                attr.sort()
-                res.sort()
+		attr.sort()
+		res.sort()
 		test.assertEqual(attr, res, "Attributes expected %s, recieved %s" % (res, attr))
 
 	def test_parent(self, test):
@@ -225,7 +231,7 @@ class AccessibleTest(_PasyTest):
 		root = self._root
 
 		doc = minidom.Document()
-		_createNode(root, doc)
+		_createNode(doc, root, doc)
 		answer = doc.toprettyxml()
 
 
