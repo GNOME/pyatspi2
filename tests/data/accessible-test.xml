@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <!--
 
 Copyright 2008 Codethink Ltd.
@@ -19,7 +20,6 @@ Boston, MA 02110-1301, USA.
 
 -->
 
-<?xml version="1.0" ?>
 <accessible description="The main accessible object, root of the accessible tree" name="atspi-test-main" role="68" type="document">
 	<accessible description="" name="gnome-settings-daemon" role="77"/>
 	<accessible description="" name="gnome-panel" role="77">
