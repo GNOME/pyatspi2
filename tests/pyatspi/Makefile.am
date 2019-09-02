@@ -9,6 +9,7 @@ SUBDIRS = pasytest
 EXTRA_DIST = \
 	accessibletest.py\
 	actiontest.py\
+	collectiontest.py\
 	componenttest.py\
 	desktoptest.py\
 	statetest.py\
