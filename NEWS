@@ -1,3 +1,7 @@
+What's new in pyatspi 2.34.0:
+
+* Updated doap, and include it in the tarball.
+
 What's new in pyatspi 2.33.92:
 
 * Several test fixes (thanks to Samuel THibault).
