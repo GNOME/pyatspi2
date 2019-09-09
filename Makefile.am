@@ -6,4 +6,5 @@ else
 SUBDIRS+=
 endif
 
-EXTRA_DIST = COPYING.GPL
+EXTRA_DIST = COPYING.GPL \
+	pyatspi2.doap
