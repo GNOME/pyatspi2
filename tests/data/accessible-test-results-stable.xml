@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<accessible name="atspi-test-main" role="69" description="The main accessible object, root of the accessible tree">
+	<accessible name="gnome-settings-daemon" role="79" description=""/>
+	<accessible name="gnome-panel" role="79" description="">
+		<accessible name="Bottom Expanded Edge Panel" role="25" description=""/>
+		<accessible name="Top Expanded Edge Panel" role="25" description=""/>
+	</accessible>
+	<accessible name="nautilus" role="79" description="">
+		<accessible name="Desktop" role="25" description=""/>
+	</accessible>
+	<accessible name="metacity" role="79" description=""/>
+	<accessible name="tracker-applet" role="79" description=""/>
+	<accessible name="empathy" role="79" description="">
+		<accessible name="Contact List" role="25" description=""/>
+	</accessible>
+	<accessible name="nm-applet" role="79" description=""/>
+	<accessible name="gnome-power-manager" role="79" description=""/>
+	<accessible name="update-notifier" role="79" description=""/>
+	<accessible name="Firefox" role="79" description="Firefox Application Accessible">
+		<accessible name="Google Reader - Mozilla Firefox 3 Beta 5" role="25" description="Firefox Application Accessible">
+			<accessible name="" role="35" description=""/>
+			<accessible name="Strip originally conceived in conversation with Jeph Jacques. Soon to be a major motion picture." role="66" description=""/>
+			<accessible name="" role="68" description="">
+				<accessible name="" role="33" description="">
+					<accessible name="" role="10" description=""/>
+					<accessible name="" role="10" description=""/>
+				</accessible>
+			</accessible>
+			<accessible name="" role="35" description="">
+				<accessible name="" role="69" description=""/>
+			</accessible>
+			<accessible name="" role="35" description=""/>
+			<accessible name="" role="35" description=""/>
+			<accessible name="" role="35" description=""/>
+			<accessible name="" role="35" description=""/>
+			<accessible name="" role="35" description=""/>
+			<accessible name="" role="66" description=""/>
+			<accessible name="" role="66" description=""/>
+			<accessible name="" role="65" description="">
+				<accessible name="Application" role="36" description=""/>
+				<accessible name="" role="53" description=""/>
+				<accessible name="Activity Indicator" role="45" description=""/>
+			</accessible>
+			<accessible name="" role="65" description="">
+				<accessible name="Back" role="45" description="Go back one page"/>
+				<accessible name="Forward" role="45" description="Go forwards one page"/>
+				<accessible name="" role="45" description=""/>
+				<accessible name="Reload" role="45" description="Reload current page"/>
+				<accessible name="Stop" role="45" description="Stop loading this page"/>
+				<accessible name="Home" role="45" description="chrome://ubufox/content/startpage.html"/>
+				<accessible name="Location" role="80" description=""/>
+				<accessible name="Search using Google" role="80" description=""/>
+			</accessible>
+			<accessible name="" role="65" description="">
+				<accessible name="Smart Bookmarks" role="45" description=""/>
+				<accessible name="Getting Started" role="45" description=""/>
+				<accessible name="Latest Headlines" role="45" description=""/>
+			</accessible>
+			<accessible name="" role="41" description="">
+				<accessible name="Google Reader" role="66" description=""/>
+				<accessible name="" role="35" description=""/>
+				<accessible name="" role="40" description=""/>
+				<accessible name="" role="51" description=""/>
+				<accessible name="" role="51" description="">
+					<accessible name="Google Reader" role="30" description="">
+						<accessible name="Google Reader" role="86" description="">
+							<accessible name="Click here for ARIA enhanced Google Reader." role="72" description=""/>
+							<accessible name="" role="89" description=""/>
+							<accessible name="" role="89" description=""/>
+							<accessible name="" role="89" description=""/>
+							<accessible name="Google Reader" role="72" description=""/>
+							<accessible name="" role="63" description=""/>
+							<accessible name="" role="89" description=""/>
+							<accessible name="" role="89" description="">
+								<accessible name="" role="89" description=""/>
+								<accessible name="" role="89" description=""/>
+								<accessible name="" role="89" description="">
+									<accessible name="" role="57" description=""/>
+									<accessible name="" role="89" description="">
+										<accessible name="" role="89" description="">
+											<accessible name="" role="89" description="">
+												<accessible name="" role="57" description=""/>
+												<accessible name="" role="57" description="">
+													<accessible name="" role="58" description="">
+														<accessible name="" role="89" description="">
+															<accessible name="" role="89" description=""/>
+															<accessible name="" role="63" description=""/>
+															<accessible name="Google News" role="72" description=""/>
+															<accessible name="" role="89" description="">
+																<accessible name="" role="89" description=""/>
+																<accessible name="" role="89" description="">
+																	<accessible name="Reader and ARIA: A new way to read" role="72" description=""/>
+																</accessible>
+																<accessible name="" role="89" description="">
+																	<accessible name="Official Google Reader Blog" role="72" description=""/>
+																</accessible>
+																<accessible name="" role="89" description=""/>
+															</accessible>
+														</accessible>
+													</accessible>
+													<accessible name="" role="58" description=""/>
+												</accessible>
+											</accessible>
+											<accessible name="" role="89" description="">
+												<accessible name="Google Reader Blog" role="72" description=""/>
+												<accessible name="Discuss" role="72" description=""/>
+												<accessible name="Privacy Policy" role="72" description=""/>
+												<accessible name="Help" role="72" description=""/>
+												<accessible name="" role="89" description=""/>
+											</accessible>
+										</accessible>
+									</accessible>
+								</accessible>
+							</accessible>
+							<accessible name="" role="89" description="">
+								<accessible name="" role="29" description=""/>
+								<accessible name="" role="29" description=""/>
+								<accessible name="" role="29" description=""/>
+								<accessible name="" role="29" description=""/>
+								<accessible name="" role="29" description=""/>
+							</accessible>
+						</accessible>
+					</accessible>
+				</accessible>
+			</accessible>
+			<accessible name="" role="35" description=""/>
+			<accessible name="" role="56" description="">
+				<accessible name="Done" role="45" description=""/>
+				<accessible name="" role="45" description=""/>
+			</accessible>
+		</accessible>
+	</accessible>
+	<accessible name="gnome-terminal" role="79" description="">
+		<accessible name="mdoff@silver-wind: ~/Projects/accessibility/dbus-atspi/test" role="25" description=""/>
+	</accessible>
+</accessible>
