@@ -239,8 +239,15 @@ class AccessibleTest(_PasyTest):
 					"accessible-test-results.xml")
 		file = open(correct)
 		cstring = file.read()
+
+		correct2 = os.path.join(os.environ["TEST_DATA_DIRECTORY"],
+					"accessible-test-results-stable.xml")
+		file = open(correct2)
+		cstring2 = file.read()
 		
-		test.assertEqual(answer, cstring, "Object tree not passed correctly")
+		if answer != cstring and \
+		   answer != cstring2:
+		    test.fail("Object tree not passed correctly")
 
 	def test_null_interface(self, test):
 		root = self._root
