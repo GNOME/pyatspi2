@@ -1,4 +1,11 @@
 What's new in pyatspi 2.34.0:
+What's new in pyatspi 2.35.1:
+
+* Fix dead link in README.
+
+* Adjust accepted test results for python 3.8 compatibility (!21).
+
+* Add ROLE_MARK and ROLE_SUGGESTION (!22).
 
 * Updated doap, and include it in the tarball.
 
