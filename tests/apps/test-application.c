@@ -35,6 +35,7 @@
 #include <gmodule.h>
 #include <atk/atk.h>
 #include <dbus/dbus.h>
+#include <atspi/atspi-gmain.h>
 
 /* The test module, GModule containing interface for an atk-test */
 static GModule *test_module;
@@ -222,7 +223,7 @@ init_dbus_interface(gchar *bus_name)
 					       	&test_vtable,
 						NULL));
 
-  dbus_connection_setup_with_g_main(dbus_bus, g_main_context_default());
+  atspi_dbus_connection_setup_with_g_main(dbus_bus, g_main_context_default());
 }
 
 static void

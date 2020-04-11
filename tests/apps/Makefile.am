@@ -5,12 +5,14 @@ check_LTLIBRARIES = libnoopapp.la \
 		    libactionapp.la \
 		    librelationapp.la
 
-test_application_CFLAGS = $(DBUS_GLIB_CFLAGS)	\
+test_application_CFLAGS = $(AT_SPI_CFLAGS)	\
 			  $(ATK_CFLAGS)		\
+			  $(GOBJ_CFLAGS)	\
 			  $(GMODULE_CFLAGS)	\
 		       	  -I$(top_srcdir)
 
-test_application_LDADD = $(DBUS_GLIB_LIBS)	\
+test_application_LDADD = $(AT_SPI_LIBS)	\
+		         $(GOBJ_LIBS)	\
 		         $(GMODULE_LIBS)	\
 		         $(ATK_LIBS)
 

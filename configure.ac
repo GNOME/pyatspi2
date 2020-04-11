@@ -66,9 +66,9 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(GLIB_LIBS)
         AC_SUBST(GLIB_CFLAGS)
 
-        PKG_CHECK_MODULES(DBUS_GLIB, [dbus-glib-1 >= 0.7.0])
-        AC_SUBST(DBUS_GLIB_LIBS)
-        AC_SUBST(DBUS_GLIB_CFLAGS)
+        PKG_CHECK_MODULES(AT_SPI, [atspi-2])
+        AC_SUBST(AT_SPI_LIBS)
+        AC_SUBST(AT_SPI_CFLAGS)
 
         PKG_CHECK_MODULES(GOBJ, [gobject-2.0 >= 2.0.0])
         AC_SUBST(GOBJ_LIBS)
