@@ -86,7 +86,7 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(ATK_LIBS)
         AC_SUBST(ATK_CFLAGS)
 
-        PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.10.0])
+        PKG_CHECK_MODULES(GTK, [gtk+-3.0])
         AC_SUBST(GTK_LIBS)
         AC_SUBST(GTK_CFLAGS)
 fi
