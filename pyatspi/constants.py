@@ -123,7 +123,8 @@ EVENT_TREE = {
     'mouse:button:3p',
     'mouse:button:3r'],
   'screen-reader' :
-    ['screen-reader:region-changed'],
+    ['screen-reader:region-changed',
+     'screen-reader:mode-changed'],
   'window' :
     ['window:minimize',
     'window:maximize',
