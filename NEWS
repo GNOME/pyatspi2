@@ -1,3 +1,12 @@
+What's new in pyatspi 2.37.90:
+
+* Tests: use libatspi's dbus-gmain implementation, eliminating
+  dependency on dbus-glib (!4).
+
+* Migrate to gtk 3 (!23).
+
+* Add support for the mode-changed signal (!24).
+
 What's new in pyatspi 2.35.1:
 
 * Fix dead link in README.
