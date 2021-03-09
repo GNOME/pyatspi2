@@ -319,7 +319,8 @@ def getPath(acc):
         @raise LookupError: When the application accessible cannot be reached
         """
         path = []
-        while 1:
+        tries = 0
+        while tries < 100:
                 if acc.parent is None:
                         path.reverse()
                         return path
@@ -328,6 +329,8 @@ def getPath(acc):
                 except Exception:
                         raise LookupError
                 acc = acc.parent
+                tries = tries + 1
+        raise LookupError
 
 def pointToList(point):
 	return (point.x, point.y)
