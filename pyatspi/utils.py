@@ -296,7 +296,8 @@ def findAncestor(acc, pred):
         if acc is None:
                 # guard against bad start condition
                 return None
-        while 1:
+        tries = 0
+        while tries < 100:
                 if acc.parent is None:
                         # stop if there is no parent and we haven't returned yet
                         return None
@@ -306,6 +307,8 @@ def findAncestor(acc, pred):
                         pass
                 # move to the parent
                 acc = acc.parent
+                tries = tries + 1
+        return None
 
 def getPath(acc):
         """
