@@ -1,3 +1,8 @@
+What's new in pyatspi 2.38.1:
+
+* Add sanity checks to getPath and findAncestor so that we don't
+  hang if an accessible returns itself as its own parent (#6, #7).
+
 What's new in pyatspi 2.37.90:
 
 * Tests: use libatspi's dbus-gmain implementation, eliminating
