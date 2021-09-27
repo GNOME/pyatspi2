@@ -116,7 +116,8 @@ static AtkStateSet *my_atk_object_ref_state_set(AtkObject *accessible)
 
     if (obj->state_set == NULL)
         obj->state_set = atk_state_set_new();
-    return g_object_ref(G_OBJECT(obj->state_set));
+    g_object_ref(obj->state_set);
+    return obj->state_set;
 }
 
 static AtkAttributeSet *my_atk_object_get_attributes (AtkObject *accessible)
@@ -139,6 +140,8 @@ static AtkAttributeSet *my_atk_object_get_attributes (AtkObject *accessible)
     rs = g_slist_append(rs, (gpointer) a); 
     rs = g_slist_append(rs, (gpointer) b); 
     rs = g_slist_append(rs, (gpointer) c); 
+
+    return rs;
 }
 
 //function, needed in instance_finalize()

@@ -50,5 +50,7 @@ struct _MyAtkHyperlinkClass
     AtkHyperlinkClass parent;
 };
 
+MyAtkHyperlink* my_atk_hyperlink_new(gint start_index, gint end_index,const gchar* uri);
+
 GType my_atk_hyperlink_get_type();
 #endif /*MY_ATK_HYPERLINK_H*/
