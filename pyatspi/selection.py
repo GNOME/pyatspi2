@@ -42,7 +42,7 @@ class Selection(interface):
                 @return True if the selections were successfully cleared, False
                 otherwise.
                 """
-                return Atspi.Text.clear_selection(self.obj)
+                return Atspi.Selection.clear_selection(self.obj)
 
         def deselectChild(self, childIndex):
                 """
