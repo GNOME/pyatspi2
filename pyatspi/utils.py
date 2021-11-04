@@ -344,7 +344,7 @@ def rectToList(rect):
 def attributeListToHash(list):
         ret = dict()
         for item in list:
-                [key, val] = item.split(":")
+                [key, val] = item.split(":", 1)
                 val = val.replace(":", r"\:")
                 if ret.__contains__(key):
                     ret[key] = ret[key] + ":" + val
