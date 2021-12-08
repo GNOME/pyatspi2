@@ -1,3 +1,10 @@
+What's new in pyatspi 2.38.2:
+
+* Fix a missing return value in the testsuite.
+
+* Make Selection#clearSelection work.
+
+* Fix attributeListToHash() in case there’s a colon in an attr value.
 What's new in pyatspi 2.38.1:
 
 * Add sanity checks to getPath and findAncestor so that we don't
