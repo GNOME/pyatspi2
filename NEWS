@@ -1,3 +1,7 @@
+What's new in pyatspi 2.51.1:
+
+    Add registerEventListenerWithApp
+
 What's new in pyatspi 2.38.2:
 
 * Fix a missing return value in the testsuite.
