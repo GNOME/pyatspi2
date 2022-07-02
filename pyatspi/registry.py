@@ -237,6 +237,35 @@ class Registry(object):
                 for name in names:
                         Atspi.EventListener.register (listener, name)
 
+        def registerEventListenerWithApp(self, client, app, *names):
+                """
+                Registers a new client callback for the given event names. Supports
+                registration for all subevents if only partial event name is specified.
+                Do not include a trailing colon.
+
+                For example, 'object' will register for all object events,
+                'object:property-change' will register for all property change events,
+                and 'object:property-change:accessible-parent' will register only for the
+                parent property change event.
+
+                Registered clients will not be automatically removed when the client dies.
+                To ensure the client is properly garbage collected, call
+                L{deregisterEventListener}.
+
+                @@param client: Callable to be invoked when the event occurs
+                @@type client: callable
+                @@param names: List of full or partial event names
+                @@type names: list of string
+                """
+                if not self.has_implementations:
+                        self._set_default_registry ()
+                try:
+                        listener = self.event_listeners[client]
+                except:
+                        listener = self.event_listeners[client] = Atspi.EventListener.new(self.eventWrapper, client)
+                for name in names:
+                        Atspi.EventListener.register_with_app (listener, name, None, app)
+
         def deregisterEventListener(self, client, *names):
                 """
                 Unregisters an existing client callback for the given event names. Supports 
