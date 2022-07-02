@@ -90,7 +90,8 @@ EVENT_TREE = {
      'object:text-changed',
      'object:text-attributes-changed',
      'object:text-caret-moved',  
-     'object:attributes-changed'],
+     'object:attributes-changed',
+     'object:announcement'],
   'object:text-changed' :
     ['object:text-changed:insert',
     'object:text-changed:delete'],
