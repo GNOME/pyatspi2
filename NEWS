@@ -1,4 +1,10 @@
-What's new in pyatspi 2.51.1:
+What's new in pyatspi 2.45.90:
+
+* Add object:announcement to the list of events.
+
+* Add support for ATSPI_ROLE_PUSH_BUTTON_MENU.
+
+What's new in pyatspi 2.45.1:
 
     Add registerEventListenerWithApp
 
