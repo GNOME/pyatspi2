@@ -147,7 +147,8 @@ class Role(AtspiEnum):
                 126:'ROLE_CONTENT_INSERTION',
                 127:'ROLE_MARK',
                 128:'ROLE_SUGGESTION',
-                129:'ROLE_LAST_DEFINED',
+                129:'ROLE_PUSH_BUTTON_MENU',
+                130:'ROLE_LAST_DEFINED',
         }
 
 ROLE_ACCELERATOR_LABEL = Role(1)
@@ -214,7 +215,7 @@ ROLE_INTERNAL_FRAME = Role(28)
 ROLE_INVALID = Role(0)
 ROLE_LABEL = Role(29)
 ROLE_LANDMARK = Role(110)
-ROLE_LAST_DEFINED = Role(129)
+ROLE_LAST_DEFINED = Role(130)
 ROLE_LAYERED_PANE = Role(30)
 ROLE_LEVEL_BAR = Role(103)
 ROLE_LINK = Role(88)
@@ -239,6 +240,7 @@ ROLE_PANEL = Role(39)
 ROLE_PARAGRAPH = Role(73)
 ROLE_PASSWORD_TEXT = Role(40)
 ROLE_POPUP_MENU = Role(41)
+ROLE_PUSH_BUTTON_MENU = Role(129)
 ROLE_PROGRESS_BAR = Role(42)
 ROLE_PUSH_BUTTON = Role(43)
 ROLE_RADIO_BUTTON = Role(44)
@@ -405,6 +407,7 @@ ROLE_NAMES = {
         ROLE_CONTENT_INSERTION: 'content insertion',
         ROLE_MARK: 'mark',
         ROLE_SUGGESTION: 'suggestion',
+        ROLE_PUSH_BUTTON_MENU: 'push button menu',
 }
 
 #END----------------------------------------------------------------------------
