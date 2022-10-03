@@ -19,6 +19,8 @@
 
 #include	<glib-object.h>
 
+#include "user_marshal.h"
+
 /* INT:BOXED (marshal.list:1) */
 void
 g_cclosure_user_marshal_INT__BOXED (GClosure     *closure,
