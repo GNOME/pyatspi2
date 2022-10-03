@@ -27,7 +27,6 @@
 #include <my-atk-hyperlink.h>
 #include <my-atk-hypertext.h>
 #include <my-atk-object.h>
-#include <my-atk-streamable-content.h>
 #include <my-atk-text.h>
 #include <my-atk-value.h>
 

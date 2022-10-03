@@ -23,8 +23,6 @@ libdummyatk_la_SOURCES = my-atk-action.c		\
 			 my-atk-object.h		\
 			 my-atk-selection.c		\
 			 my-atk-selection.h		\
-			 my-atk-streamable-content.c	\
-			 my-atk-streamable-content.h	\
 			 my-atk-table.c			\
 			 my-atk-table.h			\
 			 my-atk-text.c			\
