@@ -259,6 +259,7 @@ static GOptionEntry optentries[] =
  * 
  * Entry point for all test applications.
  */
+int
 main(int argc, char *argv[])
 {
   GOptionContext *opt;
