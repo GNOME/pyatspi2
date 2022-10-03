@@ -62,7 +62,7 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(DBUS_LIBS)
         AC_SUBST(DBUS_CFLAGS)
 
-        PKG_CHECK_MODULES(GLIB, [glib-2.0])
+        PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.36.0])
         AC_SUBST(GLIB_LIBS)
         AC_SUBST(GLIB_CFLAGS)
 
@@ -70,11 +70,11 @@ if test "$enable_tests" = "yes"; then
         AC_SUBST(AT_SPI_LIBS)
         AC_SUBST(AT_SPI_CFLAGS)
 
-        PKG_CHECK_MODULES(GOBJ, [gobject-2.0 >= 2.0.0])
+        PKG_CHECK_MODULES(GOBJ, [gobject-2.0 >= 2.36.0])
         AC_SUBST(GOBJ_LIBS)
         AC_SUBST(GOBJ_CFLAGS)
 
-        PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= 2.0.0])	
+        PKG_CHECK_MODULES(GMODULE, [gmodule-2.0 >= 2.36.0])	
         AC_SUBST(GMODULE_LIBS)
         AC_SUBST(GMODULE_CFLAGS)
 

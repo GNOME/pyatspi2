@@ -277,8 +277,6 @@ main(int argc, char *argv[])
   if (amodule_path == NULL)
       g_error("No atspi module provided");
 
-  g_type_init();
-
   setup_atk_util();
   load_test_module(tmodule_path, tdata_path);
   load_atspi_module(amodule_path, &argc, &argv);

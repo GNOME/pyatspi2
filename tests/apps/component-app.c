@@ -39,7 +39,6 @@ test_init (gchar *path)
      g_error("No test data path provided");
   tdata_path = path;
 
-  g_type_init();
   for(i = 0; i < sizeof(comps) / sizeof(comps[0]); i++)
     {
       MyAtkComponent *mycomp = MY_ATK_COMPONENT(g_object_new(MY_TYPE_ATK_COMPONENT, NULL));
