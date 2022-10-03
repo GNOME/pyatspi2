@@ -46,7 +46,7 @@ AtkAttribute* attribute_copy(AtkAttribute* attr)
 }
 void attribute_print(AtkAttribute* attr)
 {
-    TRACE("name=%s, value=%s", attr->name, attr->value);
+    g_print("name=%s, value=%s", attr->name, attr->value);
 }
 
 //AtkAttributeSet
@@ -61,7 +61,7 @@ AtkAttributeSet* attribute_set_copy(AtkAttributeSet* attr)
 void attribute_set_print(AtkAttributeSet *set)
 {
     if(set == NULL) 
-       TRACE0("(empty)");
+       g_print("(empty)");
     else 
        g_slist_foreach(set, (GFunc)attribute_print, NULL);
 }
@@ -148,7 +148,7 @@ void range_free(Range* range)
 }
 void range_print(const Range*range)
 {
-    TRACE("[%d,%d):", range->start, range->end);
+    g_print("[%d,%d):", range->start, range->end);
     attribute_set_print(range->attributeSet);
 }
 //only for correct list of ranges - ranges shouldn't intersect
@@ -752,7 +752,7 @@ AtkAttributeSet* my_atk_text_get_run_attributes(AtkText* text, gint offset,
     GList *attributes = ((MyAtkText*)text)->attributes;
     if(offset < 0 || offset >= my_atk_text_get_character_count(text))
     {
-        TRACE0("Incorrect value of offset.");
+        g_print("Incorrect value of offset.");
         return NULL;
     }
     gint start = -1, end = -1;
