@@ -75,7 +75,6 @@ class Registry(object):
 
                 self.has_implementations = False
 
-                self.device_event_register = None
                 self.app_event_register = None
                 self.desktop = None
 
