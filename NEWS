@@ -1,3 +1,12 @@
+What's new in pyatspi 2.46.1:
+
+* Fix some implicit function declarations and other compiler warnings
+  in the tests.
+
+* Remove some unused code.
+
+* Update the README to describe the module's current status.
+
 What's new in pyatspi 2.45.90:
 
 * Add object:announcement to the list of events.
