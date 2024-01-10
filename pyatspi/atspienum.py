@@ -30,7 +30,7 @@ class AtspiEnum(int):
                                 return True
                         else:
                                 return False
-                except ValueError:
+                except (ValueError, TypeError):
                         return False
 
         def __hash__(self):
