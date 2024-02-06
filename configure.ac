@@ -36,7 +36,7 @@ AC_ARG_WITH(python,
 if test x"$PYTHON" = xyes; then
 	AC_MSG_ERROR([--with-python option requires a path or program argument])
 fi
-if test -n "$PYTHON" && ! which "$PYTHON"; then
+if test -n "$PYTHON" && ! command -v "$PYTHON" 2>&1 >/dev/null; then
 	AC_MSG_ERROR([Python interpreter $PYTHON does not exist])
 fi
 
