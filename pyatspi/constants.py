@@ -99,6 +99,7 @@ EVENT_TREE = {
     ['object:property-change:accessible-parent', 
     'object:property-change:accessible-name',
     'object:property-change:accessible-description',
+    'object:property-change:accessible-help-text',
     'object:property-change:accessible-value',
     'object:property-change:accessible-role',
     'object:property-change:accessible-table-caption',
