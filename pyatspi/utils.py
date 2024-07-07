@@ -50,13 +50,13 @@ __all__ = [
          ]
 
 def setCacheLevel(level):
-        pass
+        raise NotImplementedError
 
 def getCacheLevel():
-        return None
+        raise NotImplementedError
 
 def clearCache():
-        pass
+        raise NotImplementedError
 
 def printCache():
         print("Print cache function is deprecated")
