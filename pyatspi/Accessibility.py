@@ -125,7 +125,10 @@ Atspi.Accessible.getRelationSet = Atspi.Accessible.get_relation_set
 Atspi.Accessible.getRole = Atspi.Accessible.get_role
 Atspi.Accessible.getRoleName = Atspi.Accessible.get_role_name
 Atspi.Accessible.getState = Atspi.Accessible.get_state_set
-del Atspi.Accessible.children
+try:
+    del Atspi.Accessible.children
+except:
+    pass
 Atspi.Accessible.description = property(fget=Atspi.Accessible.get_description)
 Atspi.Accessible.objectLocale = property(fget=Atspi.Accessible.get_object_locale)
 Atspi.Accessible.accessibleId = property(fget=Atspi.Accessible.get_accessible_id)
