@@ -1,8 +1,10 @@
+#!/bin/sh
+
 export PYTHONPATH=$top_srcdir:$top_srcdir/tests/pyatspi
 
 export TEST_DATA_DIRECTORY=$top_srcdir/tests/data
 export TEST_ATSPI_LIBRARY=$gtk_module_dir/libatk-bridge.so
-export TEST_MODULES_DIRECTORY=$top_builddir/tests/apps/.libs
+export TEST_MODULES_DIRECTORY=$top_builddir/tests/apps
 export TEST_APPLICATION=$top_builddir/tests/apps/test-application
 
 run()

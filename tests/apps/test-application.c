@@ -36,6 +36,7 @@
 #include <atk/atk.h>
 #include <dbus/dbus.h>
 #include <atspi/atspi-gmain.h>
+#include <atk-bridge.h>
 
 /* The test module, GModule containing interface for an atk-test */
 static GModule *test_module;
@@ -84,23 +85,6 @@ setup_atk_util(void)
 }
 
 typedef void (*GtkModuleInit) (int *argc, char **argv[]);
-
-/* AT-SPI is a gtk module that must be loaded and initialized */
-static void
-load_atspi_module(const char *path, int *argc, char **argv[])
-{
-  GModule *bridge;
-  gpointer init;
-
-  bridge = g_module_open(path, G_MODULE_BIND_LOCAL|G_MODULE_BIND_LAZY);
-  if (!bridge)
-    g_error("Couldn't load atk-bridge module : %s\n", g_module_error());
-
-  if (!g_module_symbol(bridge, "gtk_module_init", &init))
-    g_error("Couldn't load symbol \"gtk_module_init\"\n");
-
-  ((GtkModuleInit) init)(argc, argv);
-}
 
 typedef void (*TestModuleInit) (gchar *path);
 
@@ -242,14 +226,12 @@ send_started_signal(void)
 
 /*Command line data*/
 static gchar *tmodule_path = NULL;
-static gchar *amodule_path = NULL;
 static gchar *tdata_path = NULL;
 static gchar *bus_name = NULL;
 
 static GOptionEntry optentries[] = 
 {
   {"test-module", 0, 0, G_OPTION_ARG_STRING, &tmodule_path, "Module containing test scenario", NULL},
-  {"test-atspi-library", 0, 0, G_OPTION_ARG_STRING, &amodule_path, "Gtk module with atk-atspi adaptor", NULL},
   {"test-data-directory", 0, 0, G_OPTION_ARG_STRING, &tdata_path, "Path to directory of test data", NULL},
   {"test-dbus-name", 0, 0, G_OPTION_ARG_STRING, &bus_name, "Bus name", NULL},
   {NULL}
@@ -275,12 +257,10 @@ main(int argc, char *argv[])
 
   if (tmodule_path == NULL)
       g_error("No test module provided");
-  if (amodule_path == NULL)
-      g_error("No atspi module provided");
 
   setup_atk_util();
   load_test_module(tmodule_path, tdata_path);
-  load_atspi_module(amodule_path, &argc, &argv);
+  atk_bridge_adaptor_init (&argc, &argv);
   init_dbus_interface(bus_name);
   send_started_signal();
 

@@ -1,0 +1,4 @@
+option('enable_tests',
+       description: 'Enable unit tests',
+       type: 'boolean',
+       value: false)
