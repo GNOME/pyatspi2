@@ -22,7 +22,6 @@ if get_option('enable_tests')
   atspi_dep = dependency('atspi-2', version: atspi_req_version)
   atk_dep = dependency('atk', version: atspi_req_version)
   atk_bridge_dep = dependency('atk-bridge-2.0', version: atspi_req_version)
-  gtk_dep = dependency('gtk+-3.0')
   libxml_dep = dependency('libxml-2.0', version: libxml_req_version)
 endif
 
