@@ -51,10 +51,10 @@ create_atk_object_from_element(xmlNode *element)
   name = xmlGetProp(element, NAME_ATTR);
   description = xmlGetProp(element, DESC_ATTR);
   role_text = xmlGetProp(element, ROLE_ATTR);
-  role = atoi(role_text);
+  role = atoi((char *)role_text);
   type_text = xmlGetProp(element, TYPE_ATTR);
 
-  if (type_text && !strcmp (type_text, "document"))
+  if (type_text && !strcmp ((char *)type_text, "document"))
     type = MY_TYPE_ATK_DOCUMENT;
 
   obj = MY_ATK_OBJECT(g_object_new(type,

@@ -214,7 +214,6 @@ static void
 send_started_signal(void)
 {
   DBusMessage* sig;
-  DBusMessageIter args;
 
   sig = dbus_message_new_signal("/org/codethink/atspi/test", "org.codethink.atspi.test", "started");
   g_assert(sig != NULL);

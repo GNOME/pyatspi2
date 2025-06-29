@@ -34,24 +34,6 @@
 #define NROWS 4     /* row count */
 #define NCOLS 5     /* column count */
 
-static gint ids[NROWS][NCOLS] = 
-    { {0,  1,  2,  2,  3},
-      {4,  5,  6,  7,  8},
-      {9,  9, 10, 11, 12},
-      {9,  9, 13, 14, -1} };
-      
-static gint row_ext[NROWS][NCOLS] = 
-    { {1,  1,  1,  1,  1},
-      {1,  1,  1,  1,  1},
-      {2,  2,  1,  1,  1},
-      {2,  2,  1,  1,  1} };
-
-static gint col_ext[NROWS][NCOLS] = 
-    { {1,  1,  2,  2,  1},
-      {1,  1,  1,  1,  1},
-      {2,  2,  1,  1,  1},
-      {2,  2,  1,  1,  1} };
-
 #define NCHILDREN 16    /* child object count */
 
 // default string values

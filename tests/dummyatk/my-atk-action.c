@@ -24,6 +24,8 @@
 #include "my-atk-object.h"
 #include "my-atk-action.h"
 
+static const gchar* keybinding_note_define = "none";
+
 static GObjectClass *parent_class = NULL;
 //implementation of the interface
 static gboolean my_atk_action_do_action(AtkAction *action, gint i)

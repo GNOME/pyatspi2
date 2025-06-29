@@ -34,7 +34,6 @@
 #define MY_IS_ATK_ACTION_CLASS(vtable) (G_TYPE_CHECK_CLASS_TYPE ((vtable), MY_TYPE_ATK_ACTION))
 #define MY_ATK_ACTION_GET_CLASS(inst)  (G_TYPE_INSTANCE_GET_CLASS ((inst), MY_TYPE_ATK_ACTION, MyAtkActionClass))
 
-static const gchar* keybinding_note_define = "none";
 
 #define FIRST_ACTION_NAME "First action"
 #define FIRST_ACTION_DESCRIPTION "First action performed"
