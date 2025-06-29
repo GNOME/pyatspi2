@@ -1,3 +1,15 @@
+What's new in pyatspi 2.57.0:
+
+* Fix an incompatibility with the new libatspi Python overrides.
+
+* Port to Meson.
+
+    Add object:state-changed:<STATE> events to event tree.
+
+    Add "object:property-change:accessible-help-text" to event tree.
+
+    Add support for ATSPI_ROLE_SWITCH.
+
 What's new in pyatspi 2.46.1:
 
 * Fix some implicit function declarations and other compiler warnings
