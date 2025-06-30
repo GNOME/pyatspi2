@@ -1,0 +1,9 @@
+include:
+  - project: "GNOME/citemplates"
+    file: "templates/default-rules.yml"
+  - component: "gitlab.gnome.org/GNOME/citemplates/gnomeos-basic-ci@master"
+    inputs:
+      meson-options: "-Denable_tests=true"
+  - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
+    inputs:
+      dist-job-name: "build-gnomeos"
