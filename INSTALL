@@ -1,20 +1,23 @@
 Install procedure
 -----------------
 
-        % gzip -cd pyatspi-2.0.0.tar.gz | tar xvf   # unpack the sources
-        % cd pyatspi-2.0.0                          # change to the toplevel directory
-        % ./configure                               # run the `configure' script
-        % make                                      # build pyatspi
+        % tar -xJf pyatspi-2.57.0.tar.xz            # unpack the sources
+        % cd pyatspi-2.57.0                         # change to the toplevel directory
+% mkdir build                                       # create a build directory
+cd build                                            # Change to the build directory
+        % meson setup ..                            # Prepare meson for build
+        % ninja                                     # build pyatspi
 
         [ Become root if necessary ]
-        % make install                              # install pyatspi
+        % ninja install                             # install pyatspi
 
 Requirements
 ------------
 
-        GNU make
-        GNU autotools
+        Meson
 
         python
         glib
-        dbus-python
+        libatspi (from at-spi2-core)
+        dbus-python (if tests are enabled)
+        libxml2 (if tests are enabled)
