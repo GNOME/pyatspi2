@@ -12,6 +12,7 @@ lib_sources = [
   'document.py',
   'editabletext.py',
   'hypertext.py',
+  'image.py',
   'interface.py',
   'registry.py',
   'role.py',
