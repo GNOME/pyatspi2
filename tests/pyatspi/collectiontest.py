@@ -90,7 +90,7 @@ class AccessibleTest(_PasyTest):
                         collection.MATCH_NONE,
                 [],     # role
                         collection.MATCH_NONE,
-                "",     # interfaces
+                [],     # interfaces
                         collection.MATCH_NONE,
                         False)
 
@@ -146,7 +146,7 @@ class AccessibleTest(_PasyTest):
                         collection.MATCH_ANY,
                 [],     # role
                         collection.MATCH_ANY,
-                "",     # interfaces
+                [],     # interfaces
                         collection.MATCH_NONE,
                         False)
 
@@ -169,7 +169,7 @@ class AccessibleTest(_PasyTest):
                         collection.MATCH_NONE,
                 [pyatspi.ROLE_RADIO_MENU_ITEM],
                         collection.MATCH_ANY,
-                "",     # interfaces
+                [],     # interfaces
                         collection.MATCH_NONE,
                         False)
 
@@ -188,7 +188,7 @@ class AccessibleTest(_PasyTest):
                         collection.MATCH_NONE,
                 [pyatspi.ROLE_ENTRY, pyatspi.ROLE_HTML_CONTAINER],
                         collection.MATCH_ANY,
-                "",     # interfaces
+                [],     # interfaces
                         collection.MATCH_NONE,
                         False)
 
