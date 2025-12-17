@@ -35,18 +35,6 @@ st = [pyatspi.STATE_MULTI_LINE,
       pyatspi.STATE_SUPPORTS_AUTOCOMPLETION,
       pyatspi.STATE_VERTICAL,]
 
-def _createNode(accessible, parentElement):
-        e = minidom.Element("accessible")
-
-        e.attributes["name"] = accessible.name
-        e.attributes["role"] = str(int(accessible.getRole()))
-        e.attributes["description"] = accessible.description
-
-        for i in range(0, accessible.childCount):
-                _createNode(accessible.getChildAtIndex(i), e)
-
-        parentElement.appendChild(e)
-
 class AccessibleTest(_PasyTest):
 
         __tests__ = ["setup",

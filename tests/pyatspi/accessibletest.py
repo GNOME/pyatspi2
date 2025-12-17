@@ -36,7 +36,7 @@ st = [pyatspi.STATE_MULTI_LINE,
       pyatspi.STATE_VERTICAL,]
 
 def _createNode(doc, accessible, parentElement):
-	e = minidom.Element("accessible")
+	e = doc.createElement("accessible")
 
 	nameA = doc.createAttribute('name')
 	roleA = doc.createAttribute('role')
