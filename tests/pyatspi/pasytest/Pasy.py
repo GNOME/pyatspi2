@@ -80,7 +80,7 @@ class PasyTestFunc(PasyTestStep):
 		try:
 			self._func(self)
 		except Exception as e:
-			self.fail(e.message)
+			self.fail(str(e))
 			traceback.print_exc()
 		self.win()
 
