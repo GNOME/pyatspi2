@@ -35,7 +35,7 @@
 #include <gmodule.h>
 #include <atk/atk.h>
 #include <dbus/dbus.h>
-#include <atspi/atspi-gmain.h>
+#include <atspi/atspi-misc.h>
 #include <atk-bridge.h>
 
 /* The test module, GModule containing interface for an atk-test */
