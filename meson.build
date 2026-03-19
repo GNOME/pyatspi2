@@ -1,6 +1,6 @@
 project('pyatspi', 'c',
   version: '2.58.1',
-  meson_version: '>= 0.51.0'
+  meson_version: '>= 0.58.0'
 )
 
 # Dependencies
