@@ -1,5 +1,5 @@
 project('pyatspi', 'c',
-  version: '2.58.1',
+  version: '2.58.2',
   meson_version: '>= 0.58.0'
 )
 

@@ -1,3 +1,7 @@
+What's new in pyatspi 2.58.2:
+
+* Fix building the tests with at-spi2-core 2.60.0.
+
 What's new in pyatspi 2.58.1:
 
 * Fix a traceback in the collection tests.
